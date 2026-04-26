@@ -102,18 +102,28 @@
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script type="text/babel" src="../components/data.jsx"></script>
 
 <script type="text/babel">
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-const ADMIN_PASSWORD = 'admin12345';
-const STORAGE_KEY    = 'bwfc-admin-data';
-const TOKEN_KEY      = 'bwfc-gh-token';
-const AUTH_KEY       = 'bwfc-admin-authed';
-const GITHUB_OWNER   = 'wrestlingamour-wq';
-const GITHUB_REPO    = 'blidworth-welfare-fc';
-const GITHUB_PATH    = 'website/components/data.jsx';
+const ADMIN_PASSWORD     = 'admin12345';
+const STORAGE_KEY        = 'bwfc-admin-data';
+const TOKEN_KEY          = 'bwfc-gh-token';
+const NETLIFY_TOKEN_KEY  = 'bwfc-netlify-token';
+const NETLIFY_SITE_KEY   = 'bwfc-netlify-site';
+const AUTH_KEY           = 'bwfc-admin-authed';
+const GITHUB_OWNER       = 'wrestlingamour-wq';
+const GITHUB_REPO        = 'blidworth-welfare-fc';
+const GITHUB_PATH        = 'components/data.jsx';  // path within repo root
+
+// Files to include in Netlify zip deploy (paths relative to repo root)
+const SITE_FILE_PREFIXES = ['components/', 'styles/', 'assets/', 'admin/'];
+const SITE_FILE_NAMES    = [
+  'home.html','fixtures.html','news.html','tickets.html','table.html',
+  'club.html','article.html','lotto.html','squad.html','index.html',
+];
 
 // ─── Data helpers ─────────────────────────────────────────────────────────────
 function getInitialData() {
@@ -166,7 +176,7 @@ function serializeData(data) {
   return `// Blidworth Welfare FC — shared site data\n// Last updated via admin panel: ${new Date().toISOString()}\n\nconst BW_DATA = ${JSON.stringify(out, null, 2)};\n\nwindow.BW_DATA = BW_DATA;\n`;
 }
 
-// GitHub publish
+// ── GitHub: commit data.jsx ──────────────────────────────────────────────────
 async function publishToGitHub(data, token) {
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`;
   const headers = {
@@ -174,25 +184,72 @@ async function publishToGitHub(data, token) {
     'Accept': 'application/vnd.github.v3+json',
     'Content-Type': 'application/json',
   };
-  // Get current SHA
   const getRes = await fetch(url, { headers });
   if (!getRes.ok) throw new Error(`GitHub error ${getRes.status}: ${await getRes.text()}`);
   const fileInfo = await getRes.json();
-  // Encode content
   const content = serializeData(data);
   const encoded = btoa(unescape(encodeURIComponent(content)));
-  // Commit
   const putRes = await fetch(url, {
-    method: 'PUT',
-    headers,
+    method: 'PUT', headers,
     body: JSON.stringify({
-      message: `Admin panel: update site content ${new Date().toLocaleString('en-GB')}`,
+      message: `Admin: update site content ${new Date().toLocaleString('en-GB')}`,
       content: encoded,
       sha: fileInfo.sha,
     }),
   });
   if (!putRes.ok) throw new Error(`GitHub commit error ${putRes.status}: ${await putRes.text()}`);
   return true;
+}
+
+// ── Netlify: build zip from GitHub + deploy ──────────────────────────────────
+async function deployToNetlify(netlifyToken, siteId, onProgress) {
+  onProgress('Fetching site files from GitHub...');
+  const BASE = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/`;
+  const GH_API = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/git/trees/main?recursive=1`;
+
+  // Get full file tree
+  const treeRes = await fetch(GH_API);
+  if (!treeRes.ok) throw new Error('Could not fetch repo file list from GitHub');
+  const { tree } = await treeRes.json();
+
+  // Filter to site files only
+  const siteFiles = tree.filter(f => {
+    if (f.type !== 'blob') return false;
+    const p = f.path;
+    if (p.startsWith('blidworth-bot/') || p.startsWith('.github/') || p.startsWith('scripts/')) return false;
+    if (['CLAUDE.md','HANDOVER.md','hosting.html','shop.html'].includes(p)) return false;
+    return true;
+  });
+
+  onProgress(`Building zip (${siteFiles.length} files)...`);
+  const zip = new JSZip();
+
+  // Fetch each file and add to zip
+  for (const file of siteFiles) {
+    const res = await fetch(BASE + file.path);
+    if (!res.ok) { console.warn(`Skipping ${file.path}: ${res.status}`); continue; }
+    const buf = await res.arrayBuffer();
+    zip.file(file.path, buf);
+  }
+
+  onProgress('Compressing...');
+  const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+
+  onProgress('Deploying to Netlify...');
+  const deployRes = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/deploys`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${netlifyToken}`,
+      'Content-Type': 'application/zip',
+    },
+    body: zipBlob,
+  });
+  if (!deployRes.ok) {
+    const txt = await deployRes.text();
+    throw new Error(`Netlify deploy failed ${deployRes.status}: ${txt.substring(0, 200)}`);
+  }
+  const deploy = await deployRes.json();
+  return deploy;
 }
 
 // ─── Login ───────────────────────────────────────────────────────────────────
@@ -912,24 +969,44 @@ function BoardSection({ data, update }) {
 
 // ─── Settings & Publish ───────────────────────────────────────────────────────
 function SettingsSection({ data, update }) {
-  const [token, setToken] = React.useState(localStorage.getItem(TOKEN_KEY) || '');
-  const [publishing, setPublishing] = React.useState(false);
-  const [msg, setMsg] = React.useState('');
-  const [ticker, setTicker] = React.useState(data.ticker || '');
-  const saveToken = () => { localStorage.setItem(TOKEN_KEY, token); setMsg('GitHub token saved.'); };
-  const saveTicker = () => { update('ticker', ticker); };
+  const [ghToken,       setGhToken]       = React.useState(localStorage.getItem(TOKEN_KEY) || '');
+  const [netlifyToken,  setNetlifyToken]  = React.useState(localStorage.getItem(NETLIFY_TOKEN_KEY) || 'nfp_LH1xxFwoqu1kimuWoHSNmG7WHWSHHyPo46a2');
+  const [netlifySite,   setNetlifySite]   = React.useState(localStorage.getItem(NETLIFY_SITE_KEY)  || '3bb099b0-41d2-4336-813f-1dfeb234183d');
+  const [publishing,    setPublishing]    = React.useState(false);
+  const [progress,      setProgress]      = React.useState('');
+  const [msg,           setMsg]           = React.useState('');
+  const [ticker,        setTicker]        = React.useState(data.ticker || '');
+
+  const saveTokens = () => {
+    localStorage.setItem(TOKEN_KEY,          ghToken);
+    localStorage.setItem(NETLIFY_TOKEN_KEY,  netlifyToken);
+    localStorage.setItem(NETLIFY_SITE_KEY,   netlifySite);
+    setMsg('✓ Tokens saved.');
+    setTimeout(() => setMsg(''), 2000);
+  };
+
+  const saveTicker = () => update('ticker', ticker);
+
   const publish = async () => {
-    const tok = localStorage.getItem(TOKEN_KEY);
-    if (!tok) { setMsg('Enter and save your GitHub token first.'); return; }
-    setPublishing(true); setMsg('');
+    const ghTok  = localStorage.getItem(TOKEN_KEY)         || ghToken;
+    const ntTok  = localStorage.getItem(NETLIFY_TOKEN_KEY) || netlifyToken;
+    const ntSite = localStorage.getItem(NETLIFY_SITE_KEY)  || netlifySite;
+    if (!ghTok)  { setMsg('✗ Enter your GitHub token first.'); return; }
+    if (!ntTok)  { setMsg('✗ Enter your Netlify token first.'); return; }
+    if (!ntSite) { setMsg('✗ Enter your Netlify Site ID first.'); return; }
+
+    setPublishing(true); setMsg(''); setProgress('Saving to GitHub...');
     try {
-      await publishToGitHub(data, tok);
-      setMsg('✓ Published! Netlify will rebuild in ~30 seconds. Refresh the live site shortly.');
+      await publishToGitHub(data, ghTok);
+      setProgress('GitHub saved ✓  |  Deploying to Netlify...');
+      const deploy = await deployToNetlify(ntTok, ntSite, setProgress);
+      setMsg(`✓ Live site updated! Deploy ID: ${deploy.id}. Changes are live in ~30 seconds.`);
     } catch(e) {
       setMsg('✗ Error: ' + e.message);
     }
-    setPublishing(false);
+    setPublishing(false); setProgress('');
   };
+
   return (
     <div>
       <div className="section-title">System</div>
@@ -938,109 +1015,17 @@ function SettingsSection({ data, update }) {
       <div className="card" style={{ marginBottom: 24 }}>
         <div className="card-title">Publish to Live Site</div>
         <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 20 }}>
-          Publishing saves all your edits to GitHub. Netlify automatically rebuilds the live site within about 30 seconds.
+          Saves your changes to GitHub and deploys the updated site to Netlify automatically. Takes about 15–30 seconds.
         </p>
         <button className="btn-primary btn-gold" style={{ fontSize: 14, padding: '14px 32px' }} onClick={publish} disabled={publishing}>
-          {publishing ? 'Publishing...' : '🚀 Publish to Live Site'}
+          {publishing ? '⏳ Publishing...' : '🚀 Publish to Live Site'}
         </button>
-        {msg && <div style={{ marginTop: 16, fontSize: 14, color: msg.startsWith('✓') ? 'var(--green)' : 'var(--red)' }}>{msg}</div>}
+        {progress && !msg && <div style={{ marginTop: 14, fontSize: 13, color: 'var(--muted)' }}>{progress}</div>}
+        {msg && <div style={{ marginTop: 14, fontSize: 14, color: msg.startsWith('✓') ? 'var(--green)' : 'var(--red)' }}>{msg}</div>}
       </div>
 
       <div className="card" style={{ marginBottom: 24 }}>
         <div className="card-title">Ticker Bar Text</div>
         <div className="field">
           <label>Scrolling ticker message (shown at top of all pages)</label>
-          <input value={ticker} onChange={e => setTicker(e.target.value)} placeholder="e.g. TICKETS NOW ON SALE · Welfare Ground · Saturday 3pm" />
-        </div>
-        <button className="btn-primary btn-gold" onClick={saveTicker}>Save Ticker</button>
-      </div>
-
-      <div className="card" style={{ marginBottom: 24 }}>
-        <div className="card-title">GitHub Access Token</div>
-        <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16 }}>
-          A GitHub Personal Access Token is needed to publish changes to the site. This is stored locally in your browser only.
-          Generate one at <strong>github.com → Settings → Developer Settings → Personal access tokens</strong> with <strong>repo</strong> scope.
-        </p>
-        <div className="field">
-          <label>GitHub Personal Access Token</label>
-          <input type="password" value={token} onChange={e => setToken(e.target.value)} placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
-        </div>
-        <button className="btn-primary" onClick={saveToken}>Save Token</button>
-      </div>
-
-      <div className="card">
-        <div className="card-title">Draft Data</div>
-        <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16 }}>
-          All your edits are saved as a local draft in this browser. Use this to export or reset.
-        </p>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <button className="btn-ghost" onClick={() => {
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'bwfc-content.json';
-            a.click();
-          }}>⬇ Export Draft JSON</button>
-          <button className="btn-ghost" style={{ color: 'var(--red)', borderColor: 'var(--red)' }} onClick={() => {
-            if (confirm('Reset all draft data from live site? This cannot be undone.')) {
-              localStorage.removeItem(STORAGE_KEY);
-              location.reload();
-            }
-          }}>⟳ Reset from Live Data</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── Main App ─────────────────────────────────────────────────────────────────
-function App() {
-  const [authed, setAuthed] = React.useState(!!localStorage.getItem(AUTH_KEY));
-  const [section, setSection] = React.useState('next-match');
-  const [data, setData] = React.useState(getInitialData());
-  const [saved, setSaved] = React.useState(false);
-
-  const update = (key, value) => {
-    setData(d => {
-      const next = { ...d, [key]: value };
-      saveData(next);
-      return next;
-    });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
-  };
-
-  if (!authed) {
-    return <LoginScreen onLogin={() => { localStorage.setItem(AUTH_KEY, '1'); setAuthed(true); }} />;
-  }
-
-  const sectionProps = { data, update };
-  const sections = {
-    'next-match': <NextMatchSection {...sectionProps} />,
-    'news':       <NewsSection {...sectionProps} />,
-    'fixtures':   <FixturesSection {...sectionProps} />,
-    'results':    <ResultsSection {...sectionProps} />,
-    'table':      <TableSection {...sectionProps} />,
-    'logos':      <LogoManagerSection {...sectionProps} />,
-    'info':       <ClubInfoSection {...sectionProps} />,
-    'board':      <BoardSection {...sectionProps} />,
-    'settings':   <SettingsSection {...sectionProps} />,
-  };
-
-  return (
-    <div className="admin-wrap">
-      <Sidebar section={section} onNav={setSection} saved={saved} onLogout={() => {
-        localStorage.removeItem(AUTH_KEY);
-        setAuthed(false);
-      }} />
-      <main className="main-content">
-        {sections[section] || <div>Section not found.</div>}
-      </main>
-    </div>
-  );
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
-</script>
-</body>
-</html>
+          <input value={ticker} onChange={e => setTicker(e.target.value)} placeholder="e.g. TICKETS NOW ON SALE · Welfare 
