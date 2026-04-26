@@ -10,7 +10,7 @@ const BW_DATA = {
     location: 'Blidworth, Nottinghamshire',
     league: 'Camper UK League',
     division: 'Premier Division South',
-    season: '2025/26',
+    season: '2026/27',
     manager: 'Dan Mellors',
     captain: 'Tom Hodgkinson',
     colours: 'Black & White',
@@ -72,14 +72,14 @@ const BW_DATA = {
     { pos: 18, team: 'Mansfield Hosiery Mills F.C.', p: 0, w: 0, d: 0, l: 0, gd: 0, pts: 0 },
   ],
   news: [
-    { id: 'four-to-play', cat: 'Call to Arms', title: 'Four games. One hundred years. Show up.', kicker: 'Sixteenth in the table, four fixtures left, three at the Welfare. A plea for everyone in the village to pack out the bank.', date: '2026-04-19', author: 'Club Media', img: 'terrace' },
-    { id: 'holbrook-defeat', cat: 'Match Report', title: 'Welfare edged out 2-1 by Holbrook in front of biggest spring gate', kicker: 'A spirited showing not enough as Blidworth fall to a narrow home defeat with the drop now four points away.', date: '2026-04-18', author: 'Club Media', img: 'matchday' },
-    { id: 'sunnyhill-defeat', cat: 'Match Report', title: 'Welfare fall to Sunnyhill as relegation gap narrows', kicker: 'Two first-half goals proved decisive as The Welfare failed to register a shot on target.', date: '2026-04-11', author: 'Club Media', img: 'matchday' },
-    { id: 'centenary-launch', cat: 'Club', title: '100 Years: Centenary season programme unveiled', kicker: 'A year-long celebration of Welfare football — heritage kit, dinner, and a commemorative matchday at the Welfare Ground.', date: '2026-04-09', author: 'Club Media', img: 'archive' },
-    { id: 'run-in-message', cat: 'First Team', title: '‘Six games, six finals’ — manager’s message ahead of the run-in', kicker: 'The gaffer calls on supporters to pack out the Welfare as the side look to finish the season strongly.', date: '2026-04-07', author: 'Club Media', img: 'manager' },
-    { id: 'academy-intake', cat: 'Community', title: 'Academy opens 2026 summer intake applications', kicker: 'U9 to U16 trials confirmed across four weekends from June.', date: '2026-04-05', author: 'Academy', img: 'academy' },
-    { id: 'new-kit', cat: 'Shop', title: 'Centenary home shirt — available to pre-order', kicker: 'Heritage black with gold trim, commemorating 100 years at the Welfare Ground.', date: '2026-04-02', author: 'Club Shop', img: 'kit' },
-    { id: 'volunteer-day', cat: 'Community', title: 'Volunteer day: help us spruce up the ground', kicker: 'Paint, planting, and pitch-side improvements ahead of the centenary fixture.', date: '2026-03-30', author: 'Community', img: 'ground' },
+    { id: ‘four-to-play’, cat: ‘firstteam’, catLabel: ‘First Team’, title: ‘Four games. One hundred years. Show up.’, kicker: ‘Sixteenth in the table, four fixtures left, three at the Welfare. A plea for everyone in the village to pack out the bank.’, date: ‘2026-04-19’, author: ‘Club Media’, img: ‘terrace’ },
+    { id: ‘holbrook-defeat’, cat: ‘firstteam’, catLabel: ‘Match Report’, title: ‘Welfare edged out 2-1 by Holbrook in front of biggest spring gate’, kicker: ‘A spirited showing not enough as Blidworth fall to a narrow home defeat with the drop now four points away.’, date: ‘2026-04-18’, author: ‘Club Media’, img: ‘matchday’ },
+    { id: ‘sunnyhill-defeat’, cat: ‘firstteam’, catLabel: ‘Match Report’, title: ‘Welfare fall to Sunnyhill as relegation gap narrows’, kicker: ‘Two first-half goals proved decisive as The Welfare failed to register a shot on target.’, date: ‘2026-04-11’, author: ‘Club Media’, img: ‘matchday’ },
+    { id: ‘centenary-launch’, cat: ‘announcements’, catLabel: ‘Club News’, title: ‘100 Years: Centenary season programme unveiled’, kicker: ‘A year-long celebration of Welfare football — heritage kit, dinner, and a commemorative matchday at the Welfare Ground.’, date: ‘2026-04-09’, author: ‘Club Media’, img: ‘archive’ },
+    { id: ‘run-in-message’, cat: ‘firstteam’, catLabel: ‘First Team’, title: ‘‘Six games, six finals’ — manager’s message ahead of the run-in’, kicker: ‘The gaffer calls on supporters to pack out the Welfare as the side look to finish the season strongly.’, date: ‘2026-04-07’, author: ‘Club Media’, img: ‘manager’ },
+    { id: ‘academy-intake’, cat: ‘announcements’, catLabel: ‘Community’, title: ‘Academy opens 2026 summer intake applications’, kicker: ‘U9 to U16 trials confirmed across four weekends from June.’, date: ‘2026-04-05’, author: ‘Academy’, img: ‘academy’ },
+    { id: ‘new-kit’, cat: ‘sponsorships’, catLabel: ‘Sponsorships’, title: ‘Centenary home shirt — available to pre-order’, kicker: ‘Heritage black with gold trim, commemorating 100 years at the Welfare Ground.’, date: ‘2026-04-02’, author: ‘Club Shop’, img: ‘kit’ },
+    { id: ‘volunteer-day’, cat: ‘announcements’, catLabel: ‘Community’, title: ‘Volunteer day: help us spruce up the ground’, kicker: ‘Paint, planting, and pitch-side improvements ahead of the centenary fixture.’, date: ‘2026-03-30’, author: ‘Community’, img: ‘ground’ },
   ],
   squad: [
     { no: 1, name: 'Aaron Finch', pos: 'GK', age: 29, apps: 28, goals: 0 },
@@ -115,15 +115,4 @@ const BW_DATA = {
     { platform: 'X', handle: '@BlidworthWFC', when: '2h', text: 'TICKETS ⚡️ A limited allocation for Saturday’s home derby vs Ashfield Town goes on general sale at 10am. #UpTheWelfare' },
     { platform: 'Instagram', handle: '@blidworth_welfare_fc', when: '8h', text: 'Matchday eve. Final session in the books. We go again Saturday. 🖤🤍' },
     { platform: 'Facebook', handle: 'Blidworth Welfare FC', when: '1d', text: 'Huge thanks to everyone who came down for the volunteer day — the Welfare Ground is looking the business ahead of the centenary fixture.' },
-    { platform: 'X', handle: '@BlidworthWFC', when: '2d', text: 'FT | Blidworth Welfare 3-1 Rainworth MW. Derby day delivered. Whitlock (2), Parr. Four points off top spot. #UpTheWelfare' },
-  ],
-  honours: [
-    { year: '2023/24', title: 'CMA South Division — Champions' },
-    { year: '2018/19', title: 'Notts Senior League — Runners-up' },
-    { year: '2012/13', title: 'Notts Senior Cup — Winners' },
-    { year: '1998/99', title: 'Central Alliance — Champions' },
-    { year: '1978/79', title: 'Notts Spartan League — Winners' },
-  ],
-};
-
-window.BW_DATA = BW_DATA;
+    { platform: 'X', handle: '@BlidworthWFC', when: '2d', text: 'FT | Blidworth Welfare 3-1 Rainworth MW. Derby da

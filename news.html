@@ -15,11 +15,28 @@
 <script type="text/babel" src="components/data.jsx"></script>
 <script type="text/babel" src="components/ui.jsx"></script>
 <script type="text/babel">
+const CAT_LABELS = {
+  all: 'All',
+  firstteam: 'First Team',
+  announcements: 'Announcements',
+  sponsorships: 'Sponsorships',
+};
+
 function Page() {
   const d = BW_DATA;
-  const [filter, setFilter] = React.useState('All');
-  const cats = ['All', 'Match Report', 'First Team', 'Club', 'Community', 'Shop'];
-  const filtered = filter === 'All' ? d.news : d.news.filter(n => n.cat === filter);
+  const initialCat = new URLSearchParams(location.search).get('cat') || 'all';
+  const [filter, setFilter] = React.useState(initialCat);
+  const cats = ['all', 'firstteam', 'announcements', 'sponsorships'];
+  const filtered = filter === 'all' ? d.news : d.news.filter(n => n.cat === filter);
+
+  const handleFilter = (c) => {
+    setFilter(c);
+    const url = new URL(location.href);
+    if (c === 'all') url.searchParams.delete('cat');
+    else url.searchParams.set('cat', c);
+    history.replaceState(null, '', url);
+  };
+
   return (<>
     <Ticker/>
     <SiteNav current="news"/>
@@ -34,18 +51,23 @@ function Page() {
     <section style={{ padding: '32px 0', borderBottom: '1px solid var(--rule)' }}>
       <div className="wrap" style={{ display: 'flex', gap: 8, overflowX: 'auto' }}>
         {cats.map(c => (
-          <button key={c} onClick={() => setFilter(c)} style={{
+          <button key={c} onClick={() => handleFilter(c)} style={{
             padding: '10px 18px', border: '1px solid var(--rule)',
             background: filter === c ? 'var(--ink)' : 'transparent',
             color: filter === c ? 'var(--paper)' : 'var(--ink)',
             fontFamily: 'var(--font-display)', textTransform: 'uppercase',
             letterSpacing: '0.1em', fontSize: 12, fontWeight: 500,
-          }}>{c}</button>
+          }}>{CAT_LABELS[c]}</button>
         ))}
       </div>
     </section>
     <section style={{ padding: '64px 0 96px' }}>
       <div className="wrap">
+        {filtered.length === 0 && (
+          <div style={{ padding: '80px 0', textAlign: 'center', color: 'var(--muted)' }}>
+            <div className="eyebrow">No articles yet in this section</div>
+          </div>
+        )}
         {filtered[0] && (
           <a href="article.html" style={{
             display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 48,
@@ -55,27 +77,8 @@ function Page() {
               <span className="ph-label">[ photo: {filtered[0].img} ]</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 16 }}>Featured · {filtered[0].cat}</div>
+              <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 16 }}>Featured · {filtered[0].catLabel || filtered[0].cat}</div>
               <h2 className="h-editorial" style={{ fontSize: 72, fontWeight: 400, textWrap: 'balance', marginBottom: 24 }}>
                 {filtered[0].title}
               </h2>
-              <p style={{ fontSize: 18, opacity: 0.75, marginBottom: 24, textWrap: 'pretty' }}>{filtered[0].kicker}</p>
-              <div className="eyebrow" style={{ opacity: 0.5 }}>
-                {new Date(filtered[0].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} · {filtered[0].author}
-              </div>
-            </div>
-          </a>
-        )}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
-          {filtered.slice(1).map(n => <NewsCard key={n.id} item={n} size="md"/>)}
-        </div>
-      </div>
-    </section>
-    <SponsorStrip sponsors={d.sponsors}/>
-    <SiteFooter/>
-  </>);
-}
-ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
-</script>
-</body>
-</html>
+              <p style={{ fontSize: 18, opacity: 0.75, marginBottom: 24, textW

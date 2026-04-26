@@ -13,43 +13,20 @@ function SiteNav({ variant = 'light', current = '' }) {
   const dark = variant === 'dark';
   const nav = [
     { k: 'news', label: 'News', sub: [
-      ['Latest', 'news.html'],
-      ['Match Reports', 'news.html'],
-      ['Club News', 'news.html'],
-      ['Community', 'news.html'],
-      ['Academy', 'news.html'],
-    ]},
-    { k: 'teams', label: 'Teams', sub: [
-      ['First Team', 'squad.html'],
-      ['Squad', 'squad.html'],
-      ['Manager', 'squad.html'],
-      ['Reserves', 'squad.html'],
-      ['Academy', 'squad.html'],
+      ['First Team', 'news.html?cat=firstteam'],
+      ['Announcements', 'news.html?cat=announcements'],
+      ['Sponsorships', 'news.html?cat=sponsorships'],
     ]},
     { k: 'fixtures', label: 'Fixtures', sub: [
-      ['Fixtures', 'fixtures.html'],
-      ['Results', 'fixtures.html'],
+      ['Fixtures', 'fixtures.html#fixtures'],
+      ['Results', 'fixtures.html#results'],
       ['League Table', 'table.html'],
-      ['Match Centre', 'fixtures.html'],
     ]},
     { k: 'club', label: 'Club', sub: [
-      ['History', 'home.html'],
-      ['Honours', 'home.html'],
-      ['Welfare Ground', 'home.html'],
-      ['Board', 'home.html'],
-      ['Contact', 'home.html'],
+      ['History & Honours', 'club.html#history'],
+      ['Board & Contacts', 'club.html#board'],
     ]},
-    { k: 'tickets', label: 'Tickets', sub: [
-      ['Match Tickets', 'tickets.html'],
-      ['Season Tickets', 'tickets.html'],
-      ['Hospitality', 'tickets.html'],
-    ]},
-    { k: 'shop', label: 'Shop', sub: [
-      ['Centenary Range', 'shop.html'],
-      ['Kit 25/26', 'shop.html'],
-      ['Training Wear', 'shop.html'],
-      ['Retro', 'shop.html'],
-    ]},
+    { k: 'tickets', label: 'Tickets', sub: null },
     { k: 'lotto', label: 'Lotto', sub: null },
   ];
 
@@ -77,7 +54,7 @@ function SiteNav({ variant = 'light', current = '' }) {
             <div key={item.k}
               onMouseEnter={() => setOpen(item.k)}
               style={{ position: 'relative' }}>
-              <a href={item.k === 'lotto' ? 'lotto.html' : item.k === 'shop' ? 'shop.html' : item.k === 'fixtures' ? 'fixtures.html' : item.k === 'news' ? 'news.html' : item.k === 'teams' ? 'squad.html' : '#'}
+              <a href={item.k === 'lotto' ? 'lotto.html' : item.k === 'fixtures' ? 'fixtures.html' : item.k === 'news' ? 'news.html' : item.k === 'tickets' ? 'tickets.html' : item.k === 'club' ? 'club.html' : '#'}
                  style={{
                    display: 'flex', alignItems: 'center', padding: '0 14px', height: 88,
                    fontFamily: 'var(--font-display)', textTransform: 'uppercase',
@@ -478,3 +455,4 @@ function SocialItem({ s }) {
 Object.assign(window, {
   SiteNav, Ticker, Countdown, MatchCard, NewsCard, SponsorStrip, SiteFooter, SectionHeader, SocialItem,
 });
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   

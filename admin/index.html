@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Admin · Blidworth Welfare FC</title>
+<link rel="stylesheet" href="../styles/base.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f4f4f2; }
+  .admin-wrap { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { background: var(--ink); color: var(--paper); display: flex; flex-direction: column; }
+  .sidebar-brand { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .sidebar-brand .crest { width: 36px; height: 36px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; font-weight: 700; font-size: 14px; color: var(--ink); }
+  .sidebar-brand .club { font-family: var(--font-display); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .sidebar-brand .label { font-size: 10px; opacity: 0.4; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 2px; }
+  .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+  .nav-group { margin-bottom: 8px; }
+  .nav-group-label { padding: 8px 20px 4px; font-size: 9px; opacity: 0.35; text-transform: uppercase; letter-spacing: 0.2em; font-family: var(--font-display); }
+  .nav-btn { display: block; width: 100%; text-align: left; padding: 10px 20px; font-size: 13px; color: rgba(255,255,255,0.7); border: none; background: transparent; cursor: pointer; transition: all 0.15s; font-family: var(--font-body); }
+  .nav-btn:hover { color: var(--paper); background: rgba(255,255,255,0.06); }
+  .nav-btn.active { color: var(--gold); background: rgba(212,162,76,0.1); font-weight: 600; }
+  .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .save-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--gold); opacity: 0; transition: opacity 0.3s; }
+  .save-pill.visible { opacity: 1; }
+
+  /* Main area */
+  .main-content { padding: 40px 48px; overflow-y: auto; max-width: 1100px; }
+  .section-title { font-family: var(--font-display); font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 6px; }
+  .section-h { font-size: 32px; font-weight: 700; color: var(--ink); margin-bottom: 32px; }
+
+  /* Cards */
+  .card { background: #fff; border: 1px solid var(--rule); padding: 28px; margin-bottom: 20px; }
+  .card-title { font-family: var(--font-display); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 16px; }
+
+  /* Form elements */
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--ink); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-display); }
+  .field input, .field select, .field textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--rule); background: #fff; font-size: 14px; font-family: var(--font-body); color: var(--ink); }
+  .field textarea { resize: vertical; min-height: 100px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); }
+
+  /* Buttons */
+  .btn-primary { padding: 12px 24px; background: var(--ink); color: var(--paper); border: none; font-family: var(--font-display); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 0.2s; }
+  .btn-primary:hover { background: #333; }
+  .btn-gold { background: var(--gold); color: var(--ink); }
+  .btn-gold:hover { background: #c49038; }
+  .btn-red { background: var(--red); color: #fff; }
+  .btn-red:hover { background: #c0392b; }
+  .btn-sm { padding: 8px 16px; font-size: 11px; }
+  .btn-ghost { background: transparent; border: 1px solid var(--rule); color: var(--ink); padding: 8px 16px; font-family: var(--font-display); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; }
+  .btn-ghost:hover { border-color: var(--ink); }
+
+  /* Tables */
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .admin-table th { padding: 12px 14px; text-align: left; font-family: var(--font-display); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); border-bottom: 2px solid var(--ink); }
+  .admin-table td { padding: 14px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+  .admin-table tr:hover td { background: #fafaf8; }
+
+  /* Tags/badges */
+  .badge { display: inline-block; padding: 3px 10px; font-size: 11px; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+  .badge-firstteam { background: #1a1a2e; color: #fff; }
+  .badge-announcements { background: #2c6e49; color: #fff; }
+  .badge-sponsorships { background: #7b4d12; color: #fff; }
+
+  /* Article editor */
+  .article-item { border: 1px solid var(--rule); padding: 16px 20px; margin-bottom: 12px; cursor: pointer; transition: border-color 0.15s; }
+  .article-item:hover { border-color: var(--gold); }
+  .article-item.selected { border-color: var(--gold); background: #fffdf5; }
+  .article-item-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .article-item-meta { font-size: 12px; color: var(--muted); }
+
+  /* Logo grid */
+  .logo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .logo-item { border: 1px solid var(--rule); padding: 20px; text-align: center; }
+  .logo-item img { width: 64px; height: 64px; object-fit: contain; display: block; margin: 0 auto 12px; }
+  .logo-placeholder { width: 64px; height: 64px; background: var(--paper-2); border: 2px dashed var(--rule); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; color: var(--muted); font-size: 24px; }
+  .logo-item-name { font-size: 12px; font-weight: 600; margin-bottom: 10px; color: var(--ink); }
+
+  /* Tabs */
+  .tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--rule); margin-bottom: 28px; }
+  .tab-btn { padding: 12px 20px; font-family: var(--font-display); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; border: none; background: transparent; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--gold); }
+  .tab-btn:hover:not(.active) { color: var(--ink); }
+
+  /* Login screen */
+  .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--ink); }
+  .login-box { background: var(--paper); padding: 48px; width: 400px; }
+
+  /* Publish section */
+  .publish-bar { background: var(--ink); color: var(--paper); padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+  .publish-status { font-size: 13px; opacity: 0.7; }
+  .publish-status.ok { color: var(--gold); opacity: 1; }
+  .publish-status.error { color: #e74c3c; opacity: 1; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="../components/data.jsx"></script>
+
+<script type="text/babel">
+
+// ─── Constants ───────────────────────────────────────────────────────────────
+const ADMIN_PASSWORD = 'admin12345';
+const STORAGE_KEY    = 'bwfc-admin-data';
+const TOKEN_KEY      = 'bwfc-gh-token';
+const AUTH_KEY       = 'bwfc-admin-authed';
+const GITHUB_OWNER   = 'wrestlingamour-wq';
+const GITHUB_REPO    = 'blidworth-welfare-fc';
+const GITHUB_PATH    = 'website/components/data.jsx';
+
+// ─── Data helpers ─────────────────────────────────────────────────────────────
+function getInitialData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  const base = window.BW_DATA ? JSON.parse(JSON.stringify(window.BW_DATA)) : {};
+  return {
+    ...base,
+    logos: base.logos || {},
+    board: base.board || [
+      { id: 1, role: 'Chairman',          name: 'TBC', email: '', photo: null },
+      { id: 2, role: 'Secretary',         name: 'TBC', email: '', photo: null },
+      { id: 3, role: 'Treasurer',         name: 'TBC', email: '', photo: null },
+      { id: 4, role: 'Team Manager',      name: 'Dan Mellors', email: '', photo: null },
+      { id: 5, role: 'Assistant Manager', name: 'TBC', email: '', photo: null },
+      { id: 6, role: 'Welfare Officer',   name: 'TBC', email: '', photo: null },
+    ],
+    historyText: base.historyText || 'Blidworth Welfare Football Club was founded in 1926, rooted in the mining heritage of the village. The club has been a constant in the community through generations of change.',
+    historyPhotos: base.historyPhotos || [],
+    ticker: base.ticker || '',
+  };
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function fileToBase64(file) {
+  return new Promise((res) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.readAsDataURL(file);
+  });
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// Serialize data back to data.jsx format
+function serializeData(data) {
+  const out = JSON.parse(JSON.stringify(data));
+  return `// Blidworth Welfare FC — shared site data\n// Last updated via admin panel: ${new Date().toISOString()}\n\nconst BW_DATA = ${JSON.stringify(out, null, 2)};\n\nwindow.BW_DATA = BW_DATA;\n`;
+}
+
+// GitHub publish
+async function publishToGitHub(data, token) {
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`;
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json',
+  };
+  // Get current SHA
+  const getRes = await fetch(url, { headers });
+  if (!getRes.ok) throw new Error(`GitHub error ${getRes.status}: ${await getRes.text()}`);
+  const fileInfo = await getRes.json();
+  // Encode content
+  const content = serializeData(data);
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+  // Commit
+  const putRes = await fetch(url, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      message: `Admin panel: update site content ${new Date().toLocaleString('en-GB')}`,
+      content: encoded,
+      sha: fileInfo.sha,
+    }),
+  });
+  if (!putRes.ok) throw new Error(`GitHub commit error ${putRes.status}: ${await putRes.text()}`);
+  return true;
+}
+
+// ─── Login ───────────────────────────────────────────────────────────────────
+function LoginScreen({ onLogin }) {
+  const [pw, setPw] = React.useState('');
+  const [err, setErr] = React.useState('');
+  const submit = (e) => {
+    e.preventDefault();
+    if (pw === ADMIN_PASSWORD) { onLogin(); }
+    else { setErr('Incorrect password. Try again.'); setPw(''); }
+  };
+  return (
+    <div className="login-screen">
+      <div className="login-box">
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--muted)', marginBottom: 8 }}>
+            Blidworth Welfare FC
+          </div>
+          <h1 style={{ fontSize: 32, fontWeight: 700, color: 'var(--ink)', margin: 0 }}>Admin Panel</h1>
+        </div>
+        <form onSubmit={submit}>
+          <div className="field">
+            <label>Password</label>
+            <input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="Enter admin password" autoFocus />
+          </div>
+          {err && <div style={{ color: 'var(--red)', fontSize: 13, marginBottom: 12 }}>{err}</div>}
+          <button type="submit" className="btn-primary" style={{ width: '100%', padding: '14px' }}>
+            Sign In →
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ─── Sidebar ─────────────────────────────────────────────────────────────────
+function Sidebar({ section, onNav, onLogout, saved }) {
+  const navItems = [
+    { group: 'Content', items: [
+      { k: 'next-match',  label: '📅  Next Match'    },
+      { k: 'news',        label: '📰  News'           },
+      { k: 'fixtures',    label: '📋  Fixtures'       },
+      { k: 'results',     label: '🏆  Results'        },
+      { k: 'table',       label: '📊  League Table'   },
+    ]},
+    { group: 'Club', items: [
+      { k: 'logos',       label: '🔰  Club Logos'     },
+      { k: 'info',        label: '📖  Club Info'       },
+      { k: 'board',       label: '👥  Board & Contacts'},
+    ]},
+    { group: 'System', items: [
+      { k: 'settings',    label: '⚙️  Settings & Publish' },
+    ]},
+  ];
+  return (
+    <div className="sidebar">
+      <div className="sidebar-brand">
+        <div className="crest">BW</div>
+        <div className="club">Blidworth Welfare</div>
+        <div className="label">Admin Panel</div>
+      </div>
+      <nav className="sidebar-nav">
+        {navItems.map(g => (
+          <div className="nav-group" key={g.group}>
+            <div className="nav-group-label">{g.group}</div>
+            {g.items.map(i => (
+              <button key={i.k} className={`nav-btn${section === i.k ? ' active' : ''}`} onClick={() => onNav(i.k)}>
+                {i.label}
+              </button>
+            ))}
+          </div>
+        ))}
+      </nav>
+      <div className="sidebar-footer">
+        <div className={`save-pill${saved ? ' visible' : ''}`}>✓ Saved to draft</div>
+        <button className="nav-btn" style={{ color: 'rgba(255,255,255,0.4)', marginTop: 8, padding: '8px 0' }} onClick={onLogout}>
+          ← Log out
+        </button>
+        <div style={{ fontSize: 11, opacity: 0.3, marginTop: 8 }}>
+          <a href="../home.html" style={{ color: 'inherit' }}>View live site ↗</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Next Match ───────────────────────────────────────────────────────────────
+function NextMatchSection({ data, update }) {
+  const nm = data.nextMatch || {};
+  const logos = data.logos || {};
+  const teams = (data.table || []).map(r => r.team);
+  const [form, setForm] = React.useState({
+    awayName:  nm.away?.name || '',
+    awayShort: nm.away?.short || '',
+    comp:      nm.comp || '',
+    venue:     nm.venue || 'Welfare Ground',
+    round:     nm.round || 'League',
+    kickoff:   nm.kickoff ? nm.kickoff.substring(0, 16) : '',
+    isHome:    nm.home?.name === 'Blidworth Welfare',
+  });
+  const save = () => {
+    const opponent = { name: form.awayName, short: form.awayShort };
+    if (logos[form.awayName]) opponent.logo = logos[form.awayName];
+    const nextMatch = form.isHome
+      ? { home: { short: 'BWFC', name: 'Blidworth Welfare', crest: 'assets/crest.png' }, away: opponent, comp: form.comp, kickoff: form.kickoff ? new Date(form.kickoff).toISOString() : '', venue: form.venue, round: form.round, tickets: true }
+      : { home: opponent, away: { short: 'BWFC', name: 'Blidworth Welfare', crest: 'assets/crest.png' }, comp: form.comp, kickoff: form.kickoff ? new Date(form.kickoff).toISOString() : '', venue: form.venue, round: form.round, tickets: false };
+    update('nextMatch', nextMatch);
+  };
+  const handleTeamPick = (name) => {
+    const t = (data.table || []).find(r => r.team === name) || {};
+    const short = name.split(' ').map(w => w[0]).join('').substring(0, 4).toUpperCase();
+    setForm(f => ({ ...f, awayName: name, awayShort: short }));
+  };
+  return (
+    <div>
+      <div className="section-title">Content</div>
+      <div className="section-h">Next Match</div>
+      <div className="card">
+        <div className="card-title">Fixture Details</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+          <div className="field">
+            <label>Venue type</label>
+            <select value={form.isHome ? 'home' : 'away'} onChange={e => setForm(f => ({ ...f, isHome: e.target.value === 'home' }))}>
+              <option value="home">Home (Welfare Ground)</option>
+              <option value="away">Away</option>
+            </select>
+          </div>
+          <div className="field">
+            <label>Kickoff date & time</label>
+            <input type="datetime-local" value={form.kickoff} onChange={e => setForm(f => ({ ...f, kickoff: e.target.value }))} />
+          </div>
+          <div className="field">
+            <label>Opponent (pick from table)</label>
+            <select value={form.awayName} onChange={e => handleTeamPick(e.target.value)}>
+              <option value="">— select club —</option>
+              {teams.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div className="field">
+            <label>Opponent short code</label>
+            <input value={form.awayShort} onChange={e => setForm(f => ({ ...f, awayShort: e.target.value.toUpperCase() }))} maxLength={5} placeholder="e.g. BOR" />
+          </div>
+          <div className="field">
+            <label>Competition</label>
+            <input value={form.comp} onChange={e => setForm(f => ({ ...f, comp: e.target.value }))} placeholder="e.g. Camper UK Premier South" />
+          </div>
+          <div className="field">
+            <label>Round</label>
+            <input value={form.round} onChange={e => setForm(f => ({ ...f, round: e.target.value }))} placeholder="e.g. League" />
+          </div>
+          {!form.isHome && (
+            <div className="field">
+              <label>Venue</label>
+              <input value={form.venue} onChange={e => setForm(f => ({ ...f, venue: e.target.value }))} />
+            </div>
+          )}
+        </div>
+        {logos[form.awayName] ? (
+          <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img src={logos[form.awayName]} style={{ width: 48, height: 48, objectFit: 'contain' }} />
+            <span style={{ fontSize: 13, color: 'var(--muted)' }}>Logo saved for {form.awayName}</span>
+          </div>
+        ) : form.awayName && (
+          <div style={{ marginTop: 12, fontSize: 13, color: 'var(--muted)' }}>
+            No logo saved for {form.awayName} — upload one in Club Logos.
+          </div>
+        )}
+        <button className="btn-primary btn-gold" style={{ marginTop: 20 }} onClick={save}>Save Next Match</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── News Manager ─────────────────────────────────────────────────────────────
+const CATS = [
+  { k: 'firstteam',     label: 'First Team'    },
+  { k: 'announcements', label: 'Announcements' },
+  { k: 'sponsorships',  label: 'Sponsorships'  },
+];
+
+function NewsSection({ data, update }) {
+  const [tab, setTab]         = React.useState('firstteam');
+  const [editing, setEditing] = React.useState(null); // null = list, 'new' or article id
+  const [form, setForm]       = React.useState({});
+
+  const articles = (data.news || []).filter(n => n.cat === tab);
+
+  const startNew = () => {
+    setForm({ cat: tab, catLabel: CATS.find(c => c.k === tab)?.label, title: '', kicker: '', body: '', date: new Date().toISOString().split('T')[0], author: 'Club Media', photos: [] });
+    setEditing('new');
+  };
+  const startEdit = (a) => {
+    setForm({ ...a, photos: a.photos || [] });
+    setEditing(a.id);
+  };
+  const cancel = () => { setEditing(null); setForm({}); };
+  const saveArticle = () => {
+    const existing = data.news || [];
+    if (editing === 'new') {
+      update('news', [{ ...form, id: uid() }, ...existing]);
+    } else {
+      update('news', existing.map(n => n.id === editing ? { ...form, id: editing } : n));
+    }
+    cancel();
+  };
+  const deleteArticle = (id) => {
+    if (!confirm('Delete this article?')) return;
+    update('news', (data.news || []).filter(n => n.id !== id));
+  };
+  const addPhoto = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const b64 = await fileToBase64(file);
+    setForm(f => ({ ...f, photos: [...(f.photos || []), b64] }));
+  };
+  const removePhoto = (idx) => {
+    setForm(f => ({ ...f, photos: f.photos.filter((_, i) => i !== idx) }));
+  };
+
+  if (editing !== null) {
+    return (
+      <div>
+        <div className="section-title">News</div>
+        <div className="section-h" style={{ marginBottom: 16 }}>{editing === 'new' ? 'New Article' : 'Edit Article'}</div>
+        <button className="btn-ghost btn-sm" style={{ marginBottom: 24 }} onClick={cancel}>← Back to list</button>
+        <div className="card">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            <div className="field">
+              <label>Category</label>
+              <select value={form.cat} onChange={e => { const c = CATS.find(x => x.k === e.target.value); setForm(f => ({ ...f, cat: e.target.value, catLabel: c?.label })); }}>
+                {CATS.map(c => <option key={c.k} value={c.k}>{c.label}</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label>Date</label>
+              <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} />
+            </div>
+          </div>
+          <div className="field">
+            <label>Headline</label>
+            <input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="Article headline" />
+          </div>
+          <div className="field">
+            <label>Standfirst / kicker</label>
+            <input value={form.kicker} onChange={e => setForm(f => ({ ...f, kicker: e.target.value }))} placeholder="One-line summary shown in cards" />
+          </div>
+          <div className="field">
+            <label>Author</label>
+            <input value={form.author} onChange={e => setForm(f => ({ ...f, author: e.target.value }))} placeholder="Club Media" />
+          </div>
+          <div className="field">
+            <label>Article body</label>
+            <textarea rows={10} value={form.body} onChange={e => setForm(f => ({ ...f, body: e.target.value }))} placeholder="Full article text..." />
+          </div>
+          <div className="field">
+            <label>Photos</label>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
+              {(form.photos || []).map((p, i) => (
+                <div key={i} style={{ position: 'relative' }}>
+                  <img src={p} style={{ width: 100, height: 80, objectFit: 'cover', display: 'block' }} />
+                  <button onClick={() => removePhoto(i)} style={{ position: 'absolute', top: 4, right: 4, background: 'rgba(0,0,0,0.7)', color: '#fff', border: 'none', width: 20, height: 20, cursor: 'pointer', fontSize: 12 }}>✕</button>
+                </div>
+              ))}
+              <label style={{ width: 100, height: 80, border: '2px dashed var(--rule)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--muted)', fontSize: 24 }}>
+                +
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={addPhoto} />
+              </label>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button className="btn-primary btn-gold" onClick={saveArticle}>Save Article</button>
+            <button className="btn-ghost" onClick={cancel}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="section-title">Content</div>
+      <div className="section-h">News</div>
+      <div className="tab-bar">
+        {CATS.map(c => (
+          <button key={c.k} className={`tab-btn${tab === c.k ? ' active' : ''}`} onClick={() => setTab(c.k)}>
+            {c.label}
+          </button>
+        ))}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+        <div style={{ fontSize: 13, color: 'var(--muted)' }}>{articles.length} article{articles.length !== 1 ? 's' : ''}</div>
+        <button className="btn-primary btn-sm" onClick={startNew}>+ New Article</button>
+      </div>
+      {articles.length === 0 && (
+        <div className="card" style={{ textAlign: 'center', padding: '48px', color: 'var(--muted)' }}>
+          No articles yet in this section. Click + New Article to add one.
+        </div>
+      )}
+      {articles.map(a => (
+        <div key={a.id} className="article-item">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ flex: 1 }}>
+              <div className="article-item-title">{a.title}</div>
+              <div className="article-item-meta">{formatDate(a.date)} · {a.author}</div>
+            </div>
+            <div style={{ display: 'flex', gap: 8, flexShrink: 0, marginLeft: 16 }}>
+              <button className="btn-ghost btn-sm" onClick={() => startEdit(a)}>Edit</button>
+              <button className="btn-ghost btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red)' }} onClick={() => deleteArticle(a.id)}>Delete</button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Fixtures Manager ─────────────────────────────────────────────────────────
+function FixturesSection({ data, update }) {
+  const [adding, setAdding] = React.useState(false);
+  const [form, setForm] = React.useState({ date: '', time: '15:00', home: 'Blidworth Welfare', away: '', comp: 'League', venue: 'H' });
+  const [editId, setEditId] = React.useState(null);
+  const fixtures = data.fixtures || [];
+  const saveRow = () => {
+    if (editId !== null) {
+      update('fixtures', fixtures.map((f, i) => i === editId ? { ...form } : f));
+      setEditId(null);
+    } else {
+      update('fixtures', [...fixtures, { ...form }]);
+    }
+    setForm({ date: '', time: '15:00', home: 'Blidworth Welfare', away: '', comp: 'League', venue: 'H' });
+    setAdding(false);
+  };
+  const del = (i) => { if (confirm('Remove fixture?')) update('fixtures', fixtures.filter((_, j) => j !== i)); };
+  const startEdit = (i) => { setForm({ ...fixtures[i] }); setEditId(i); setAdding(true); };
+  const cancel = () => { setAdding(false); setEditId(null); setForm({ date: '', time: '15:00', home: 'Blidworth Welfare', away: '', comp: 'League', venue: 'H' }); };
+  const teams = ['Blidworth Welfare', ...(data.table || []).map(r => r.team).filter(t => t !== 'Blidworth Welfare')];
+  return (
+    <div>
+      <div className="section-title">Content</div>
+      <div className="section-h">Fixtures</div>
+      {adding && (
+        <div className="card" style={{ marginBottom: 24 }}>
+          <div className="card-title">{editId !== null ? 'Edit Fixture' : 'Add Fixture'}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+            <div className="field"><label>Date</label><input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} /></div>
+            <div className="field"><label>Kickoff</label><input type="time" value={form.time} onChange={e => setForm(f => ({ ...f, time: e.target.value }))} /></div>
+            <div className="field"><label>H/A</label>
+              <select value={form.venue} onChange={e => {
+                const isHome = e.target.value === 'H';
+                setForm(f => ({ ...f, venue: e.target.value, home: isHome ? 'Blidworth Welfare' : f.away || '', away: isHome ? f.away || '' : 'Blidworth Welfare' }));
+              }}>
+                <option value="H">Home</option>
+                <option value="A">Away</option>
+              </select>
+            </div>
+            <div className="field"><label>Home</label>
+              <select value={form.home} onChange={e => setForm(f => ({ ...f, home: e.target.value }))}>
+                {teams.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="field"><label>Away</label>
+              <select value={form.away} onChange={e => setForm(f => ({ ...f, away: e.target.value }))}>
+                {teams.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="field"><label>Competition</label><input value={form.comp} onChange={e => setForm(f => ({ ...f, comp: e.target.value }))} /></div>
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button className="btn-primary btn-gold" onClick={saveRow}>Save</button>
+            <button className="btn-ghost" onClick={cancel}>Cancel</button>
+          </div>
+        </div>
+      )}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+        <button className="btn-primary btn-sm" onClick={() => { setAdding(true); setEditId(null); }}>+ Add Fixture</button>
+      </div>
+      <table className="admin-table">
+        <thead><tr><th>Date</th><th>Time</th><th>Home</th><th>Away</th><th>Comp</th><th>H/A</th><th></th></tr></thead>
+        <tbody>
+          {fixtures.map((f, i) => (
+            <tr key={i}>
+              <td>{formatDate(f.date)}</td>
+              <td>{f.time}</td>
+              <td style={{ fontWeight: f.home === 'Blidworth Welfare' ? 700 : 400 }}>{f.home}</td>
+              <td style={{ fontWeight: f.away === 'Blidworth Welfare' ? 700 : 400 }}>{f.away}</td>
+              <td style={{ fontSize: 12, color: 'var(--muted)' }}>{f.comp}</td>
+              <td><span className="badge" style={{ background: f.venue === 'H' ? 'var(--ink)' : 'transparent', color: f.venue === 'H' ? '#fff' : 'var(--ink)', border: '1px solid var(--rule)' }}>{f.venue}</span></td>
+              <td>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button className="btn-ghost btn-sm" onClick={() => startEdit(i)}>Edit</button>
+                  <button className="btn-ghost btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red)' }} onClick={() => del(i)}>✕</button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ─── Results Manager ──────────────────────────────────────────────────────────
+function ResultsSection({ data, update }) {
+  const [adding, setAdding] = React.useState(false);
+  const [editId, setEditId] = React.useState(null);
+  const [form, setForm] = React.useState({ date: '', home: 'Blidworth Welfare', hs: '', away: '', as: '', comp: 'League', ht: '' });
+  const results = data.results || [];
+  const teams = ['Blidworth Welfare', ...(data.table || []).map(r => r.team).filter(t => t !== 'Blidworth Welfare')];
+  const saveRow = () => {
+    const row = { ...form, hs: Number(form.hs), as: Number(form.as) };
+    if (editId !== null) { update('results', results.map((r, i) => i === editId ? row : r)); setEditId(null); }
+    else { update('results', [row, ...results]); }
+    setForm({ date: '', home: 'Blidworth Welfare', hs: '', away: '', as: '', comp: 'League', ht: '' });
+    setAdding(false);
+  };
+  const del = (i) => { if (confirm('Remove result?')) update('results', results.filter((_, j) => j !== i)); };
+  const startEdit = (i) => { setForm({ ...results[i], hs: results[i].hs ?? '', as: results[i].as ?? '' }); setEditId(i); setAdding(true); };
+  const cancel = () => { setAdding(false); setEditId(null); setForm({ date: '', home: 'Blidworth Welfare', hs: '', away: '', as: '', comp: 'League', ht: '' }); };
+  return (
+    <div>
+      <div className="section-title">Content</div>
+      <div className="section-h">Results</div>
+      {adding && (
+        <div className="card" style={{ marginBottom: 24 }}>
+          <div className="card-title">{editId !== null ? 'Edit Result' : 'Add Result'}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+            <div className="field"><label>Date</label><input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} /></div>
+            <div className="field"><label>Competition</label><input value={form.comp} onChange={e => setForm(f => ({ ...f, comp: e.target.value }))} /></div>
+            <div className="field"><label>HT Score</label><input value={form.ht} onChange={e => setForm(f => ({ ...f, ht: e.target.value }))} placeholder="e.g. 1-0" /></div>
+            <div className="field"><label>Home</label>
+              <select value={form.home} onChange={e => setForm(f => ({ ...f, home: e.target.value }))}>
+                {teams.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="field"><label>Home Score</label><input type="number" min="0" value={form.hs} onChange={e => setForm(f => ({ ...f, hs: e.target.value }))} /></div>
+            <div></div>
+            <div className="field"><label>Away</label>
+              <select value={form.away} onChange={e => setForm(f => ({ ...f, away: e.target.value }))}>
+                {teams.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="field"><label>Away Score</label><input type="number" min="0" value={form.as} onChange={e => setForm(f => ({ ...f, as: e.target.value }))} /></div>
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button className="btn-primary btn-gold" onClick={saveRow}>Save</button>
+            <button className="btn-ghost" onClick={cancel}>Cancel</button>
+          </div>
+        </div>
+      )}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+        <button className="btn-primary btn-sm" onClick={() => { setAdding(true); setEditId(null); }}>+ Add Result</button>
+      </div>
+      <table className="admin-table">
+        <thead><tr><th>Date</th><th>Home</th><th>Score</th><th>Away</th><th>Comp</th><th>Result</th><th></th></tr></thead>
+        <tbody>
+          {results.map((r, i) => {
+            const bwHome = r.home === 'Blidworth Welfare';
+            const bwScore = bwHome ? r.hs : r.as;
+            const oppScore = bwHome ? r.as : r.hs;
+            const wld = bwScore > oppScore ? 'W' : bwScore < oppScore ? 'L' : 'D';
+            const col = { W: 'var(--green)', L: 'var(--red)', D: '#8a7b4a' }[wld] || 'var(--muted)';
+            return (
+              <tr key={i}>
+                <td>{formatDate(r.date)}</td>
+                <td style={{ fontWeight: bwHome ? 700 : 400 }}>{r.home}</td>
+                <td style={{ fontFamily: 'var(--font-display)', fontWeight: 700, textAlign: 'center' }}>{r.hs} – {r.as}</td>
+                <td style={{ fontWeight: !bwHome ? 700 : 400 }}>{r.away}</td>
+                <td style={{ fontSize: 12, color: 'var(--muted)' }}>{r.comp}</td>
+                <td><span className="badge" style={{ background: col, color: '#fff' }}>{wld}</span></td>
+                <td>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button className="btn-ghost btn-sm" onClick={() => startEdit(i)}>Edit</button>
+                    <button className="btn-ghost btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red)' }} onClick={() => del(i)}>✕</button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ─── League Table ─────────────────────────────────────────────────────────────
+function TableSection({ data, update }) {
+  const [pasted, setPasted] = React.useState('');
+  const [msg, setMsg] = React.useState('');
+  const table = data.table || [];
+
+  // Very simple FA text parser — handles tab/multi-space delimited rows
+  const parseFA = (text) => {
+    const lines = text.trim().split('\n').filter(l => l.trim());
+    const rows = [];
+    for (const line of lines) {
+      const cols = line.trim().split(/\s{2,}|\t/).map(c => c.trim()).filter(Boolean);
+      // Expect: pos team p w d l gf ga gd pts (or similar)
+      if (cols.length < 7) continue;
+      const pos = parseInt(cols[0]);
+      if (isNaN(pos)) continue;
+      // Try to find numeric cols from end
+      const nums = [];
+      let nameEnd = 1;
+      for (let j = cols.length - 1; j >= 1; j--) {
+        if (!isNaN(parseInt(cols[j]))) { nums.unshift(parseInt(cols[j])); }
+        else { nameEnd = j + 1; break; }
+      }
+      const team = cols.slice(1, nameEnd).join(' ');
+      const [p, w, d, l, ...rest] = nums;
+      const pts = nums[nums.length - 1];
+      const gd = nums[nums.length - 2];
+      const isSelf = team.toLowerCase().includes('blidworth');
+      rows.push({ pos, team, p: p||0, w: w||0, d: d||0, l: l||0, gd: gd||0, pts: pts||0, ...(isSelf ? { self: true } : {}) });
+    }
+    return rows;
+  };
+
+  const syncPaste = () => {
+    const rows = parseFA(pasted);
+    if (rows.length < 2) { setMsg('Could not parse — try copying the full table from FA Full-Time'); return; }
+    update('table', rows);
+    setMsg(`✓ Parsed ${rows.length} teams and updated table`);
+    setPasted('');
+  };
+
+  const updateRow = (i, key, val) => {
+    const t = table.map((r, j) => j === i ? { ...r, [key]: key === 'team' ? val : Number(val) } : r);
+    update('table', t);
+  };
+
+  return (
+    <div>
+      <div className="section-title">Content</div>
+      <div className="section-h">League Table</div>
+
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div className="card-title">Sync from FA Full-Time</div>
+        <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 16 }}>
+          Go to <strong>fulltime.thefa.com</strong>, find the Camper UK Premier South table, select all text and paste it below.
+        </p>
+        <div className="field">
+          <label>Paste FA table text here</label>
+          <textarea rows={8} value={pasted} onChange={e => setPasted(e.target.value)} placeholder="Paste the full table text from FA Full-Time..." style={{ fontFamily: 'monospace', fontSize: 12 }} />
+        </div>
+        {msg && <div style={{ color: msg.startsWith('✓') ? 'var(--green)' : 'var(--red)', fontSize: 13, marginBottom: 12 }}>{msg}</div>}
+        <button className="btn-primary btn-gold" onClick={syncPaste}>Parse & Update Table</button>
+      </div>
+
+      <div className="card">
+        <div className="card-title">Manual Edit</div>
+        <table className="admin-table">
+          <thead><tr><th>Pos</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr></thead>
+          <tbody>
+            {table.map((r, i) => (
+              <tr key={i} style={{ background: r.self ? '#fffdf0' : undefined }}>
+                <td style={{ fontWeight: 700, width: 40 }}>{r.pos}</td>
+                <td><input value={r.team} onChange={e => updateRow(i, 'team', e.target.value)} style={{ border: 'none', background: 'transparent', fontSize: 14, width: '100%', fontWeight: r.self ? 700 : 400 }} /></td>
+                {['p','w','d','l','gd','pts'].map(k => (
+                  <td key={k} style={{ width: 50 }}><input type="number" value={r[k]} onChange={e => updateRow(i, k, e.target.value)} style={{ border: 'none', background: 'transparent', fontSize: 14, width: 44, textAlign: 'center' }} /></td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ─── Logo Manager ─────────────────────────────────────────────────────────────
+function LogoManagerSection({ data, update }) {
+  const logos = data.logos || {};
+  const clubs = [...new Set([
+    'Blidworth Welfare',
+    ...(data.table || []).map(r => r.team),
+  ])];
+  const uploadLogo = async (club, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const b64 = await fileToBase64(file);
+    update('logos', { ...logos, [club]: b64 });
+  };
+  const removeLogo = (club) => {
+    const l = { ...logos };
+    delete l[club];
+    update('logos', l);
+  };
+  return (
+    <div>
+      <div className="section-title">Club</div>
+      <div className="section-h">Club Logos</div>
+      <p style={{ color: 'var(--muted)', fontSize: 14, marginBottom: 28 }}>
+        Upload a badge for each club. Logos are automatically used in fixtures, results, and the Next Match editor.
+      </p>
+      <div className="logo-grid">
+        {clubs.map(club => (
+          <div key={club} className="logo-item">
+            {logos[club]
+              ? <img src={logos[club]} alt={club} />
+              : <div className="logo-placeholder">🔰</div>
+            }
+            <div className="logo-item-name">{club}</div>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <label className="btn-ghost btn-sm" style={{ cursor: 'pointer', display: 'inline-block' }}>
+                {logos[club] ? 'Replace' : 'Upload'}
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => uploadLogo(club, e)} />
+              </label>
+              {logos[club] && (
+                <button className="btn-ghost btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red)' }} onClick={() => removeLogo(club)}>Remove</button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Club Info (History & Honours) ───────────────────────────────────────────
+function ClubInfoSection({ data, update }) {
+  const [histText, setHistText] = React.useState(data.historyText || '');
+  const [honours, setHonours]   = React.useState(data.honours || []);
+  const saveHistory = () => { update('historyText', histText); };
+  const saveHonours = () => { update('honours', honours); };
+  const updateHonour = (i, key, val) => setHonours(h => h.map((x, j) => j === i ? { ...x, [key]: val } : x));
+  const addHonour = () => setHonours(h => [...h, { year: '', title: '' }]);
+  const removeHonour = (i) => setHonours(h => h.filter((_, j) => j !== i));
+  return (
+    <div>
+      <div className="section-title">Club</div>
+      <div className="section-h">Club Info</div>
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div className="card-title">Club History Text</div>
+        <div className="field">
+          <label>History paragraphs</label>
+          <textarea rows={8} value={histText} onChange={e => setHistText(e.target.value)} />
+        </div>
+        <button className="btn-primary btn-gold" onClick={saveHistory}>Save History</button>
+      </div>
+      <div className="card">
+        <div className="card-title">Roll of Honour</div>
+        {honours.map((h, i) => (
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '140px 1fr auto', gap: 12, marginBottom: 12, alignItems: 'center' }}>
+            <input value={h.year} onChange={e => updateHonour(i, 'year', e.target.value)} placeholder="2023/24" style={{ padding: '8px 12px', border: '1px solid var(--rule)', fontSize: 14 }} />
+            <input value={h.title} onChange={e => updateHonour(i, 'title', e.target.value)} placeholder="Trophy / title name" style={{ padding: '8px 12px', border: '1px solid var(--rule)', fontSize: 14 }} />
+            <button className="btn-ghost btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red)' }} onClick={() => removeHonour(i)}>✕</button>
+          </div>
+        ))}
+        <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+          <button className="btn-ghost" onClick={addHonour}>+ Add Trophy</button>
+          <button className="btn-primary btn-gold" onClick={saveHonours}>Save Honours</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Board & Contacts ─────────────────────────────────────────────────────────
+function BoardSection({ data, update }) {
+  const board = data.board || [];
+  const updateMember = (i, key, val) => {
+    update('board', board.map((m, j) => j === i ? { ...m, [key]: val } : m));
+  };
+  const addMember = () => {
+    update('board', [...board, { id: uid(), role: '', name: '', email: '', photo: null }]);
+  };
+  const removeMember = (i) => {
+    if (confirm('Remove this board member?')) update('board', board.filter((_, j) => j !== i));
+  };
+  const uploadPhoto = async (i, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const b64 = await fileToBase64(file);
+    updateMember(i, 'photo', b64);
+  };
+  return (
+    <div>
+      <div className="section-title">Club</div>
+      <div className="section-h">Board & Contacts</div>
+      {board.map((m, i) => (
+        <div key={m.id || i} className="card" style={{ marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 24 }}>
+            <div style={{ textAlign: 'center' }}>
+              {m.photo
+                ? <img src={m.photo} style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: '50%', marginBottom: 8 }} />
+                : <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--paper-2)', border: '2px dashed var(--rule)', margin: '0 auto 8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>👤</div>
+              }
+              <label className="btn-ghost btn-sm" style={{ cursor: 'pointer', display: 'inline-block', fontSize: 10 }}>
+                Photo
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => uploadPhoto(i, e)} />
+              </label>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div className="field" style={{ margin: 0 }}>
+                <label>Role</label>
+                <input value={m.role} onChange={e => updateMember(i, 'role', e.target.value)} placeholder="Chairman, Manager, etc." />
+              </div>
+              <div className="field" style={{ margin: 0 }}>
+                <label>Name</label>
+                <input value={m.name} onChange={e => updateMember(i, 'name', e.target.value)} placeholder="Full name" />
+              </div>
+              <div className="field" style={{ margin: 0, gridColumn: '1 / -1' }}>
+                <label>Email</label>
+                <input type="email" value={m.email} onChange={e => updateMember(i, 'email', e.target.value)} placeholder="contact@email.com" />
+              </div>
+            </div>
+          </div>
+          <div style={{ marginTop: 16, borderTop: '1px solid var(--rule)', paddingTop: 12, textAlign: 'right' }}>
+            <button className="btn-ghost btn-sm" style={{ color: 'var(--red)', borderColor: 'var(--red)' }} onClick={() => removeMember(i)}>Remove</button>
+          </div>
+        </div>
+      ))}
+      <button className="btn-ghost" onClick={addMember}>+ Add Board Member</button>
+    </div>
+  );
+}
+
+// ─── Settings & Publish ───────────────────────────────────────────────────────
+function SettingsSection({ data, update }) {
+  const [token, setToken] = React.useState(localStorage.getItem(TOKEN_KEY) || '');
+  const [publishing, setPublishing] = React.useState(false);
+  const [msg, setMsg] = React.useState('');
+  const [ticker, setTicker] = React.useState(data.ticker || '');
+  const saveToken = () => { localStorage.setItem(TOKEN_KEY, token); setMsg('GitHub token saved.'); };
+  const saveTicker = () => { update('ticker', ticker); };
+  const publish = async () => {
+    const tok = localStorage.getItem(TOKEN_KEY);
+    if (!tok) { setMsg('Enter and save your GitHub token first.'); return; }
+    setPublishing(true); setMsg('');
+    try {
+      await publishToGitHub(data, tok);
+      setMsg('✓ Published! Netlify will rebuild in ~30 seconds. Refresh the live site shortly.');
+    } catch(e) {
+      setMsg('✗ Error: ' + e.message);
+    }
+    setPublishing(false);
+  };
+  return (
+    <div>
+      <div className="section-title">System</div>
+      <div className="section-h">Settings & Publish</div>
+
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div className="card-title">Publish to Live Site</div>
+        <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 20 }}>
+          Publishing saves all your edits to GitHub. Netlify automatically rebuilds the live site within about 30 seconds.
+        </p>
+        <button className="btn-primary btn-gold" style={{ fontSize: 14, padding: '14px 32px' }} onClick={publish} disabled={publishing}>
+          {publishing ? 'Publishing...' : '🚀 Publish to Live Site'}
+        </button>
+        {msg && <div style={{ marginTop: 16, fontSize: 14, color: msg.startsWith('✓') ? 'var(--green)' : 'var(--red)' }}>{msg}</div>}
+      </div>
+
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div className="card-title">Ticker Bar Text</div>
+        <div className="field">
+          <label>Scrolling ticker message (shown at top of all pages)</label>
+          <input value={ticker} onChange={e => setTicker(e.target.value)} placeholder="e.g. TICKETS NOW ON SALE · Welfare Ground · Saturday 3pm" />
+        </div>
+        <button className="btn-primary btn-gold" onClick={saveTicker}>Save Ticker</button>
+      </div>
+
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div className="card-title">GitHub Access Token</div>
+        <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16 }}>
+          A GitHub Personal Access Token is needed to publish changes to the site. This is stored locally in your browser only.
+          Generate one at <strong>github.com → Settings → Developer Settings → Personal access tokens</strong> with <strong>repo</strong> scope.
+        </p>
+        <div className="field">
+          <label>GitHub Personal Access Token</label>
+          <input type="password" value={token} onChange={e => setToken(e.target.value)} placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+        </div>
+        <button className="btn-primary" onClick={saveToken}>Save Token</button>
+      </div>
+
+      <div className="card">
+        <div className="card-title">Draft Data</div>
+        <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16 }}>
+          All your edits are saved as a local draft in this browser. Use this to export or reset.
+        </p>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <button className="btn-ghost" onClick={() => {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'bwfc-content.json';
+            a.click();
+          }}>⬇ Export Draft JSON</button>
+          <button className="btn-ghost" style={{ color: 'var(--red)', borderColor: 'var(--red)' }} onClick={() => {
+            if (confirm('Reset all draft data from live site? This cannot be undone.')) {
+              localStorage.removeItem(STORAGE_KEY);
+              location.reload();
+            }
+          }}>⟳ Reset from Live Data</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main App ─────────────────────────────────────────────────────────────────
+function App() {
+  const [authed, setAuthed] = React.useState(!!localStorage.getItem(AUTH_KEY));
+  const [section, setSection] = React.useState('next-match');
+  const [data, setData] = React.useState(getInitialData());
+  const [saved, setSaved] = React.useState(false);
+
+  const update = (key, value) => {
+    setData(d => {
+      const next = { ...d, [key]: value };
+      saveData(next);
+      return next;
+    });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
+
+  if (!authed) {
+    return <LoginScreen onLogin={() => { localStorage.setItem(AUTH_KEY, '1'); setAuthed(true); }} />;
+  }
+
+  const sectionProps = { data, update };
+  const sections = {
+    'next-match': <NextMatchSection {...sectionProps} />,
+    'news':       <NewsSection {...sectionProps} />,
+    'fixtures':   <FixturesSection {...sectionProps} />,
+    'results':    <ResultsSection {...sectionProps} />,
+    'table':      <TableSection {...sectionProps} />,
+    'logos':      <LogoManagerSection {...sectionProps} />,
+    'info':       <ClubInfoSection {...sectionProps} />,
+    'board':      <BoardSection {...sectionProps} />,
+    'settings':   <SettingsSection {...sectionProps} />,
+  };
+
+  return (
+    <div className="admin-wrap">
+      <Sidebar section={section} onNav={setSection} saved={saved} onLogout={() => {
+        localStorage.removeItem(AUTH_KEY);
+        setAuthed(false);
+      }} />
+      <main className="main-content">
+        {sections[section] || <div>Section not found.</div>}
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

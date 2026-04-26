@@ -44,7 +44,7 @@ function HomeModern() {
             <div className="reveal reveal-1" style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 40 }}>
               <img src="assets/crest.png" className="crest-reveal"
                    style={{ height: 64 }}/>
-              <div className="eyebrow">Centenary Season · 2025/26</div>
+              <div className="eyebrow">Centenary Season · 2026/27</div>
             </div>
 
             <div className="reveal reveal-2">
