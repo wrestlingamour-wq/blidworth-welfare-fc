@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>News · Blidworth Welfare FC</title>
+<link rel="stylesheet" href="styles/base.css">
+<style>.news-card:hover h3 { color: var(--gold); transition: color 0.2s; }</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="components/data.jsx"></script>
+<script type="text/babel" src="components/ui.jsx"></script>
+<script type="text/babel">
+function Page() {
+  const d = BW_DATA;
+  const [filter, setFilter] = React.useState('All');
+  const cats = ['All', 'Match Report', 'First Team', 'Club', 'Community', 'Shop'];
+  const filtered = filter === 'All' ? d.news : d.news.filter(n => n.cat === filter);
+  return (<>
+    <Ticker/>
+    <SiteNav current="news"/>
+    <section style={{ padding: '64px 0 32px', borderBottom: '1px solid var(--rule)' }}>
+      <div className="wrap">
+        <div className="eyebrow" style={{ color: 'var(--red)', marginBottom: 16 }}>The Newsroom</div>
+        <h1 className="h-editorial" style={{ fontSize: 'clamp(72px, 9vw, 160px)', fontWeight: 400, lineHeight: 0.92 }}>
+          Latest news <span style={{ fontStyle: 'italic', opacity: 0.5 }}>& stories</span>
+        </h1>
+      </div>
+    </section>
+    <section style={{ padding: '32px 0', borderBottom: '1px solid var(--rule)' }}>
+      <div className="wrap" style={{ display: 'flex', gap: 8, overflowX: 'auto' }}>
+        {cats.map(c => (
+          <button key={c} onClick={() => setFilter(c)} style={{
+            padding: '10px 18px', border: '1px solid var(--rule)',
+            background: filter === c ? 'var(--ink)' : 'transparent',
+            color: filter === c ? 'var(--paper)' : 'var(--ink)',
+            fontFamily: 'var(--font-display)', textTransform: 'uppercase',
+            letterSpacing: '0.1em', fontSize: 12, fontWeight: 500,
+          }}>{c}</button>
+        ))}
+      </div>
+    </section>
+    <section style={{ padding: '64px 0 96px' }}>
+      <div className="wrap">
+        {filtered[0] && (
+          <a href="article.html" style={{
+            display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 48,
+            marginBottom: 64, color: 'var(--ink)',
+          }} className="news-card">
+            <div className="ph" style={{ height: 520 }}>
+              <span className="ph-label">[ photo: {filtered[0].img} ]</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 16 }}>Featured · {filtered[0].cat}</div>
+              <h2 className="h-editorial" style={{ fontSize: 72, fontWeight: 400, textWrap: 'balance', marginBottom: 24 }}>
+                {filtered[0].title}
+              </h2>
+              <p style={{ fontSize: 18, opacity: 0.75, marginBottom: 24, textWrap: 'pretty' }}>{filtered[0].kicker}</p>
+              <div className="eyebrow" style={{ opacity: 0.5 }}>
+                {new Date(filtered[0].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} · {filtered[0].author}
+              </div>
+            </div>
+          </a>
+        )}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
+          {filtered.slice(1).map(n => <NewsCard key={n.id} item={n} size="md"/>)}
+        </div>
+      </div>
+    </section>
+    <SponsorStrip sponsors={d.sponsors}/>
+    <SiteFooter/>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
+</script>
+</body>
+</html>

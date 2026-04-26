@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Four to play · Blidworth Welfare FC</title>
+<link rel="stylesheet" href="styles/base.css">
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="components/data.jsx"></script>
+<script type="text/babel" src="components/ui.jsx"></script>
+<script type="text/babel">
+function Page() {
+  const d = BW_DATA;
+  return (<>
+    <Ticker/>
+    <SiteNav current="news"/>
+    <article>
+      <section style={{ background: 'var(--ink)', color: 'var(--paper)', position: 'relative', overflow: 'hidden' }}>
+        <div className="ph" style={{ position: 'absolute', inset: 0, height: 760, opacity: 0.5 }}>
+          <span className="ph-label" style={{ position: 'absolute', bottom: 16, right: 16 }}>[ hero: packed terrace, Welfare Ground ]</span>
+        </div>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,10,10,0.2), rgba(10,10,10,0.95))', height: 760 }}/>
+        <div className="wrap" style={{ position: 'relative', padding: '120px 0 80px', minHeight: 760, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+          <div className="reveal reveal-1" style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+            <span className="chip red">Call to Arms</span>
+            <span className="chip" style={{ background: 'transparent', color: 'var(--paper)', borderColor: 'var(--rule-light)' }}>Centenary Season · The Run-In</span>
+          </div>
+          <h1 className="h-editorial reveal reveal-2" style={{ fontSize: 'clamp(64px, 9vw, 156px)', fontWeight: 400, textWrap: 'balance', marginBottom: 28, maxWidth: 1200, lineHeight: 0.95 }}>
+            Four games. One hundred years. <em style={{ color: 'var(--gold)' }}>Show up.</em>
+          </h1>
+          <p className="reveal reveal-3 h-editorial" style={{ fontSize: 26, fontStyle: 'italic', maxWidth: 920, marginBottom: 32, opacity: 0.88, textWrap: 'pretty' }}>
+            Sixteenth in the table. Four fixtures left. Three of them at the Welfare. This club has kicked a ball here since 1926 — and right now, it needs you on the grass bank more than ever.
+          </p>
+          <div className="reveal reveal-4" style={{ display: 'flex', gap: 24, fontSize: 14, opacity: 0.7 }}>
+            <span>By <em>Club Media</em></span><span>·</span>
+            <span>19 April 2026</span><span>·</span><span>3 min read</span>
+          </div>
+        </div>
+      </section>
+
+      <section style={{ padding: '80px 0', background: 'var(--paper)' }}>
+        <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 2.4fr 1fr', gap: 48 }}>
+          <aside style={{ position: 'sticky', top: 120, alignSelf: 'start' }}>
+            <div className="eyebrow" style={{ marginBottom: 16, opacity: 0.5 }}>Share</div>
+            {['X', 'Facebook', 'WhatsApp', 'Copy link'].map(s => (
+              <a key={s} href="#" style={{ display: 'block', padding: '10px 0', fontSize: 13, borderBottom: '1px solid var(--rule)' }}>{s} →</a>
+            ))}
+          </aside>
+          <div style={{ fontSize: 18, lineHeight: 1.75, textWrap: 'pretty' }}>
+            <p style={{ marginBottom: 24 }}>
+              <span style={{ fontFamily: 'var(--font-editorial)', fontSize: 96, float: 'left', lineHeight: 0.85, marginRight: 12, marginTop: 8 }}>L</span>
+              et's not dress it up. We lost on Saturday. Two-one at home to Holbrook Sports, in front of the biggest gate of the spring, on a day we needed a performance and got fragments of one. The table is unforgiving: sixteenth of eighteen, four games to play, and the drop is close enough to touch.
+            </p>
+            <p style={{ marginBottom: 24 }}>
+              And yet. This is still the centenary season. One hundred years since a group of Blidworth miners decided this village needed a football team and put their names to it. One hundred years of wet Tuesday nights, of dads lifting kids onto the railings, of tea at half-time and handshakes at full.
+            </p>
+            <p style={{ marginBottom: 24 }}>
+              That history doesn't save us from a result. It doesn't put a tackle in or head a ball clear. But it does ask something of the people who wear this badge — and the people who turn up to watch them. It asks us all to show up.
+            </p>
+
+            <div style={{ padding: '40px 48px', background: 'var(--ink)', color: 'var(--paper)', margin: '48px 0' }}>
+              <div className="h-editorial" style={{ fontSize: 44, fontStyle: 'italic', textWrap: 'balance', marginBottom: 20, lineHeight: 1.1 }}>
+                "We don't need miracles. We need everyone in this village on that touchline, every Saturday left."
+              </div>
+              <div className="eyebrow" style={{ color: 'var(--gold)' }}>The dressing room · Monday morning</div>
+            </div>
+
+            <h3 className="h-display" style={{ fontSize: 32, fontWeight: 700, marginBottom: 16, marginTop: 40 }}>The maths</h3>
+            <p style={{ marginBottom: 24 }}>
+              Four games. Three at home: Borrowash Victoria on Tuesday, Linby Colliery Welfare next Tuesday, Derby Singh Brothers on the Thursday. One away — Wirksworth Ivanhoe on the 25th. Twelve points still on the table. We don't need all of them. We need enough of them, and we need them won in front of our own.
+            </p>
+
+            <h3 className="h-display" style={{ fontSize: 32, fontWeight: 700, marginBottom: 16, marginTop: 40 }}>What we're asking</h3>
+            <p style={{ marginBottom: 24 }}>
+              <strong>Turn up.</strong> If you've been once this season, come twice more. If you've not been since the kids were young, bring them. If you live down Mansfield Road and pass the ground on the way home — come in. It's £6 on the gate. There's a bar, there's a burger, and there's eleven lads in red and black who'll run through a wall if the bank is full.
+            </p>
+            <p style={{ marginBottom: 24 }}>
+              <strong>Bring someone.</strong> One friend, one neighbour, one cousin. A full Welfare on a Tuesday night, under the lights, is a thing every grassroots side in this country would sell its kit for. We've got the ground. We've got the team. We need the bodies.
+            </p>
+            <p style={{ marginBottom: 24 }}>
+              <strong>Make noise.</strong> We've too many games left this season to be quiet at them. Sing the old songs. Sing new ones. "Up the Welfare" is still the best three words in Nottinghamshire football. Use them.
+            </p>
+
+            <div className="ph" style={{ height: 480, margin: '48px 0' }}>
+              <span className="ph-label">[ photo: floodlights at the Welfare, looking north ]</span>
+            </div>
+
+            <h3 className="h-display" style={{ fontSize: 32, fontWeight: 700, marginBottom: 16, marginTop: 40 }}>One hundred years is a long time</h3>
+            <p style={{ marginBottom: 24 }}>
+              Clubs like ours — village clubs, pit clubs, clubs with a welfare ground and a committee and a sponsor who owns the autocentre down the road — they don't last this long by accident. They last because people keep showing up. Generations of them. That's the whole trick.
+            </p>
+            <p style={{ marginBottom: 24 }}>
+              Whatever happens in the next four games, this club will wake up on the other side of it and start planning season one hundred and one. We'd very much like to do that in the Premier Division South. To do it, we need the next four Saturdays and the one Tuesday to feel like the old ones felt.
+            </p>
+            <p style={{ marginBottom: 24, fontFamily: 'var(--font-editorial)', fontStyle: 'italic', fontSize: 22 }}>
+              Four to play. We'll see you there.
+            </p>
+
+            <div style={{ padding: '32px 40px', border: '2px solid var(--ink)', marginTop: 48, background: 'var(--paper-2)' }}>
+              <div className="eyebrow" style={{ color: 'var(--red)', marginBottom: 12 }}>Next up</div>
+              <div className="h-display" style={{ fontSize: 32, fontWeight: 700, marginBottom: 8, lineHeight: 1.1 }}>
+                Blidworth Welfare vs Borrowash Victoria
+              </div>
+              <div style={{ fontSize: 15, opacity: 0.7, marginBottom: 24 }}>
+                Tuesday 21 April · 19:45 · Welfare Ground · Admission £6 / £3
+              </div>
+              <a href="tickets.html" className="btn red">Tickets &amp; matchday info →</a>
+            </div>
+          </div>
+          <aside>
+            <div style={{ background: 'var(--ink)', color: 'var(--paper)', padding: 24, marginBottom: 24 }}>
+              <div className="eyebrow" style={{ marginBottom: 16, color: 'var(--gold)' }}>The run-in</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 0, fontSize: 13 }}>
+                {[
+                  ['Tue 21 Apr', 'Borrowash Victoria', 'H'],
+                  ['Sat 25 Apr', 'Wirksworth Ivanhoe', 'A'],
+                  ['Tue 28 Apr', 'Linby Colliery W.', 'H'],
+                  ['Thu 30 Apr', 'Derby Singh Bros', 'H'],
+                ].map((f, i) => (
+                  <div key={i} style={{ padding: '14px 0', borderBottom: i < 3 ? '1px solid var(--rule-light)' : 'none' }}>
+                    <div className="eyebrow" style={{ fontSize: 10, opacity: 0.6, marginBottom: 4 }}>{f[0]} · {f[2]}</div>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{f[1]}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{ padding: 24, border: '1px solid var(--rule)' }}>
+              <div className="eyebrow" style={{ marginBottom: 12, color: 'var(--red)' }}>Where we stand</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 56, fontWeight: 700, lineHeight: 1, marginBottom: 4 }}>16<sup style={{ fontSize: 20 }}>th</sup></div>
+              <div style={{ fontSize: 12, opacity: 0.6, marginBottom: 20 }}>of 18 · Premier South</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 6, fontSize: 13 }}>
+                <span style={{ opacity: 0.6 }}>Played</span><span className="mono-num">27</span>
+                <span style={{ opacity: 0.6 }}>Won</span><span className="mono-num">5</span>
+                <span style={{ opacity: 0.6 }}>Drawn</span><span className="mono-num">7</span>
+                <span style={{ opacity: 0.6 }}>Lost</span><span className="mono-num">15</span>
+                <span style={{ opacity: 0.6 }}>Points</span><span className="mono-num" style={{ fontWeight: 700 }}>22</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section style={{ padding: '64px 0', background: 'var(--paper-2)' }}>
+        <div className="wrap">
+          <SectionHeader eyebrow="Keep reading" title="More from the newsroom" action={{ label: 'All News', href: 'news.html' }}/>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
+            {d.news.slice(1, 4).map(n => <NewsCard key={n.id} item={n}/>)}
+          </div>
+        </div>
+      </section>
+    </article>
+    <SponsorStrip sponsors={d.sponsors}/>
+    <SiteFooter/>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
+</script>
+</body>
+</html>

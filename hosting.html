@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Blidworth Welfare FC · Running Costs</title>
+<link rel="stylesheet" href="styles/base.css">
+<style>
+  body { background: var(--paper); }
+  .hero { background: var(--ink); color: var(--paper); padding: 80px 0 64px; }
+  .section { padding: 72px 0; border-bottom: 1px solid var(--rule); }
+  .section:last-child { border-bottom: none; }
+  .wrap-narrow { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+  .tier { border: 1px solid var(--rule); padding: 32px; background: var(--white); display: flex; flex-direction: column; }
+  .tier.rec { background: var(--ink); color: var(--paper); border-color: var(--ink); position: relative; }
+  .tier.rec::before {
+    content: 'RECOMMENDED'; position: absolute; top: -10px; left: 24px;
+    background: var(--gold); color: var(--ink); padding: 4px 10px;
+    font-family: var(--font-display); font-size: 10px; letter-spacing: 0.14em; font-weight: 700;
+  }
+  .tier .ey { font-family: var(--font-display); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.6; margin-bottom: 8px; }
+  .tier h3 { font-family: var(--font-display); font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+  .tier .tag { font-size: 13px; opacity: 0.65; margin-bottom: 28px; }
+  .tier .price {
+    font-family: var(--font-display); font-size: 48px; font-weight: 700; line-height: 1;
+    font-variant-numeric: tabular-nums; margin-bottom: 4px;
+  }
+  .tier.rec .price { color: var(--gold); }
+  .tier .per { font-size: 12px; opacity: 0.6; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 24px; }
+  .tier ul { list-style: none; padding: 0; margin: 0 0 24px; flex: 1; }
+  .tier li { padding: 8px 0; font-size: 13px; border-bottom: 1px solid var(--rule); display: flex; gap: 10px; }
+  .tier.rec li { border-color: var(--rule-light); }
+  .tier li::before { content: '✓'; color: var(--gold); font-weight: 700; }
+  .tier li.x::before { content: '✕'; color: var(--red); }
+  .tier .foot { font-size: 12px; opacity: 0.6; padding-top: 16px; border-top: 1px solid var(--rule); }
+  .tier.rec .foot { border-color: var(--rule-light); }
+
+  .breakdown { width: 100%; border-collapse: collapse; margin-top: 32px; }
+  .breakdown th, .breakdown td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--rule); font-size: 14px; }
+  .breakdown th { font-family: var(--font-display); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; background: var(--paper-2); }
+  .breakdown td:last-child, .breakdown th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .breakdown tr.total td { font-weight: 700; font-size: 16px; border-top: 2px solid var(--ink); border-bottom: none; padding-top: 18px; }
+  .note { background: var(--paper-2); padding: 24px; border-left: 3px solid var(--gold); margin-top: 32px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header className="hero">
+<div class="wrap-narrow">
+  <div style="display:flex; align-items:center; gap:14px; margin-bottom: 32px;">
+    <img src="assets/crest.png" style="height:56px;" alt=""/>
+    <div style="font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px; color: var(--gold);">Blidworth Welfare FC · Ops</div>
+  </div>
+  <h1 class="h-display" style="font-size: clamp(56px, 7vw, 96px); font-weight: 700; line-height: 0.95; max-width: 900px;">
+    What it costs to run this website.
+  </h1>
+  <p style="font-size: 20px; opacity: 0.7; max-width: 720px; margin-top: 24px; line-height: 1.5;">
+    Three honest options, from free-and-fiddly to hands-off-for-you. Prices in £ per year, UK providers where it matters.
+  </p>
+</div>
+</header>
+
+<section class="section">
+<div class="wrap-narrow">
+  <div style="font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px; color: var(--gold); margin-bottom: 8px;">Pick a path</div>
+  <h2 class="h-display" style="font-size: 44px; font-weight: 700;">Three tiers, three ways to run it.</h2>
+
+  <div class="tiers">
+    <!-- TIER 1 -->
+    <div class="tier">
+      <div class="ey">Tier 1 · DIY</div>
+      <h3>Volunteer-run</h3>
+      <div class="tag">You edit files. Manual sync Wed & Sun.</div>
+      <div class="price">£0–£20</div>
+      <div class="per">per year</div>
+      <ul>
+        <li>Free hosting (Netlify / Cloudflare Pages / GitHub Pages)</li>
+        <li>Domain name ~£12/yr (blidworthwelfarefc.co.uk)</li>
+        <li>FA Sync tool — paste & export JSON</li>
+        <li>Articles edited in code by volunteer</li>
+        <li>Lotto/shop = external links (PayPal, etc.)</li>
+        <li class="x">No admin login</li>
+        <li class="x">Needs a tech-confident volunteer</li>
+      </ul>
+      <div class="foot">Best if: you have a volunteer happy to edit files twice a week.</div>
+    </div>
+
+    <!-- TIER 2 (recommended) -->
+    <div class="tier rec">
+      <div class="ey">Tier 2 · Balanced</div>
+      <h3>Admin panel + CMS</h3>
+      <div class="tag">Login, edit articles/fixtures in a browser. Auto-sync from FA.</div>
+      <div class="price">£180–£360</div>
+      <div class="per">per year</div>
+      <ul>
+        <li>Custom design (what we've built) fully preserved</li>
+        <li>Admin login + dashboard (Decap CMS / Sanity free tier)</li>
+        <li>Automated FA Full-Time sync (cron, twice weekly)</li>
+        <li>Lotto & ticket Stripe integration</li>
+        <li>Media library for photos</li>
+        <li>1–2 days one-time dev setup (~£400–£800)</li>
+        <li class="x">Needs a developer for major changes</li>
+      </ul>
+      <div class="foot" style="opacity:0.8;">Best if: you want a proper running site but keep the look.</div>
+    </div>
+
+    <!-- TIER 3 -->
+    <div class="tier">
+      <div class="ey">Tier 3 · Turnkey</div>
+      <h3>Pitchero or similar</h3>
+      <div class="tag">Move to a platform built for grassroots clubs.</div>
+      <div class="price">£0–£420</div>
+      <div class="per">per year</div>
+      <ul>
+        <li>Admin panel out-of-the-box</li>
+        <li>Auto FA Full-Time integration (native)</li>
+        <li>Ticketing, lotto, shop modules included</li>
+        <li>Mobile app for fans</li>
+        <li>Used by ~1,500 UK clubs</li>
+        <li class="x">You lose this custom design — generic theme</li>
+        <li class="x">Monthly subs can creep up with add-ons</li>
+      </ul>
+      <div class="foot">Best if: design matters less than low ongoing effort.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section" style="background: var(--paper-2);">
+<div class="wrap-narrow">
+  <div style="font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px; color: var(--red); margin-bottom: 8px;">Detailed breakdown</div>
+  <h2 class="h-display" style="font-size: 44px; font-weight: 700;">Tier 2 — the honest numbers.</h2>
+  <p style="font-size: 16px; opacity: 0.7; max-width: 720px; margin-top: 16px;">
+    If you go the "admin login + keep the design" route, here's what you'd actually pay, split by one-time vs. ongoing.
+  </p>
+
+  <h3 style="font-family: var(--font-display); text-transform: uppercase; font-size: 13px; letter-spacing: 0.12em; margin-top: 40px;">One-time setup</h3>
+  <table class="breakdown">
+    <thead>
+      <tr><th>Item</th><th>Who</th><th>Cost</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Wire site to CMS (articles, fixtures, squad, lotto)</td><td>Developer · 1–2 days</td><td>£400–£800</td></tr>
+      <tr><td>FA Full-Time auto-sync script (runs twice weekly)</td><td>Developer · ½ day</td><td>£150–£250</td></tr>
+      <tr><td>Stripe / PayPal ticket + lotto integration</td><td>Developer · ½ day</td><td>£150–£250</td></tr>
+      <tr><td>Domain name (blidworthwelfarefc.co.uk)</td><td>Registrar</td><td>£12</td></tr>
+      <tr><td>Admin training session (1 hour Zoom)</td><td>Developer</td><td>£50</td></tr>
+      <tr class="total"><td>Setup total</td><td></td><td>£762–£1,362</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-family: var(--font-display); text-transform: uppercase; font-size: 13px; letter-spacing: 0.12em; margin-top: 40px;">Ongoing (per year)</h3>
+  <table class="breakdown">
+    <thead>
+      <tr><th>Item</th><th>Provider</th><th>£/year</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Hosting (static site)</td><td>Cloudflare Pages / Netlify</td><td>£0</td></tr>
+      <tr><td>Domain renewal</td><td>.co.uk registrar</td><td>£12</td></tr>
+      <tr><td>CMS</td><td>Decap (free) or Sanity free tier</td><td>£0–£180</td></tr>
+      <tr><td>Cron / auto-sync worker</td><td>Cloudflare Workers</td><td>£0–£60</td></tr>
+      <tr><td>Stripe fees (transaction-based)</td><td>Stripe</td><td>1.5% + 20p per sale</td></tr>
+      <tr><td>Email (contact form, newsletters)</td><td>Resend / Mailchimp free</td><td>£0–£60</td></tr>
+      <tr><td>Ad-hoc dev support (est. 2–3h/yr)</td><td>Developer · £80/hr</td><td>£160–£240</td></tr>
+      <tr class="total"><td>Running total</td><td></td><td>£172–£552/yr</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong style="font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.1em; font-size: 12px;">Bottom line</strong><br/>
+    Realistic steady-state cost: around <strong>£200–£400/year</strong> once set up, plus ~£800 one-off to build the admin layer. Lotto revenue (87 entries × £1/week × 52 weeks = ~£4,500/yr) would cover this many times over.
+  </div>
+</div>
+</section>
+
+<section class="section">
+<div class="wrap-narrow">
+  <div style="font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px; color: var(--gold); margin-bottom: 8px;">Reality check</div>
+  <h2 class="h-display" style="font-size: 44px; font-weight: 700;">What most clubs at your level actually do.</h2>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 32px;">
+    <div>
+      <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-bottom: 12px;">Pitchero (~70% of clubs)</h3>
+      <p style="font-size: 14px; opacity: 0.75; line-height: 1.6;">
+        Free tier covers the basics; paid tiers (~£30–£50/mo) add ticketing, e-commerce, branded app. FA full-time is native. You lose custom design but gain zero dev dependency.
+      </p>
+    </div>
+    <div>
+      <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-bottom: 12px;">WordPress + volunteer admin (~20%)</h3>
+      <p style="font-size: 14px; opacity: 0.75; line-height: 1.6;">
+        Cheap hosting, generic theme, volunteer manages everything. Gets messy over time but works if you have a dedicated person. ~£120/yr all-in.
+      </p>
+    </div>
+    <div>
+      <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-bottom: 12px;">Custom bespoke (~5%)</h3>
+      <p style="font-size: 14px; opacity: 0.75; line-height: 1.6;">
+        What we've built. Usually paid for by a sponsor or a tech-minded committee member. Looks sharp, differentiates the club, needs real dev support to maintain.
+      </p>
+    </div>
+    <div>
+      <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-bottom: 12px;">Facebook only (~5%)</h3>
+      <p style="font-size: 14px; opacity: 0.75; line-height: 1.6;">
+        No website. Social posts cover announcements, FA Full-Time takes the fixture load. Free, simple, limited.
+      </p>
+    </div>
+  </div>
+
+  <div class="note" style="border-color: var(--red); margin-top: 48px;">
+    <strong style="font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.1em; font-size: 12px;">My honest take</strong><br/>
+    For your centenary, the custom site is a lovely statement. But to make it sustainable without burning out a volunteer, the Tier 2 admin layer is essential. Roughly <strong>£800 one-off + £300/year</strong>, and anyone can run it. Lotto + sponsor contributions cover it easily. If budget is genuinely zero, Pitchero is the sensible answer — not this site.
+  </div>
+</div>
+</section>
+
+<footer style="background: var(--ink); color: var(--paper); padding: 48px 0; text-align: center;">
+  <div class="wrap-narrow">
+    <div style="font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px; opacity: 0.5;">Blidworth Welfare FC · 1926 – 2026</div>
+    <p style="margin-top: 16px; opacity: 0.7; font-size: 14px;">Up the Welfare.</p>
+    <a href="home.html" style="color: var(--gold); font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.1em; font-size: 12px; display: inline-block; margin-top: 24px;">← Back to the site</a>
+  </div>
+</footer>
+
+</body>
+</html>

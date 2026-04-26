@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Fixtures & Results · Blidworth Welfare FC</title>
+<link rel="stylesheet" href="styles/base.css">
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="components/data.jsx"></script>
+<script type="text/babel" src="components/ui.jsx"></script>
+<script type="text/babel">
+function Page() {
+  const d = BW_DATA;
+  const [tab, setTab] = React.useState('fixtures');
+  const tabs = [
+    { k: 'fixtures', label: 'Fixtures' },
+    { k: 'results', label: 'Results' },
+    { k: 'all', label: 'All' },
+  ];
+  const formatDate = (iso) => new Date(iso).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' }).toUpperCase();
+
+  return (<>
+    <Ticker/>
+    <SiteNav current="fixtures"/>
+
+    <section style={{ background: 'var(--ink)', color: 'var(--paper)', padding: '80px 0 56px' }}>
+      <div className="wrap">
+        <div className="eyebrow reveal reveal-1" style={{ color: 'var(--gold)', marginBottom: 16 }}>Season 2025/26</div>
+        <h1 className="h-display reveal reveal-2" style={{ fontSize: 'clamp(64px, 8vw, 128px)', fontWeight: 700 }}>
+          Fixtures & Results
+        </h1>
+        <p className="reveal reveal-3" style={{ fontSize: 18, opacity: 0.7, maxWidth: 640, marginTop: 24 }}>
+          Camper UK League — Premier Division South. All kick-off times are local and subject to change.
+        </p>
+      </div>
+    </section>
+
+    <section style={{ padding: '48px 0 96px' }}>
+      <div className="wrap">
+        <div style={{ display: 'flex', gap: 0, marginBottom: 40, borderBottom: '1px solid var(--rule)' }}>
+          {tabs.map(t => (
+            <button key={t.k} onClick={() => setTab(t.k)} style={{
+              padding: '16px 24px',
+              fontFamily: 'var(--font-display)', textTransform: 'uppercase',
+              letterSpacing: '0.1em', fontSize: 14, fontWeight: 600,
+              borderBottom: tab === t.k ? '3px solid var(--gold)' : '3px solid transparent',
+              color: tab === t.k ? 'var(--ink)' : 'var(--muted)',
+              marginBottom: -1,
+            }}>{t.label}</button>
+          ))}
+          <div style={{ marginLeft: 'auto', display: 'flex', gap: 12, alignItems: 'center' }}>
+            <select style={{ padding: '10px 14px', border: '1px solid var(--rule)', background: 'var(--white)', fontSize: 13 }}>
+              <option>All Competitions</option>
+              <option>Premier Division South</option>
+              <option>League Cup</option>
+              <option>County Cup</option>
+            </select>
+            <select style={{ padding: '10px 14px', border: '1px solid var(--rule)', background: 'var(--white)', fontSize: 13 }}>
+              <option>2025/26</option>
+              <option>2024/25</option>
+              <option>2023/24</option>
+            </select>
+          </div>
+        </div>
+
+        {(tab === 'fixtures' || tab === 'all') && (
+          <div style={{ marginBottom: 56 }}>
+            <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 20 }}>Upcoming</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+              {d.fixtures.map((f, i) => {
+                const home = f.home === 'Blidworth Welfare';
+                return (
+                  <div key={i} style={{
+                    background: 'var(--white)', border: '1px solid var(--rule)',
+                    padding: 24, display: 'flex', flexDirection: 'column', gap: 16,
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span className="eyebrow" style={{ opacity: 0.6 }}>{f.comp}</span>
+                      <span className="chip" style={{ background: home ? 'var(--ink)' : 'transparent', color: home ? 'var(--paper)' : 'var(--ink)', borderColor: 'var(--ink)' }}>{f.venue}</span>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 12, alignItems: 'center', padding: '16px 0' }}>
+                      <div style={{ textAlign: 'right', fontSize: 16, fontWeight: 600 }}>{f.home}</div>
+                      <div style={{ padding: '4px 14px', border: '1px solid var(--rule)', fontFamily: 'var(--font-display)', fontVariantNumeric: 'tabular-nums', fontSize: 18, fontWeight: 600 }}>{f.time}</div>
+                      <div style={{ fontSize: 16, fontWeight: 600 }}>{f.away}</div>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
+                      <span className="eyebrow" style={{ opacity: 0.6 }}>{formatDate(f.date)}</span>
+                      {home && <a href="tickets.html" style={{ color: 'var(--red)', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Tickets →</a>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {(tab === 'results' || tab === 'all') && (
+          <div>
+            <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 20 }}>Recent Results</div>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15 }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid var(--ink)' }}>
+                  {['Date', 'Competition', 'Home', 'Score', 'Away', 'Result', ''].map((h, i) => (
+                    <th key={i} style={{
+                      padding: '14px 12px',
+                      textAlign: i === 3 ? 'center' : 'left',
+                      fontFamily: 'var(--font-display)', fontWeight: 500,
+                      textTransform: 'uppercase', letterSpacing: '0.1em',
+                      fontSize: 11, opacity: 0.6,
+                    }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {d.results.map((r, i) => {
+                  const home = r.home === 'Blidworth Welfare';
+                  const wld = home ? (r.hs > r.as ? 'W' : r.hs < r.as ? 'L' : 'D') : (r.as > r.hs ? 'W' : r.as < r.hs ? 'L' : 'D');
+                  const col = wld === 'W' ? 'var(--green)' : wld === 'D' ? '#8a7b4a' : 'var(--red)';
+                  return (
+                    <tr key={i} style={{ borderBottom: '1px solid var(--rule)' }}>
+                      <td style={{ padding: '18px 12px', fontVariantNumeric: 'tabular-nums' }}>{formatDate(r.date)}</td>
+                      <td style={{ padding: '18px 12px', fontSize: 13 }}>{r.comp}</td>
+                      <td style={{ padding: '18px 12px', fontWeight: home ? 700 : 500 }}>{r.home}</td>
+                      <td style={{ padding: '18px 12px', textAlign: 'center', fontFamily: 'var(--font-display)', fontVariantNumeric: 'tabular-nums', fontSize: 20, fontWeight: 600 }}>
+                        {r.hs} – {r.as}
+                      </td>
+                      <td style={{ padding: '18px 12px', fontWeight: !home ? 700 : 500 }}>{r.away}</td>
+                      <td style={{ padding: '18px 12px' }}>
+                        <span style={{
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                          width: 28, height: 28, background: col, color: '#fff',
+                          fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 13,
+                        }}>{wld}</span>
+                      </td>
+                      <td style={{ padding: '18px 12px' }}>
+                        <a href="article.html" style={{ color: 'var(--gold)', fontSize: 13, fontWeight: 600 }}>Report →</a>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <SponsorStrip sponsors={d.sponsors}/>
+    <SiteFooter/>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>League Table · Blidworth Welfare FC</title>
+<link rel="stylesheet" href="styles/base.css">
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="components/data.jsx"></script>
+<script type="text/babel" src="components/ui.jsx"></script>
+<script type="text/babel">
+function Page() {
+  const d = BW_DATA;
+  return (<>
+    <Ticker/>
+    <SiteNav current="fixtures"/>
+
+    <section style={{ background: 'var(--ink)', color: 'var(--paper)', padding: '80px 0 56px' }}>
+      <div className="wrap">
+        <div className="eyebrow reveal reveal-1" style={{ color: 'var(--gold)', marginBottom: 16 }}>Camper UK · Premier South · 2025/26</div>
+        <h1 className="h-display reveal reveal-2" style={{ fontSize: 'clamp(64px, 8vw, 128px)', fontWeight: 700 }}>
+          League Table
+        </h1>
+      </div>
+    </section>
+
+    <section style={{ padding: '64px 0 96px' }}>
+      <div className="wrap">
+        <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: 40 }}>
+          <div>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid var(--ink)' }}>
+                  {[['#', 'c'], ['Club', 'l'], ['P', 'c'], ['W', 'c'], ['D', 'c'], ['L', 'c'], ['GD', 'c'], ['Pts', 'c']].map(([h, a]) => (
+                    <th key={h} style={{
+                      padding: '14px 10px',
+                      textAlign: a === 'l' ? 'left' : 'center',
+                      fontFamily: 'var(--font-display)', fontWeight: 500,
+                      textTransform: 'uppercase', letterSpacing: '0.1em',
+                      fontSize: 11, opacity: 0.7,
+                    }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {d.table.map((r, i) => {
+                  let indicator = null;
+                  if (r.pos <= 2) indicator = <div style={{ width: 4, height: 24, background: 'var(--green)' }}/>;
+                  else if (r.pos >= 12) indicator = <div style={{ width: 4, height: 24, background: 'var(--red)' }}/>;
+                  return (
+                    <tr key={r.team} style={{
+                      borderBottom: '1px solid var(--rule)',
+                      background: r.self ? 'rgba(212,162,76,0.1)' : (i % 2 ? 'rgba(10,10,10,0.015)' : 'transparent'),
+                    }}>
+                      <td style={{ padding: '16px 10px', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          {indicator}
+                          {r.pos}
+                        </div>
+                      </td>
+                      <td style={{ padding: '16px 10px', fontWeight: r.self ? 700 : 500, color: r.self ? 'var(--ink)' : 'inherit', fontSize: r.self ? 15 : 14 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          {r.self && <img src="assets/crest.png" style={{ height: 22 }}/>}
+                          {r.team}
+                        </div>
+                      </td>
+                      <td style={{ padding: '16px 10px', textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>{r.p}</td>
+                      <td style={{ padding: '16px 10px', textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>{r.w}</td>
+                      <td style={{ padding: '16px 10px', textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>{r.d}</td>
+                      <td style={{ padding: '16px 10px', textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>{r.l}</td>
+                      <td style={{ padding: '16px 10px', textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>{r.gd > 0 ? '+' + r.gd : r.gd}</td>
+                      <td style={{ padding: '16px 10px', textAlign: 'center', fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: 16, fontFamily: 'var(--font-display)' }}>{r.pts}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <div style={{ marginTop: 24, display: 'flex', gap: 24, fontSize: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 4, height: 14, background: 'var(--green)' }}/> Promotion
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 4, height: 14, background: 'var(--red)' }}/> Relegation
+              </div>
+            </div>
+          </div>
+          <aside>
+            <div style={{ background: 'var(--ink)', color: 'var(--paper)', padding: 32, marginBottom: 24 }}>
+              <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 16 }}>The Run-In</div>
+              <div className="h-editorial" style={{ fontSize: 36, textWrap: 'balance', marginBottom: 20 }}>
+                Four to play. Every point matters.
+              </div>
+              <p style={{ fontSize: 14, opacity: 0.75 }}>
+                The Welfare sit 16th with four fixtures remaining — home advantage in three of them could prove decisive.
+              </p>
+            </div>
+            <div style={{ background: 'var(--paper-2)', padding: 24 }}>
+              <div className="eyebrow" style={{ marginBottom: 16 }}>Top Scorers · Division</div>
+              {[
+                ['K. Shaw', 'Melbourne Dynamo', 24],
+                ['A. Bennett', 'Graham Street Prims', 19],
+                ['L. Whyatt', 'Selston F.C.', 17],
+                ['R. Davies', 'Borrowash Victoria', 15],
+                ['J. Price', 'Derby Singh Bros', 13],
+              ].map((row, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, padding: '10px 0', borderBottom: i < 4 ? '1px solid var(--rule)' : 'none' }}>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{row[0]}</div>
+                    <div style={{ opacity: 0.6, fontSize: 11 }}>{row[1]}</div>
+                  </div>
+                  <div className="h-display mono-num" style={{ fontSize: 20, fontWeight: 600 }}>{row[2]}</div>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <SponsorStrip sponsors={d.sponsors}/>
+    <SiteFooter/>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
+</script>
+</body>
+</html>

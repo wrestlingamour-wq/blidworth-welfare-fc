@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Blidworth Welfare FC · Site Index</title>
+<link rel="stylesheet" href="styles/base.css">
+<style>
+  .page-tile {
+    aspect-ratio: 4/3;
+    position: relative; overflow: hidden;
+    border: 1px solid var(--rule);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 24px; color: var(--ink); background: var(--white);
+  }
+  .page-tile:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); border-color: var(--ink); }
+  .page-tile .big-num { font-family: var(--font-display); font-weight: 700; font-size: 88px; line-height: 1; opacity: 0.12; }
+  .page-tile:hover .big-num { color: var(--gold); opacity: 0.3; }
+</style>
+</head>
+<body>
+<div class="wrap" style="padding-top: 80px; padding-bottom: 80px;">
+  <div style="display: flex; align-items: center; gap: 32px; margin-bottom: 48px;">
+    <img src="assets/crest.png" style="height: 120px; flex-shrink: 0;" class="crest-reveal"/>
+    <div style="flex: 1; min-width: 0;">
+      <div class="eyebrow" style="color: var(--red); margin-bottom: 8px;">Site Index · Design Exploration</div>
+      <h1 class="h-editorial" style="font-size: 56px; font-weight: 400; line-height: 1.05;">Blidworth Welfare FC</h1>
+      <div style="font-size: 14px; opacity: 0.6; margin-top: 8px;">Three homepage directions · seven supporting pages · one hundred years.</div>
+    </div>
+  </div>
+
+  <div class="eyebrow" style="margin-bottom: 16px; color: var(--gold);">Start here</div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 56px;">
+    <a href="home.html?v=classic" class="page-tile">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 12px;">Homepage · Variant 1</div>
+        <div class="h-display" style="font-size: 40px; font-weight: 700;">CLASSIC</div>
+        <div style="font-size: 13px; opacity: 0.7; margin-top: 8px;">Broadcast/pro-club feel. Dark hero takeover, dense news grid.</div>
+      </div>
+      <div class="big-num">01</div>
+    </a>
+    <a href="home.html?v=modern" class="page-tile">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 12px;">Homepage · Variant 2</div>
+        <div class="h-display" style="font-size: 40px; font-weight: 700;">MODERN</div>
+        <div style="font-size: 13px; opacity: 0.7; margin-top: 8px;">Split-screen hero, huge type, broadcast-graphic energy.</div>
+      </div>
+      <div class="big-num">02</div>
+    </a>
+    <a href="home.html?v=editorial" class="page-tile">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 12px;">Homepage · Variant 3</div>
+        <div class="h-display" style="font-size: 40px; font-weight: 700;">EDITORIAL</div>
+        <div style="font-size: 13px; opacity: 0.7; margin-top: 8px;">Newspaper masthead, serif columns, print-like density.</div>
+      </div>
+      <div class="big-num">03</div>
+    </a>
+  </div>
+
+  <div class="eyebrow" style="margin-bottom: 16px; color: var(--gold);">Supporting Pages</div>
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+    <a href="fixtures.html" class="page-tile"><div><div class="eyebrow">Matchday</div><div class="h-display" style="font-size: 28px; font-weight: 600; margin-top: 12px;">Fixtures & Results</div></div><div class="big-num">04</div></a>
+    <a href="table.html" class="page-tile"><div><div class="eyebrow">Season</div><div class="h-display" style="font-size: 28px; font-weight: 600; margin-top: 12px;">League Table</div></div><div class="big-num">05</div></a>
+    <a href="news.html" class="page-tile"><div><div class="eyebrow">Newsroom</div><div class="h-display" style="font-size: 28px; font-weight: 600; margin-top: 12px;">News Index</div></div><div class="big-num">06</div></a>
+    <a href="article.html" class="page-tile"><div><div class="eyebrow">Article</div><div class="h-display" style="font-size: 28px; font-weight: 600; margin-top: 12px;">Match Report</div></div><div class="big-num">07</div></a>
+    <a href="squad.html" class="page-tile"><div><div class="eyebrow">First Team</div><div class="h-display" style="font-size: 28px; font-weight: 600; margin-top: 12px;">Squad</div></div><div class="big-num">08</div></a>
+    <a href="tickets.html" class="page-tile"><div><div class="eyebrow">Matchday</div><div class="h-display" style="font-size: 28px; font-weight: 600; margin-top: 12px;">Tickets</div></div><div class="big-num">09</div></a>
+    <a href="shop.html" class="page-tile"><div><div class="eyebrow">Retail</div><div class="h-display" style="font-size: 28px; font-weight: 600; margin-top: 12px;">Club Shop</div></div><div class="big-num">10</div></a>
+    <a href="lotto.html" class="page-tile"><div><div class="eyebrow">Community</div><div class="h-display" style="font-size: 28px; font-weight: 600; margin-top: 12px;">Welfare Lotto</div></div><div class="big-num">11</div></a>
+  </div>
+
+  <div style="margin-top: 64px; padding: 32px; background: var(--paper-2); font-size: 13px; line-height: 1.7;">
+    <div class="eyebrow" style="color: var(--red); margin-bottom: 12px;">Notes</div>
+    <ul style="padding-left: 20px;">
+      <li>Homepage has a Variant picker (bottom-right) — toggle Classic / Modern / Editorial live.</li>
+      <li>Open the <strong>Tweaks</strong> toolbar toggle on home.html to persist variant & accent colour.</li>
+      <li>Crest founding date is <strong>1926</strong> (per the badge). Update data in <code>components/data.jsx</code> if it should be 1925.</li>
+      <li>All photos are striped placeholders — swap for real imagery when ready.</li>
+      <li>Sponsors, fixtures, table, squad, and news content are plausible placeholders.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

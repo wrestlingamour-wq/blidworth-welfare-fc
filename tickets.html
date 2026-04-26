@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Tickets · Blidworth Welfare FC</title>
+<link rel="stylesheet" href="styles/base.css">
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="components/data.jsx"></script>
+<script type="text/babel" src="components/ui.jsx"></script>
+<script type="text/babel">
+function Page() {
+  const d = BW_DATA;
+  return (<>
+    <Ticker/>
+    <SiteNav current="tickets"/>
+    <section style={{ background: 'var(--ink)', color: 'var(--paper)', padding: '96px 0' }}>
+      <div className="wrap">
+        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 56, alignItems: 'center' }}>
+          <div>
+            <div className="eyebrow reveal reveal-1" style={{ color: 'var(--gold)', marginBottom: 16 }}>Tickets · On sale now</div>
+            <h1 className="h-display reveal reveal-2" style={{ fontSize: 'clamp(64px, 9vw, 144px)', fontWeight: 700, lineHeight: 0.9 }}>
+              BWFC<br/>v Ashfield
+            </h1>
+            <div className="reveal reveal-3" style={{ fontSize: 20, marginTop: 24, opacity: 0.8 }}>
+              Saturday 18 April · 15:00 · Welfare Ground<br/>
+              Camper UK · Premier Division South
+            </div>
+            <div className="reveal reveal-4" style={{ marginTop: 40 }}>
+              <Countdown target={d.nextMatch.kickoff} onDark/>
+            </div>
+          </div>
+          <div className="ph" style={{ height: 520 }}>
+            <span className="ph-label">[ photo: Welfare Ground aerial, matchday crowd ]</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style={{ padding: '80px 0' }}>
+      <div className="wrap">
+        <div className="eyebrow" style={{ color: 'var(--red)', marginBottom: 16 }}>Choose your ticket</div>
+        <h2 className="h-editorial" style={{ fontSize: 56, marginBottom: 40 }}>Gate prices & memberships</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
+          {[
+            { label: 'Adult', price: 8, note: 'General admission · Standing' },
+            { label: 'Concession', price: 5, note: 'Over 65s / Students w/ ID' },
+            { label: 'Under 16', price: 2, note: 'Must be accompanied' },
+            { label: 'Under 12', price: 0, note: 'Free with paying adult' },
+          ].map(t => (
+            <div key={t.label} style={{ padding: 32, border: '1px solid var(--rule)', background: 'var(--white)' }}>
+              <div className="eyebrow" style={{ marginBottom: 12, color: 'var(--gold)' }}>{t.label}</div>
+              <div className="h-display mono-num" style={{ fontSize: 72, fontWeight: 700, lineHeight: 1 }}>
+                {t.price === 0 ? 'Free' : `£${t.price}`}
+              </div>
+              <div style={{ fontSize: 13, opacity: 0.7, marginTop: 12 }}>{t.note}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop: 32, textAlign: 'center' }}>
+          <a href="#" className="btn red">Buy Online →</a>
+        </div>
+      </div>
+    </section>
+
+    <section style={{ padding: '80px 0', background: 'var(--paper-2)' }}>
+      <div className="wrap">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }}>
+          <div>
+            <div className="eyebrow" style={{ color: 'var(--red)', marginBottom: 16 }}>Centenary Membership</div>
+            <h2 className="h-editorial" style={{ fontSize: 48, fontWeight: 400, textWrap: 'balance', marginBottom: 20 }}>
+              100 years, 1,926 memberships.
+            </h2>
+            <p style={{ fontSize: 16, marginBottom: 24, opacity: 0.8 }}>
+              Access to every home league match, a numbered centenary pin badge, priority on cup tickets, and 10% off in the club shop. £75 for the season.
+            </p>
+            <a href="#" className="btn">Buy Membership →</a>
+          </div>
+          <div className="ph gold" style={{ height: 340 }}>
+            <span className="ph-label">[ membership card + pin badge ]</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <SponsorStrip sponsors={d.sponsors}/>
+    <SiteFooter/>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>First Team Squad · Blidworth Welfare FC</title>
+<link rel="stylesheet" href="styles/base.css">
+<style>
+  .player-card { transition: transform 0.3s, background 0.3s; cursor: pointer; }
+  .player-card:hover { transform: translateY(-4px); background: var(--ink); color: var(--paper); }
+  .player-card:hover .player-no { color: var(--gold); }
+  .player-card:hover .ph { opacity: 0.9; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="components/data.jsx"></script>
+<script type="text/babel" src="components/ui.jsx"></script>
+<script type="text/babel">
+function Page() {
+  const d = BW_DATA;
+  const groups = [
+    { label: 'Goalkeepers', pos: 'GK' },
+    { label: 'Defenders', pos: 'DF' },
+    { label: 'Midfielders', pos: 'MF' },
+    { label: 'Forwards', pos: 'FW' },
+  ];
+  return (<>
+    <Ticker/>
+    <SiteNav current="teams"/>
+
+    <section style={{ background: 'var(--ink)', color: 'var(--paper)', padding: '80px 0 56px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', right: -40, top: -40, fontFamily: 'var(--font-display)', fontSize: 320, fontWeight: 700, opacity: 0.04, color: 'var(--gold)', lineHeight: 0.85 }}>2025/26</div>
+      <div className="wrap" style={{ position: 'relative' }}>
+        <div className="eyebrow reveal reveal-1" style={{ color: 'var(--gold)', marginBottom: 16 }}>First Team · 2025/26</div>
+        <h1 className="h-display reveal reveal-2" style={{ fontSize: 'clamp(64px, 9vw, 144px)', fontWeight: 700 }}>The Squad</h1>
+        <p className="reveal reveal-3" style={{ fontSize: 18, opacity: 0.7, maxWidth: 640, marginTop: 24 }}>
+          Manager: <strong>{d.club.manager}</strong> · Captain: <strong>{d.club.captain}</strong> · 18-strong senior squad competing in the centenary season.
+        </p>
+      </div>
+    </section>
+
+    {groups.map(g => {
+      const players = d.squad.filter(p => p.pos === g.pos);
+      return (
+        <section key={g.pos} style={{ padding: '64px 0', borderBottom: '1px solid var(--rule)' }}>
+          <div className="wrap">
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 24, marginBottom: 40, borderBottom: '1px solid var(--rule)', paddingBottom: 16 }}>
+              <h2 className="h-editorial" style={{ fontSize: 56, fontWeight: 400 }}>{g.label}</h2>
+              <div className="eyebrow" style={{ color: 'var(--gold)' }}>{g.pos} · {players.length} players</div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
+              {players.map(p => (
+                <a key={p.no} href="#" className="player-card" style={{ color: 'var(--ink)', border: '1px solid var(--rule)', overflow: 'hidden', background: 'var(--white)' }}>
+                  <div className="ph" style={{ height: 280, position: 'relative' }}>
+                    <div className="player-no h-display mono-num" style={{
+                      position: 'absolute', top: 16, left: 16, fontSize: 56, fontWeight: 700,
+                      color: 'var(--paper)', lineHeight: 1, mixBlendMode: 'difference',
+                    }}>{p.no}</div>
+                    {p.captain && <div className="chip gold" style={{ position: 'absolute', top: 20, right: 16 }}>C</div>}
+                    {p.topScorer && <div className="chip" style={{ position: 'absolute', top: 20, right: 16, background: 'var(--red)', color: '#fff', borderColor: 'var(--red)' }}>★</div>}
+                    <span className="ph-label">[ {p.name} ]</span>
+                  </div>
+                  <div style={{ padding: 20 }}>
+                    <div className="eyebrow" style={{ opacity: 0.6, marginBottom: 8 }}>{p.pos} · Age {p.age}</div>
+                    <div className="h-display" style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>{p.name}</div>
+                    <div style={{ display: 'flex', gap: 16, fontSize: 12, paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
+                      <div><span style={{ opacity: 0.5 }}>Apps</span> <strong className="mono-num">{p.apps}</strong></div>
+                      <div><span style={{ opacity: 0.5 }}>Goals</span> <strong className="mono-num">{p.goals}</strong></div>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    })}
+
+    <section style={{ padding: '64px 0', background: 'var(--paper-2)' }}>
+      <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }}>
+        <div className="ph light" style={{ height: 400 }}>
+          <span className="ph-label">[ portrait: Dan Mellors, Head Coach ]</span>
+        </div>
+        <div>
+          <div className="eyebrow" style={{ color: 'var(--red)', marginBottom: 16 }}>The Manager</div>
+          <h2 className="h-editorial" style={{ fontSize: 64, fontWeight: 400, textWrap: 'balance', marginBottom: 20 }}>
+            Dan Mellors, architect of the centenary push.
+          </h2>
+          <p style={{ fontSize: 16, opacity: 0.75, marginBottom: 24, textWrap: 'pretty' }}>
+            Three seasons, two promotions, and — extended through 2028 — the man leading the Welfare into its hundredth year. A Blidworth lad himself, Mellors played nearly 200 games for the club before taking the dugout.
+          </p>
+          <a href="#" className="btn ghost">Read profile →</a>
+        </div>
+      </div>
+    </section>
+
+    <SponsorStrip sponsors={d.sponsors}/>
+    <SiteFooter/>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
+</script>
+</body>
+</html>

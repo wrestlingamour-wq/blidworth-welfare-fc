@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Welfare Lotto · Coming Soon · Blidworth Welfare FC</title>
+<link rel="stylesheet" href="styles/base.css">
+<style>
+  @keyframes pulseGold { 0%, 100% { opacity: 0.9; } 50% { opacity: 1; } }
+  .ticket-stub {
+    position: relative; padding: 64px 56px;
+    background: var(--paper);
+    border: 2px dashed var(--ink);
+    color: var(--ink);
+  }
+  .ticket-stub::before, .ticket-stub::after {
+    content: ''; position: absolute; width: 32px; height: 32px;
+    border-radius: 50%; background: var(--ink); top: 50%; transform: translateY(-50%);
+  }
+  .ticket-stub::before { left: -16px; }
+  .ticket-stub::after { right: -16px; }
+  .perforation {
+    position: absolute; top: 0; bottom: 0; left: 60%;
+    border-left: 2px dashed var(--rule);
+  }
+  .notify-form input {
+    width: 100%; padding: 16px 18px; background: transparent;
+    border: 1px solid var(--rule-light); color: var(--paper);
+    font-size: 15px; font-family: var(--font-body);
+  }
+  .notify-form input:focus { outline: 2px solid var(--gold); border-color: var(--gold); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="components/data.jsx"></script>
+<script type="text/babel" src="components/ui.jsx"></script>
+<script type="text/babel">
+function Page() {
+  const d = BW_DATA;
+  const [email, setEmail] = React.useState('');
+  const [submitted, setSubmitted] = React.useState(false);
+  return (<>
+    <Ticker/>
+    <SiteNav current="lotto"/>
+
+    <section style={{
+      background: 'var(--ink)', color: 'var(--paper)',
+      padding: '120px 0 96px', position: 'relative', overflow: 'hidden', minHeight: '80vh',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.06,
+        background: 'repeating-linear-gradient(135deg, transparent 0 60px, var(--gold) 60px 62px)',
+      }}/>
+      <div style={{
+        position: 'absolute', top: '-100px', right: '-100px', width: 500, height: 500,
+        background: 'radial-gradient(circle, rgba(212,162,76,0.12) 0%, transparent 70%)',
+      }}/>
+      <div className="wrap" style={{ position: 'relative', maxWidth: 1200 }}>
+        <div className="eyebrow reveal reveal-1" style={{ color: 'var(--gold)', marginBottom: 24 }}>
+          Welfare Lotto · In Development
+        </div>
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 80, alignItems: 'center',
+        }}>
+          <div>
+            <h1 className="h-display reveal reveal-2" style={{
+              fontSize: 'clamp(72px, 11vw, 168px)', fontWeight: 700, lineHeight: 0.9,
+              letterSpacing: '-0.03em', marginBottom: 32,
+            }}>
+              Coming<br/>
+              <span style={{ color: 'var(--gold)', fontFamily: 'var(--font-editorial)', fontStyle: 'italic', fontWeight: 400 }}>
+                soon.
+              </span>
+            </h1>
+            <p className="reveal reveal-3" style={{
+              fontSize: 22, lineHeight: 1.5, maxWidth: 560, opacity: 0.82, marginBottom: 40,
+              textWrap: 'pretty',
+            }}>
+              The Welfare Lotto is on the way — a weekly draw to raise funds for the youth academy, the Welfare Ground, and the next hundred years of this football club.
+            </p>
+            <div className="reveal reveal-4" style={{
+              display: 'flex', gap: 24, alignItems: 'center', marginBottom: 40, flexWrap: 'wrap',
+            }}>
+              <div>
+                <div className="eyebrow" style={{ opacity: 0.5, marginBottom: 6 }}>Launching</div>
+                <div className="h-display" style={{ fontSize: 28, fontWeight: 600 }}>Autumn 2026</div>
+              </div>
+              <div style={{ width: 1, height: 48, background: 'var(--rule-light)' }}/>
+              <div>
+                <div className="eyebrow" style={{ opacity: 0.5, marginBottom: 6 }}>Entry</div>
+                <div className="h-display" style={{ fontSize: 28, fontWeight: 600 }}>£1/week</div>
+              </div>
+              <div style={{ width: 1, height: 48, background: 'var(--rule-light)' }}/>
+              <div>
+                <div className="eyebrow" style={{ opacity: 0.5, marginBottom: 6 }}>Draw</div>
+                <div className="h-display" style={{ fontSize: 28, fontWeight: 600 }}>Friday 8pm</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="reveal reveal-3">
+            <div className="ticket-stub">
+              <div className="perforation"/>
+              <div style={{ marginRight: '42%' }}>
+                <div className="eyebrow" style={{ marginBottom: 12, color: 'var(--red)' }}>Welfare Lotto</div>
+                <div className="h-display" style={{ fontSize: 42, fontWeight: 700, lineHeight: 1, marginBottom: 8 }}>
+                  Ticket
+                </div>
+                <div style={{ fontFamily: 'var(--font-editorial)', fontStyle: 'italic', fontSize: 18, opacity: 0.6, marginBottom: 24 }}>
+                  Be first in line.
+                </div>
+                <div className="eyebrow" style={{ opacity: 0.5, fontSize: 10, marginBottom: 4 }}>Serial No.</div>
+                <div className="h-display mono-num" style={{ fontSize: 20, marginBottom: 16 }}>BWFC–0001</div>
+                <div className="eyebrow" style={{ opacity: 0.5, fontSize: 10, marginBottom: 4 }}>Est.</div>
+                <div className="h-display mono-num" style={{ fontSize: 20 }}>1926</div>
+              </div>
+              <div style={{
+                position: 'absolute', right: 32, top: 0, bottom: 0,
+                width: '35%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+                animation: 'pulseGold 2.4s ease-in-out infinite',
+              }}>
+                <div className="eyebrow" style={{ fontSize: 10, marginBottom: 8 }}>Status</div>
+                <div className="h-display" style={{
+                  fontSize: 28, fontWeight: 700, color: 'var(--red)',
+                  transform: 'rotate(-8deg)', border: '3px solid var(--red)',
+                  padding: '6px 14px', textTransform: 'uppercase', letterSpacing: '0.04em',
+                }}>Pending</div>
+                <div className="eyebrow" style={{ fontSize: 10, marginTop: 16, opacity: 0.5, textAlign: 'center' }}>
+                  Valid from<br/>Autumn 2026
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style={{ padding: '96px 0', background: 'var(--ink-2)', color: 'var(--paper)' }}>
+      <div className="wrap" style={{ maxWidth: 1000 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'start' }}>
+          <div>
+            <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 16 }}>What it'll do</div>
+            <h2 className="h-editorial" style={{ fontSize: 52, fontWeight: 400, lineHeight: 1.05, marginBottom: 32 }}>
+              A weekly pound for the club.
+            </h2>
+            <p style={{ fontSize: 16, opacity: 0.75, lineHeight: 1.6, marginBottom: 20, textWrap: 'pretty' }}>
+              Grassroots clubs at our level run on volunteer hours, subs, and small gestures. The Welfare Lotto is our version of that last one — a simple weekly draw where every pound goes back into the club.
+            </p>
+            <p style={{ fontSize: 16, opacity: 0.75, lineHeight: 1.6, textWrap: 'pretty' }}>
+              Proceeds will fund the youth academy, ground improvements, training equipment, and matchday costs. No middlemen. No marketing budget. Just the Welfare.
+            </p>
+            <div style={{ marginTop: 40, paddingTop: 32, borderTop: '1px solid var(--rule-light)' }}>
+              <div className="eyebrow" style={{ opacity: 0.5, marginBottom: 12 }}>Licence status</div>
+              <p style={{ fontSize: 13, opacity: 0.6 }}>
+                Small society lottery registration in progress with Newark &amp; Sherwood District Council. We'll launch the moment it's approved.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <div className="notify-form" style={{
+              padding: 40, background: 'var(--ink)', border: '1px solid var(--rule-light)',
+            }}>
+              <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 16 }}>Be first to know</div>
+              <h3 className="h-display" style={{ fontSize: 28, fontWeight: 700, marginBottom: 16, lineHeight: 1.1 }}>
+                We'll email you on launch day.
+              </h3>
+              <p style={{ fontSize: 14, opacity: 0.7, marginBottom: 24 }}>
+                Drop your email and you'll get a single message when the lotto goes live — no newsletter spam, just the one.
+              </p>
+              {submitted ? (
+                <div style={{
+                  padding: 20, background: 'var(--ink-2)', border: '1px solid var(--gold)',
+                  fontSize: 14, textAlign: 'center',
+                }}>
+                  <div style={{ color: 'var(--gold)', marginBottom: 6, fontSize: 20 }}>✓</div>
+                  You're on the list. Up the Welfare.
+                </div>
+              ) : (
+                <form onSubmit={(e) => { e.preventDefault(); if (email) setSubmitted(true); }}>
+                  <input type="email" required placeholder="you@example.co.uk"
+                         value={email} onChange={e => setEmail(e.target.value)}/>
+                  <button className="btn gold" type="submit" style={{
+                    width: '100%', justifyContent: 'center', marginTop: 16,
+                  }}>Keep me posted →</button>
+                </form>
+              )}
+              <p style={{ fontSize: 11, opacity: 0.5, marginTop: 16, textWrap: 'pretty' }}>
+                18+ only. We'll only use your email for this one notification.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style={{ padding: '80px 0' }}>
+      <div className="wrap" style={{ textAlign: 'center', maxWidth: 900 }}>
+        <div className="eyebrow" style={{ color: 'var(--red)', marginBottom: 16 }}>In the meantime</div>
+        <h2 className="h-editorial" style={{ fontSize: 56, fontWeight: 400, marginBottom: 32 }}>
+          Back the club the old-fashioned way.
+        </h2>
+        <p style={{ fontSize: 17, opacity: 0.75, maxWidth: 640, margin: '0 auto 48px', lineHeight: 1.6, textWrap: 'pretty' }}>
+          While the lotto's in development, the best thing you can do is turn up. Gate money keeps the lights on.
+        </p>
+        <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <a href="tickets.html" className="btn red">Matchday tickets →</a>
+          <a href="shop.html" className="btn">Centenary shop →</a>
+          <a href="fixtures.html" className="btn">See fixtures</a>
+        </div>
+      </div>
+    </section>
+
+    <SponsorStrip sponsors={d.sponsors}/>
+    <SiteFooter/>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
+</script>
+</body>
+</html>

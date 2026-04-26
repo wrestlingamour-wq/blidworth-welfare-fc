@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Blidworth Welfare FC · Home</title>
+<link rel="stylesheet" href="styles/base.css">
+<style>
+  .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+  .big-tile { transition: filter 0.3s; text-decoration: none; }
+  .big-tile:hover { filter: brightness(1.12) saturate(1.05); }
+  .news-card:hover h3 { color: var(--gold); transition: color 0.2s; }
+
+  /* Variant picker */
+  .variant-picker {
+    position: fixed; bottom: 24px; right: 24px; z-index: 1000;
+    background: var(--ink); color: var(--paper);
+    padding: 8px; border-radius: 2px;
+    display: flex; gap: 4px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    font-family: var(--font-display);
+  }
+  .variant-picker button {
+    padding: 10px 16px; text-transform: uppercase; letter-spacing: 0.1em;
+    font-size: 11px; font-weight: 600; color: var(--paper);
+    border: 1px solid transparent; transition: all 0.2s;
+  }
+  .variant-picker button.active {
+    background: var(--gold); color: var(--ink);
+  }
+  .variant-picker button:hover:not(.active) { border-color: var(--rule-light); }
+  .variant-label { padding: 8px 12px; font-size: 10px; opacity: 0.5; letter-spacing: 0.15em; align-self: center; }
+
+  /* Tweaks panel */
+  .tweaks {
+    position: fixed; top: 100px; right: 24px; z-index: 999;
+    background: var(--white); border: 1px solid var(--ink);
+    padding: 20px; width: 280px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    display: none;
+  }
+  .tweaks.open { display: block; }
+  .tweaks h4 { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.1em; font-size: 12px; margin-bottom: 16px; }
+  .tweaks .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: 12px; }
+  .tweaks .row:last-child { border: none; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="components/data.jsx"></script>
+<script type="text/babel" src="components/ui.jsx"></script>
+<script type="text/babel" src="components/home-classic.jsx"></script>
+<script type="text/babel" src="components/home-modern.jsx"></script>
+<script type="text/babel" src="components/home-editorial.jsx"></script>
+<script type="text/babel" src="components/fa-sync.jsx"></script>
+
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "variant": "modern",
+  "accent": "#d4a24c",
+  "tickerSpeed": 80
+}/*EDITMODE-END*/;
+
+function App() {
+  const initialVariant =
+    new URLSearchParams(location.search).get('v') ||
+    localStorage.getItem('bwfc-variant') ||
+    TWEAK_DEFAULTS.variant;
+
+  const [variant, setVariant] = React.useState(initialVariant);
+  const [editMode, setEditMode] = React.useState(false);
+  const [faSyncOpen, setFaSyncOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    localStorage.setItem('bwfc-variant', variant);
+  }, [variant]);
+
+  React.useEffect(() => {
+    const handler = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setEditMode(true);
+      if (e.data?.type === '__deactivate_edit_mode') setEditMode(false);
+    };
+    window.addEventListener('message', handler);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const persist = (key, value) => {
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [key]: value } }, '*');
+  };
+
+  return (
+    <>
+      <Ticker />
+      <SiteNav current="" />
+      <HomeModern />
+      <SiteFooter />
+
+      {editMode && (
+        <div className="tweaks open">
+          <h4>Tweaks</h4>
+          <div className="row">
+            <span>Variant</span>
+            <select value={variant} onChange={e => { setVariant(e.target.value); persist('variant', e.target.value); }}>
+              <option value="classic">Classic</option>
+              <option value="modern">Modern</option>
+              <option value="editorial">Editorial</option>
+            </select>
+          </div>
+          <div className="row">
+            <span>Accent gold</span>
+            <input type="color" defaultValue={TWEAK_DEFAULTS.accent}
+              onChange={e => {
+                document.documentElement.style.setProperty('--gold', e.target.value);
+                persist('accent', e.target.value);
+              }} />
+          </div>
+          <div style={{ paddingTop: 14, marginTop: 6, borderTop: '1px solid var(--rule)' }}>
+            <button className="fa-sync-pill" style={{ width: '100%', justifyContent: 'center' }}
+              onClick={() => setFaSyncOpen(true)}>
+              <span className="dot"></span>
+              Sync from FA Full-Time
+            </button>
+            {window.BW_DATA?._syncedAt && (
+              <div className="fa-sync-meta">
+                Last synced {new Date(window.BW_DATA._syncedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {faSyncOpen && <FASyncPanel onClose={() => setFaSyncOpen(false)} />}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
