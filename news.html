@@ -70,7 +70,7 @@ function Page() {
           </div>
         )}
         {filtered[0] && (
-          <a href="article.html" style={{
+          <a href={`article.html?id=${filtered[0].id}`} style={{
             display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 48,
             marginBottom: 64, color: 'var(--ink)',
           }} className="news-card">
@@ -113,6 +113,4 @@ function Page() {
   </>);
 }
 ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
-</script>
-</body>
-</html>
+</s
