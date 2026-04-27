@@ -1414,7 +1414,97 @@ function TableSection({
       width: 44,
       textAlign: 'center'
     }
-  })))))))));
+  })))))))), /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      marginTop: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card-title"
+  }, "Top Scorers"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: 13,
+      color: 'var(--muted)',
+      marginBottom: 16
+    }
+  }, "Shown on the League Table page. Add players in order (highest goals first)."), /*#__PURE__*/React.createElement("table", {
+    className: "admin-table",
+    style: {
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "#"), /*#__PURE__*/React.createElement("th", null, "Player Name"), /*#__PURE__*/React.createElement("th", null, "Club"), /*#__PURE__*/React.createElement("th", null, "Goals"), /*#__PURE__*/React.createElement("th", null))), /*#__PURE__*/React.createElement("tbody", null, (data.topScorers || []).map((s, i) => /*#__PURE__*/React.createElement("tr", {
+    key: i
+  }, /*#__PURE__*/React.createElement("td", {
+    style: {
+      fontWeight: 700,
+      width: 32,
+      color: 'var(--muted)'
+    }
+  }, i + 1), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
+    value: s.name,
+    onChange: e => {
+      const next = (data.topScorers || []).map((x, j) => j === i ? {
+        ...x,
+        name: e.target.value
+      } : x);
+      update('topScorers', next);
+    },
+    style: {
+      border: 'none',
+      background: 'transparent',
+      fontSize: 14,
+      width: '100%'
+    },
+    placeholder: "Player name"
+  })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
+    value: s.club,
+    onChange: e => {
+      const next = (data.topScorers || []).map((x, j) => j === i ? {
+        ...x,
+        club: e.target.value
+      } : x);
+      update('topScorers', next);
+    },
+    style: {
+      border: 'none',
+      background: 'transparent',
+      fontSize: 14,
+      width: '100%'
+    },
+    placeholder: "Club"
+  })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    min: "0",
+    value: s.goals,
+    onChange: e => {
+      const next = (data.topScorers || []).map((x, j) => j === i ? {
+        ...x,
+        goals: Number(e.target.value)
+      } : x);
+      update('topScorers', next);
+    },
+    style: {
+      border: 'none',
+      background: 'transparent',
+      fontSize: 14,
+      width: 56,
+      textAlign: 'center'
+    }
+  })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("button", {
+    className: "btn-ghost btn-sm",
+    style: {
+      color: 'var(--red)',
+      borderColor: 'var(--red)'
+    },
+    onClick: () => update('topScorers', (data.topScorers || []).filter((_, j) => j !== i))
+  }, "\u2715")))))), /*#__PURE__*/React.createElement("button", {
+    className: "btn-ghost",
+    onClick: () => update('topScorers', [...(data.topScorers || []), {
+      name: '',
+      club: '',
+      goals: 0
+    }])
+  }, "+ Add Scorer")));
 }
 
 // ─── Logo Manager ─────────────────────────────────────────────────────────────
