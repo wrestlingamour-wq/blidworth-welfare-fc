@@ -1862,6 +1862,7 @@ function SettingsSection({
 
 // ─── App Shell ────────────────────────────────────────────────────────────────
 function App() {
+  const [isAuthed, setIsAuthed] = React.useState(() => !!localStorage.getItem(AUTH_KEY));
   const [data, setData] = React.useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -1923,6 +1924,14 @@ function App() {
       update: update
     })
   };
+  if (!isAuthed) {
+    return /*#__PURE__*/React.createElement(LoginScreen, {
+      onLogin: () => {
+        localStorage.setItem(AUTH_KEY, '1');
+        setIsAuthed(true);
+      }
+    });
+  }
   return /*#__PURE__*/React.createElement("div", {
     className: "admin-wrap"
   }, /*#__PURE__*/React.createElement("aside", {
