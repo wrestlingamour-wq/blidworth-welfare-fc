@@ -1,5 +1,5 @@
 // ─── Constants ───────────────────────────────────────────────────────────────
-const ADMIN_PASSWORD = 'admin12345';
+const ADMIN_PASSWORD = '1926BlidworthWfc';
 const STORAGE_KEY = 'bwfc-admin-data';
 const TOKEN_KEY = 'bwfc-gh-token';
 const NETLIFY_TOKEN_KEY = 'bwfc-netlify-token';
