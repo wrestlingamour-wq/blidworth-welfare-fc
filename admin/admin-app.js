@@ -7,7 +7,7 @@ const NETLIFY_SITE_KEY = 'bwfc-netlify-site';
 const AUTH_KEY = 'bwfc-admin-authed';
 const GITHUB_OWNER = 'wrestlingamour-wq';
 const GITHUB_REPO = 'blidworth-welfare-fc';
-const GITHUB_PATH = 'components/data.jsx'; // path within repo root
+const GITHUB_PATH = 'components/data.js';
 
 // Files to include in Netlify zip deploy (paths relative to repo root)
 const SITE_FILE_PREFIXES = ['components/', 'styles/', 'assets/', 'admin/'];
