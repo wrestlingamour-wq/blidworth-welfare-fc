@@ -163,7 +163,7 @@ function HomeModern() {
       gap: 10,
       marginBottom: 32
     }
-  }, /*#__PURE__*/React.createElement("span", {
+  }, next.tickets !== false && /*#__PURE__*/React.createElement("span", {
     className: "chip",
     style: {
       background: 'var(--red)',
@@ -177,7 +177,7 @@ function HomeModern() {
     style: {
       opacity: 0.7
     }
-  }, "Camper UK Premier South")), /*#__PURE__*/React.createElement("div", {
+  }, next.comp || 'Camper UK Premier South')), /*#__PURE__*/React.createElement("div", {
     className: "h-display",
     style: {
       fontSize: 14,
@@ -211,28 +211,39 @@ function HomeModern() {
         fontWeight: 700,
         lineHeight: 0.95
       }
-    }, "BLID", /*#__PURE__*/React.createElement("br", null), "WORTH"), /*#__PURE__*/React.createElement("div", {
+    }, "BLIDWORTH"), /*#__PURE__*/React.createElement("div", {
       className: "eyebrow",
       style: {
         marginTop: 12,
         opacity: 0.6
       }
-    }, isHomeFixture ? 'Home' : 'Away', " \xB7 ", ordinal(self.pos))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      style: {
-        height: 96,
-        width: 96,
-        marginBottom: 16,
-        background: 'repeating-linear-gradient(45deg, #d4a24c 0 8px, #a77f35 8px 16px)',
-        border: '2px solid var(--paper)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: 'var(--font-display)',
-        fontSize: 24,
-        fontWeight: 700,
-        color: 'var(--ink)'
-      }
-    }, oppShort), /*#__PURE__*/React.createElement("div", {
+    }, isHomeFixture ? 'Home' : 'Away', " \xB7 ", ordinal(self.pos))), /*#__PURE__*/React.createElement("div", null, (() => {
+      const oppLogo = isHomeFixture ? next.away?.logo : next.home?.logo;
+      return oppLogo ? /*#__PURE__*/React.createElement("img", {
+        src: oppLogo,
+        style: {
+          height: 96,
+          width: 96,
+          objectFit: 'contain',
+          marginBottom: 16
+        }
+      }) : /*#__PURE__*/React.createElement("div", {
+        style: {
+          height: 96,
+          width: 96,
+          marginBottom: 16,
+          background: 'repeating-linear-gradient(45deg, #d4a24c 0 8px, #a77f35 8px 16px)',
+          border: '2px solid var(--paper)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: 'var(--font-display)',
+          fontSize: 24,
+          fontWeight: 700,
+          color: 'var(--ink)'
+        }
+      }, oppShort);
+    })(), /*#__PURE__*/React.createElement("div", {
       className: "h-display",
       style: {
         fontSize: 36,

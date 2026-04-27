@@ -109,10 +109,12 @@ function HomeModern() {
 
           <div className="reveal reveal-2" style={{ position: 'relative', zIndex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 }}>
-              <span className="chip" style={{ background: 'var(--red)', borderColor: 'var(--red)', color: '#fff' }}>
-                <span className="chip-dot"/> TICKETS LIVE
-              </span>
-              <span className="eyebrow" style={{ opacity: 0.7 }}>Camper UK Premier South</span>
+              {next.tickets !== false && (
+                <span className="chip" style={{ background: 'var(--red)', borderColor: 'var(--red)', color: '#fff' }}>
+                  <span className="chip-dot"/> TICKETS LIVE
+                </span>
+              )}
+              <span className="eyebrow" style={{ opacity: 0.7 }}>{next.comp || 'Camper UK Premier South'}</span>
             </div>
             <div className="h-display" style={{ fontSize: 14, opacity: 0.6, marginBottom: 24 }}>
               {koDate} · {koTime}
@@ -130,18 +132,23 @@ function HomeModern() {
                   <div>
                     <img src="assets/crest.png" style={{ height: 96, marginBottom: 16 }}/>
                     <div className="h-display" style={{ fontSize: 36, fontWeight: 700, lineHeight: 0.95 }}>
-                      BLID<br/>WORTH
+                      BLIDWORTH
                     </div>
                     <div className="eyebrow" style={{ marginTop: 12, opacity: 0.6 }}>{isHomeFixture ? 'Home' : 'Away'} · {ordinal(self.pos)}</div>
                   </div>
                   <div>
-                    <div style={{
-                      height: 96, width: 96, marginBottom: 16,
-                      background: 'repeating-linear-gradient(45deg, #d4a24c 0 8px, #a77f35 8px 16px)',
-                      border: '2px solid var(--paper)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, color: 'var(--ink)',
-                    }}>{oppShort}</div>
+                    {(() => {
+                      const oppLogo = isHomeFixture ? next.away?.logo : next.home?.logo;
+                      return oppLogo
+                        ? <img src={oppLogo} style={{ height: 96, width: 96, objectFit: 'contain', marginBottom: 16 }} />
+                        : <div style={{
+                            height: 96, width: 96, marginBottom: 16,
+                            background: 'repeating-linear-gradient(45deg, #d4a24c 0 8px, #a77f35 8px 16px)',
+                            border: '2px solid var(--paper)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, color: 'var(--ink)',
+                          }}>{oppShort}</div>;
+                    })()}
                     <div className="h-display" style={{ fontSize: 36, fontWeight: 700, lineHeight: 0.95 }}>
                       {oppLine1}{oppLine2 && <><br/>{oppLine2}</>}
                     </div>
