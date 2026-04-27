@@ -1421,90 +1421,162 @@ function TableSection({
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "card-title"
-  }, "Top Scorers"), /*#__PURE__*/React.createElement("p", {
-    style: {
-      fontSize: 13,
-      color: 'var(--muted)',
-      marginBottom: 16
-    }
-  }, "Shown on the League Table page. Add players in order (highest goals first)."), /*#__PURE__*/React.createElement("table", {
-    className: "admin-table",
-    style: {
-      marginBottom: 16
-    }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "#"), /*#__PURE__*/React.createElement("th", null, "Player Name"), /*#__PURE__*/React.createElement("th", null, "Club"), /*#__PURE__*/React.createElement("th", null, "Goals"), /*#__PURE__*/React.createElement("th", null))), /*#__PURE__*/React.createElement("tbody", null, (data.topScorers || []).map((s, i) => /*#__PURE__*/React.createElement("tr", {
-    key: i
-  }, /*#__PURE__*/React.createElement("td", {
-    style: {
-      fontWeight: 700,
-      width: 32,
-      color: 'var(--muted)'
-    }
-  }, i + 1), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
-    value: s.name,
-    onChange: e => {
-      const next = (data.topScorers || []).map((x, j) => j === i ? {
-        ...x,
-        name: e.target.value
-      } : x);
-      update('topScorers', next);
-    },
-    style: {
-      border: 'none',
-      background: 'transparent',
-      fontSize: 14,
-      width: '100%'
-    },
-    placeholder: "Player name"
-  })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
-    value: s.club,
-    onChange: e => {
-      const next = (data.topScorers || []).map((x, j) => j === i ? {
-        ...x,
-        club: e.target.value
-      } : x);
-      update('topScorers', next);
-    },
-    style: {
-      border: 'none',
-      background: 'transparent',
-      fontSize: 14,
-      width: '100%'
-    },
-    placeholder: "Club"
-  })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    min: "0",
-    value: s.goals,
-    onChange: e => {
-      const next = (data.topScorers || []).map((x, j) => j === i ? {
-        ...x,
-        goals: Number(e.target.value)
-      } : x);
-      update('topScorers', next);
-    },
-    style: {
-      border: 'none',
-      background: 'transparent',
-      fontSize: 14,
-      width: 56,
-      textAlign: 'center'
-    }
-  })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("button", {
-    className: "btn-ghost btn-sm",
-    style: {
-      color: 'var(--red)',
-      borderColor: 'var(--red)'
-    },
-    onClick: () => update('topScorers', (data.topScorers || []).filter((_, j) => j !== i))
-  }, "\u2715")))))), /*#__PURE__*/React.createElement("button", {
-    className: "btn-ghost",
-    onClick: () => update('topScorers', [...(data.topScorers || []), {
-      name: '',
-      club: '',
-      goals: 0
-    }])
-  }, "+ Add Scorer")));
+  }, "Top Scorers"), (() => {
+    const [pasted, setPasted] = React.useState('');
+    const [msg, setMsg] = React.useState('');
+    const parseScorers = text => {
+      const lines = text.trim().split('\n').filter(l => l.trim());
+      const rows = [];
+      for (const line of lines) {
+        // Split by tab or 2+ spaces (how browsers export table cells)
+        const cols = line.trim().split(/\t|\s{2,}/).map(c => c.trim()).filter(Boolean);
+        if (cols.length < 3) continue;
+        // Last numeric = goals
+        const lastNum = parseInt(cols[cols.length - 1]);
+        if (isNaN(lastNum)) continue;
+        const goals = lastNum;
+        // First col = pos number (optional), skip it
+        let start = 0;
+        if (!isNaN(parseInt(cols[0]))) start = 1;
+        const middle = cols.slice(start, cols.length - 1);
+        if (middle.length < 2) continue;
+        // First middle = player name, rest = club
+        const name = middle[0];
+        const club = middle.slice(1).join(' ');
+        rows.push({
+          name,
+          club,
+          goals
+        });
+      }
+      return rows;
+    };
+    const syncPaste = () => {
+      const rows = parseScorers(pasted);
+      if (rows.length === 0) {
+        setMsg('Could not parse — make sure you copy the full table rows from FA Full-Time');
+        return;
+      }
+      update('topScorers', rows);
+      setMsg(`✓ Parsed ${rows.length} scorers`);
+      setPasted('');
+    };
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      className: "card",
+      style: {
+        marginBottom: 24
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "card-title"
+    }, "Paste from FA Full-Time"), /*#__PURE__*/React.createElement("p", {
+      style: {
+        fontSize: 14,
+        color: 'var(--muted)',
+        marginBottom: 16
+      }
+    }, "Go to ", /*#__PURE__*/React.createElement("strong", null, "fulltime.thefa.com"), ", find the Top Scorers list, select all the rows and paste below."), /*#__PURE__*/React.createElement("div", {
+      className: "field"
+    }, /*#__PURE__*/React.createElement("label", null, "Paste scorer rows here"), /*#__PURE__*/React.createElement("textarea", {
+      rows: 6,
+      value: pasted,
+      onChange: e => setPasted(e.target.value),
+      placeholder: "1\tK Shaw\tMelbourne Dynamo\t24\n2\tA Bennett\tGraham Street Prims\t19",
+      style: {
+        fontFamily: 'monospace',
+        fontSize: 12
+      }
+    })), msg && /*#__PURE__*/React.createElement("div", {
+      style: {
+        color: msg.startsWith('✓') ? 'var(--green)' : 'var(--red)',
+        fontSize: 13,
+        marginBottom: 12
+      }
+    }, msg), /*#__PURE__*/React.createElement("button", {
+      className: "btn-primary btn-gold",
+      onClick: syncPaste
+    }, "Parse & Update Scorers")), /*#__PURE__*/React.createElement("div", {
+      className: "card"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "card-title"
+    }, "Manual Edit"), /*#__PURE__*/React.createElement("table", {
+      className: "admin-table",
+      style: {
+        marginBottom: 16
+      }
+    }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "#"), /*#__PURE__*/React.createElement("th", null, "Player"), /*#__PURE__*/React.createElement("th", null, "Club"), /*#__PURE__*/React.createElement("th", null, "Goals"), /*#__PURE__*/React.createElement("th", null))), /*#__PURE__*/React.createElement("tbody", null, (data.topScorers || []).map((s, i) => /*#__PURE__*/React.createElement("tr", {
+      key: i
+    }, /*#__PURE__*/React.createElement("td", {
+      style: {
+        fontWeight: 700,
+        width: 32,
+        color: 'var(--muted)'
+      }
+    }, i + 1), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
+      value: s.name,
+      onChange: e => {
+        const next = (data.topScorers || []).map((x, j) => j === i ? {
+          ...x,
+          name: e.target.value
+        } : x);
+        update('topScorers', next);
+      },
+      style: {
+        border: 'none',
+        background: 'transparent',
+        fontSize: 14,
+        width: '100%'
+      },
+      placeholder: "Player name"
+    })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
+      value: s.club,
+      onChange: e => {
+        const next = (data.topScorers || []).map((x, j) => j === i ? {
+          ...x,
+          club: e.target.value
+        } : x);
+        update('topScorers', next);
+      },
+      style: {
+        border: 'none',
+        background: 'transparent',
+        fontSize: 14,
+        width: '100%'
+      },
+      placeholder: "Club"
+    })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
+      type: "number",
+      min: "0",
+      value: s.goals,
+      onChange: e => {
+        const next = (data.topScorers || []).map((x, j) => j === i ? {
+          ...x,
+          goals: Number(e.target.value)
+        } : x);
+        update('topScorers', next);
+      },
+      style: {
+        border: 'none',
+        background: 'transparent',
+        fontSize: 14,
+        width: 56,
+        textAlign: 'center'
+      }
+    })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("button", {
+      className: "btn-ghost btn-sm",
+      style: {
+        color: 'var(--red)',
+        borderColor: 'var(--red)'
+      },
+      onClick: () => update('topScorers', (data.topScorers || []).filter((_, j) => j !== i))
+    }, "\u2715")))))), /*#__PURE__*/React.createElement("button", {
+      className: "btn-ghost",
+      onClick: () => update('topScorers', [...(data.topScorers || []), {
+        name: '',
+        club: '',
+        goals: 0
+      }])
+    }, "+ Add Row")));
+  })()));
 }
 
 // ─── Logo Manager ─────────────────────────────────────────────────────────────
