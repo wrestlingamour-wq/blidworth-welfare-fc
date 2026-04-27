@@ -1708,7 +1708,8 @@ function BoardSection({
 // ─── Settings & Publish ───────────────────────────────────────────────────────
 function SettingsSection({
   data,
-  update
+  update,
+  onPublish
 }) {
   const [ghToken, setGhToken] = React.useState(localStorage.getItem(TOKEN_KEY) || '');
   const [netlifyToken, setNetlifyToken] = React.useState(localStorage.getItem(NETLIFY_TOKEN_KEY) || 'nfp_LH1xxFwoqu1kimuWoHSNmG7WHWSHHyPo46a2');
@@ -1737,6 +1738,7 @@ function SettingsSection({
     try {
       await publishToGitHub(data, ghTok);
       setMsg('✓ Published! GitHub Pages will update the live site in ~60 seconds.');
+      if (onPublish) onPublish();
     } catch (e) {
       setMsg('✗ Error: ' + e.message);
     }
@@ -1872,6 +1874,17 @@ function App() {
   });
   const [section, setSection] = React.useState('nextmatch');
   const [saved, setSaved] = React.useState(false);
+  const [isDirty, setIsDirty] = React.useState(false);
+  React.useEffect(() => {
+    if (isDirty) {
+      window.onbeforeunload = () => 'You have unsaved changes. Leave anyway?';
+    } else {
+      window.onbeforeunload = null;
+    }
+    return () => {
+      window.onbeforeunload = null;
+    };
+  }, [isDirty]);
   const update = (key, val) => {
     setData(d => {
       const next = {
@@ -1882,9 +1895,17 @@ function App() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       } catch (e) {}
       setSaved(true);
+      setIsDirty(true);
       setTimeout(() => setSaved(false), 2000);
       return next;
     });
+  };
+  const goToSite = () => {
+    if (isDirty) {
+      const ok = window.confirm('You have unsaved changes that haven\'t been published yet.\n\nGo back to the site anyway?');
+      if (!ok) return;
+    }
+    window.location.href = '../home.html';
   };
   const sections = {
     nextmatch: /*#__PURE__*/React.createElement(NextMatchSection, {
@@ -1921,7 +1942,8 @@ function App() {
     }),
     settings: /*#__PURE__*/React.createElement(SettingsSection, {
       data: data,
-      update: update
+      update: update,
+      onPublish: () => setIsDirty(false)
     })
   };
   if (!isAuthed) {
@@ -1993,7 +2015,32 @@ function App() {
     className: "sidebar-footer"
   }, /*#__PURE__*/React.createElement("div", {
     className: `save-pill${saved ? ' visible' : ''}`
-  }, "\u2713 Changes saved"))), /*#__PURE__*/React.createElement("main", {
+  }, "\u2713 Changes saved"), /*#__PURE__*/React.createElement("button", {
+    onClick: goToSite,
+    style: {
+      marginTop: 12,
+      width: '100%',
+      padding: '9px 12px',
+      background: 'rgba(255,255,255,0.07)',
+      border: '1px solid rgba(255,255,255,0.15)',
+      borderRadius: 6,
+      color: 'rgba(255,255,255,0.7)',
+      fontSize: 12,
+      fontFamily: 'var(--font-display)',
+      textTransform: 'uppercase',
+      letterSpacing: '0.08em',
+      cursor: 'pointer',
+      transition: 'all 0.2s'
+    },
+    onMouseEnter: e => {
+      e.currentTarget.style.background = 'rgba(255,255,255,0.13)';
+      e.currentTarget.style.color = '#fff';
+    },
+    onMouseLeave: e => {
+      e.currentTarget.style.background = 'rgba(255,255,255,0.07)';
+      e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
+    }
+  }, "\u2190 Back to Site"))), /*#__PURE__*/React.createElement("main", {
     className: "main-content"
   }, sections[section]));
 }
