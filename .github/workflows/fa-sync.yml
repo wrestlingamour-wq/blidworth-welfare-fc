@@ -21,12 +21,18 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Puppeteer
-        run: npm install puppeteer
+      - name: Download FA Full-Time table
+        run: |
+          curl -sL \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" \
+            -H "Accept-Language: en-GB,en;q=0.5" \
+            "https://fulltime.thefa.com/table.html?league=1854955&selectedSeason=912243998&selectedDivision=201151991&selectedCompetition=0&selectedFixtureGroupKey=1_532713038" \
+            -o /tmp/fa-table.html
+          echo "Downloaded $(wc -c < /tmp/fa-table.html) bytes"
 
       - name: Run FA Full-Time sync
-        run: node scripts/fa-sync.js
-        continue-on-error: true
+        run: node scripts/fa-sync.js /tmp/fa-table.html
 
       - name: Commit updated table
         run: |
