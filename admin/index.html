@@ -1030,4 +1030,117 @@ function SettingsSection({ data, update }) {
       <div className="card" style={{ marginBottom: 24 }}>
         <div className="card-title">API Tokens</div>
         <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16 }}>
-          Stored locally in this browser only — never sent anywhere exc
+          Stored locally in this browser only — never sent anywhere except to GitHub when you publish.
+        </p>
+        <div className="field">
+          <label>GitHub Personal Access Token</label>
+          <input
+            type="password"
+            value={ghToken}
+            onChange={e => setGhToken(e.target.value)}
+            placeholder="ghp_xxxxxxxxxxxx"
+          />
+          <small style={{ color: 'var(--muted)', fontSize: 11, marginTop: 4, display: 'block' }}>
+            Needs <strong>repo</strong> scope. <a href="https://github.com/settings/tokens/new?scopes=repo" target="_blank" style={{ color: 'var(--gold)' }}>Create one here</a>.
+          </small>
+        </div>
+        <button className="btn-primary btn-gold" onClick={saveTokens}>Save Token</button>
+        {msg && <div style={{ marginTop: 12, fontSize: 13, color: msg.startsWith('✓') ? 'var(--green)' : 'var(--red)' }}>{msg}</div>}
+      </div>
+
+      <div className="card">
+        <div className="card-title">Live Site</div>
+        <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 12 }}>
+          Your live site is hosted on GitHub Pages and updates automatically when you publish.
+        </p>
+        <a href="https://wrestlingamour-wq.github.io/blidworth-welfare-fc/home.html" target="_blank"
+          className="btn-primary btn-gold" style={{ display: 'inline-block', textDecoration: 'none', fontSize: 13 }}>
+          View Live Site →
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ─── App Shell ────────────────────────────────────────────────────────────────
+function App() {
+  const [data, setData] = React.useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch(e) {}
+    return window.BW_DATA || {};
+  });
+
+  const [section, setSection] = React.useState('nextmatch');
+  const [saved, setSaved]     = React.useState(false);
+
+  const update = (key, val) => {
+    setData(d => {
+      const next = { ...d, [key]: val };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch(e) {}
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      return next;
+    });
+  };
+
+  const sections = {
+    nextmatch:  <NextMatchSection   data={data} update={update} />,
+    news:       <NewsSection        data={data} update={update} />,
+    fixtures:   <FixturesSection    data={data} update={update} />,
+    results:    <ResultsSection     data={data} update={update} />,
+    table:      <TableSection       data={data} update={update} />,
+    logos:      <LogoManagerSection data={data} update={update} />,
+    clubinfo:   <ClubInfoSection    data={data} update={update} />,
+    board:      <BoardSection       data={data} update={update} />,
+    settings:   <SettingsSection    data={data} update={update} />,
+  };
+
+  return (
+    <div className="admin-wrap">
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <div className="crest">BW</div>
+          <div className="club">Blidworth Welfare FC</div>
+          <div className="label">Admin Panel</div>
+        </div>
+        <nav className="sidebar-nav">
+          <div className="nav-group">
+            <div className="nav-group-label">Match Day</div>
+            <button className={`nav-btn${section==='nextmatch'?' active':''}`} onClick={()=>setSection('nextmatch')}>Next Match</button>
+            <button className={`nav-btn${section==='news'?' active':''}`}      onClick={()=>setSection('news')}>News</button>
+            <button className={`nav-btn${section==='fixtures'?' active':''}`}  onClick={()=>setSection('fixtures')}>Fixtures</button>
+            <button className={`nav-btn${section==='results'?' active':''}`}   onClick={()=>setSection('results')}>Results</button>
+          </div>
+          <div className="nav-group">
+            <div className="nav-group-label">League</div>
+            <button className={`nav-btn${section==='table'?' active':''}`}     onClick={()=>setSection('table')}>League Table</button>
+          </div>
+          <div className="nav-group">
+            <div className="nav-group-label">Club</div>
+            <button className={`nav-btn${section==='logos'?' active':''}`}     onClick={()=>setSection('logos')}>Club Logos</button>
+            <button className={`nav-btn${section==='clubinfo'?' active':''}`}  onClick={()=>setSection('clubinfo')}>Club Info</button>
+            <button className={`nav-btn${section==='board'?' active':''}`}     onClick={()=>setSection('board')}>Board &amp; Contacts</button>
+          </div>
+          <div className="nav-group">
+            <div className="nav-group-label">System</div>
+            <button className={`nav-btn${section==='settings'?' active':''}`}  onClick={()=>setSection('settings')}>Settings &amp; Publish</button>
+          </div>
+        </nav>
+        <div className="sidebar-footer">
+          <div className={`save-pill${saved?' visible':''}`}>✓ Changes saved</div>
+        </div>
+      </aside>
+      <main className="main-content">
+        {sections[section]}
+      </main>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+    </script>
+  </body>
+</html>
