@@ -329,7 +329,7 @@ function Sidebar({ section, onNav, onLogout, saved }) {
           ← Log out
         </button>
         <div style={{ fontSize: 11, opacity: 0.3, marginTop: 8 }}>
-          <a href="../home.html" style={{ color: 'inherit' }}>View live site ↗</a>
+          <a href="https://wrestlingamour-wq.github.io/blidworth-welfare-fc/home.html" target="_blank" style={{ color: 'inherit' }}>View live site ↗</a>
         </div>
       </div>
     </div>
@@ -988,19 +988,13 @@ function SettingsSection({ data, update }) {
   const saveTicker = () => update('ticker', ticker);
 
   const publish = async () => {
-    const ghTok  = localStorage.getItem(TOKEN_KEY)         || ghToken;
-    const ntTok  = localStorage.getItem(NETLIFY_TOKEN_KEY) || netlifyToken;
-    const ntSite = localStorage.getItem(NETLIFY_SITE_KEY)  || netlifySite;
-    if (!ghTok)  { setMsg('✗ Enter your GitHub token first.'); return; }
-    if (!ntTok)  { setMsg('✗ Enter your Netlify token first.'); return; }
-    if (!ntSite) { setMsg('✗ Enter your Netlify Site ID first.'); return; }
+    const ghTok = localStorage.getItem(TOKEN_KEY) || ghToken;
+    if (!ghTok) { setMsg('✗ Enter your GitHub token first.'); return; }
 
     setPublishing(true); setMsg(''); setProgress('Saving to GitHub...');
     try {
       await publishToGitHub(data, ghTok);
-      setProgress('GitHub saved ✓  |  Deploying to Netlify...');
-      const deploy = await deployToNetlify(ntTok, ntSite, setProgress);
-      setMsg(`✓ Live site updated! Deploy ID: ${deploy.id}. Changes are live in ~30 seconds.`);
+      setMsg('✓ Published! GitHub Pages will update the live site in ~60 seconds.');
     } catch(e) {
       setMsg('✗ Error: ' + e.message);
     }
@@ -1015,7 +1009,7 @@ function SettingsSection({ data, update }) {
       <div className="card" style={{ marginBottom: 24 }}>
         <div className="card-title">Publish to Live Site</div>
         <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 20 }}>
-          Saves your changes to GitHub and deploys the updated site to Netlify automatically. Takes about 15–30 seconds.
+          Saves your changes to GitHub. GitHub Pages automatically updates the live site within ~60 seconds.
         </p>
         <button className="btn-primary btn-gold" style={{ fontSize: 14, padding: '14px 32px' }} onClick={publish} disabled={publishing}>
           {publishing ? '⏳ Publishing...' : '🚀 Publish to Live Site'}
@@ -1028,4 +1022,12 @@ function SettingsSection({ data, update }) {
         <div className="card-title">Ticker Bar Text</div>
         <div className="field">
           <label>Scrolling ticker message (shown at top of all pages)</label>
-          <input value={ticker} onChange={e => setTicker(e.target.value)} placeholder="e.g. TICKETS NOW ON SALE · Welfare 
+          <input value={ticker} onChange={e => setTicker(e.target.value)} placeholder="e.g. TICKETS NOW ON SALE · Welfare Ground · Saturday 3pm" />
+        </div>
+        <button className="btn-primary btn-gold" onClick={saveTicker}>Save Ticker</button>
+      </div>
+
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div className="card-title">API Tokens</div>
+        <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 16 }}>
+          Stored locally in this browser only — never sent anywhere exc
