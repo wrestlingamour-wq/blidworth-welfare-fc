@@ -94,17 +94,16 @@ function SiteNav({ variant = 'light', current = '' }) {
             display: 'flex', alignItems: 'center', gap: 6,
             padding: '6px 12px',
             borderRadius: 6,
-            border: `1px solid ${dark ? 'rgba(255,255,255,0.15)' : 'var(--rule)'}`,
+            border: '1px solid rgba(0,0,0,0.15)',
             fontFamily: 'var(--font-display)', textTransform: 'uppercase',
             letterSpacing: '0.08em', fontSize: 11, fontWeight: 600,
-            color: current === 'admin' ? 'var(--gold)' : (dark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.35)'),
-            transition: 'all 0.2s',
-            textDecoration: 'none',
+            color: current === 'admin' ? 'var(--gold)' : 'rgba(0,0,0,0.35)',
+            transition: 'all 0.2s', textDecoration: 'none',
           }}
           onMouseEnter={e => { e.currentTarget.style.color = 'var(--gold)'; e.currentTarget.style.borderColor = 'var(--gold)'; }}
-          onMouseLeave={e => { e.currentTarget.style.color = current === 'admin' ? 'var(--gold)' : (dark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.35)'); e.currentTarget.style.borderColor = dark ? 'rgba(255,255,255,0.15)' : 'var(--rule)'; }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'rgba(0,0,0,0.35)'; e.currentTarget.style.borderColor = 'rgba(0,0,0,0.15)'; }}
         >
-          <span style={{ fontSize: 14 }}>&#9881;</span> Admin
+          &#9881; Admin
         </a>
       </div>
     </header>
@@ -459,4 +458,17 @@ function SocialItem({ s }) {
           <div style={{
             width: 28, height: 28, background: badgeCol, color: '#fff',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: 'var(--font-displa
+            fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 13,
+          }}>{s.platform[0]}</div>
+          <div style={{ fontSize: 13, fontWeight: 600 }}>{s.handle}</div>
+        </div>
+        <span className="eyebrow" style={{ opacity: 0.5, fontSize: 10 }}>{s.when}</span>
+      </div>
+      <p style={{ fontSize: 14, lineHeight: 1.5 }}>{s.text}</p>
+    </div>
+  );
+}
+
+Object.assign(window, {
+  SiteNav, Ticker, Countdown, MatchCard, NewsCard, SponsorStrip, SiteFooter, SectionHeader, SocialItem,
+});
