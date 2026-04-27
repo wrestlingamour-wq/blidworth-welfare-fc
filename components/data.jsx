@@ -1,5 +1,5 @@
 // Blidworth Welfare FC — shared site data
-// Last updated via admin panel: 2026-04-27T13:30:17.648Z
+// Last updated via admin panel: 2026-04-27T13:37:48.902Z
 
 const BW_DATA = {
   "club": {
@@ -186,162 +186,162 @@ const BW_DATA = {
     {
       "pos": 1,
       "team": "Graham Street Prims",
-      "p": 28,
-      "w": 20,
-      "d": 3,
-      "l": 5,
+      "p": 31,
+      "w": 21,
+      "d": 4,
+      "l": 6,
       "gd": 24,
-      "pts": 63
+      "pts": 67
     },
     {
       "pos": 2,
       "team": "Selston F.C. First",
-      "p": 27,
-      "w": 20,
+      "p": 28,
+      "w": 21,
       "d": 2,
       "l": 5,
-      "gd": 31,
-      "pts": 62
+      "gd": 34,
+      "pts": 65
     },
     {
       "pos": 3,
       "team": "Borrowash Victoria First",
-      "p": 24,
-      "w": 16,
+      "p": 28,
+      "w": 18,
       "d": 1,
-      "l": 7,
-      "gd": 28,
-      "pts": 49
+      "l": 9,
+      "gd": 25,
+      "pts": 55
     },
     {
       "pos": 4,
-      "team": "Wirksworth Ivanhoe",
-      "p": 24,
-      "w": 15,
-      "d": 3,
-      "l": 6,
-      "gd": 20,
-      "pts": 48
+      "team": "Melbourne Dynamo",
+      "p": 29,
+      "w": 16,
+      "d": 6,
+      "l": 7,
+      "gd": 46,
+      "pts": 54
     },
     {
       "pos": 5,
-      "team": "Melbourne Dynamo",
-      "p": 26,
-      "w": 14,
-      "d": 5,
-      "l": 7,
-      "gd": 41,
-      "pts": 47
+      "team": "Wirksworth Ivanhoe",
+      "p": 25,
+      "w": 16,
+      "d": 3,
+      "l": 6,
+      "gd": 23,
+      "pts": 51
     },
     {
       "pos": 6,
-      "team": "Holbrook Sports FC",
-      "p": 28,
-      "w": 13,
-      "d": 6,
-      "l": 9,
-      "gd": 3,
-      "pts": 45
+      "team": "Derby Singh Brothers",
+      "p": 26,
+      "w": 15,
+      "d": 3,
+      "l": 8,
+      "gd": 28,
+      "pts": 48
     },
     {
       "pos": 7,
-      "team": "Derby Singh Brothers",
-      "p": 24,
-      "w": 13,
-      "d": 3,
-      "l": 8,
-      "gd": 20,
-      "pts": 42
+      "team": "Holbrook Sports FC",
+      "p": 30,
+      "w": 14,
+      "d": 6,
+      "l": 10,
+      "gd": -3,
+      "pts": 48
     },
     {
       "pos": 8,
       "team": "FC Sunnyhill",
-      "p": 27,
-      "w": 13,
+      "p": 29,
+      "w": 14,
       "d": 3,
-      "l": 11,
-      "gd": 13,
-      "pts": 42
+      "l": 12,
+      "gd": 14,
+      "pts": 45
     },
     {
       "pos": 9,
       "team": "Mickleover R B L",
-      "p": 26,
-      "w": 12,
+      "p": 28,
+      "w": 13,
       "d": 3,
-      "l": 11,
-      "gd": 11,
-      "pts": 39
+      "l": 12,
+      "gd": 13,
+      "pts": 42
     },
     {
       "pos": 10,
       "team": "Gresley Rovers Reserves",
-      "p": 28,
-      "w": 10,
+      "p": 29,
+      "w": 11,
       "d": 5,
       "l": 13,
-      "gd": 2,
-      "pts": 35
+      "gd": 3,
+      "pts": 38
     },
     {
       "pos": 11,
       "team": "Linby Colliery Welfare F.C.",
-      "p": 26,
+      "p": 27,
       "w": 9,
       "d": 5,
-      "l": 12,
-      "gd": -1,
+      "l": 13,
+      "gd": -3,
       "pts": 32
     },
     {
       "pos": 12,
       "team": "Holbrook St Michaels",
-      "p": 26,
+      "p": 29,
       "w": 9,
-      "d": 2,
-      "l": 15,
-      "gd": 0,
-      "pts": 29
+      "d": 4,
+      "l": 16,
+      "gd": -1,
+      "pts": 31
     },
     {
       "pos": 13,
-      "team": "Mickleover Athletic",
-      "p": 28,
-      "w": 8,
-      "d": 3,
-      "l": 17,
-      "gd": -13,
-      "pts": 27
+      "team": "Cromford & Wirksworth Town FC",
+      "p": 27,
+      "w": 6,
+      "d": 10,
+      "l": 11,
+      "gd": -18,
+      "pts": 28
     },
     {
       "pos": 14,
-      "team": "Cromford & Wirksworth Town FC",
-      "p": 26,
-      "w": 6,
-      "d": 9,
-      "l": 11,
+      "team": "Mickleover Athletic",
+      "p": 30,
+      "w": 8,
+      "d": 3,
+      "l": 19,
       "gd": -18,
       "pts": 27
     },
     {
       "pos": 15,
       "team": "Bakewell Town",
-      "p": 24,
+      "p": 27,
       "w": 6,
-      "d": 6,
-      "l": 12,
-      "gd": -12,
-      "pts": 24
+      "d": 7,
+      "l": 14,
+      "gd": -16,
+      "pts": 25
     },
     {
       "pos": 16,
-      "team": "Blidworth Welfare",
-      "p": 26,
-      "w": 5,
+      "team": "Blidworth Welfare F.C.",
+      "p": 29,
+      "w": 6,
       "d": 7,
-      "l": 14,
-      "gd": -38,
-      "pts": 22,
+      "l": 16,
+      "gd": -40,
+      "pts": 25,
       "self": true
     },
     {
