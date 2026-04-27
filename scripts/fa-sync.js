@@ -19,9 +19,9 @@ const path = require('path');
 // ── CONFIGURE THIS ────────────────────────────────────────────────────────────
 // Paste the full URL of Blidworth's league table on fulltime.thefa.com
 // Example: https://fulltime.thefa.com/displayTeague.do?selectedSeason=940055191&selectedDivision=940062791
-// Abacus Lighting Central Midlands Alliance League — Premier Division South 2025/26
-// league=1854955, season=61164433, division=572016962
-const FA_TABLE_URL = 'https://fulltime.thefa.com/table.html?league=1854955&selectedSeason=61164433&selectedDivision=572016962&selectedCompetition=0&selectedFixtureGroupKey=1_647276211';
+// Abacus Lighting Central Midlands Alliance League — Camper UK Premier Division South 2025/26
+// league=1854955, season=912243998, division=201151991
+const FA_TABLE_URL = 'https://fulltime.thefa.com/table.html?league=1854955&selectedSeason=912243998&selectedDivision=201151991&selectedCompetition=0&selectedFixtureGroupKey=1_532713038';
 
 // Set to true once you've confirmed the URL above works
 const SYNC_ENABLED = true;
@@ -186,4 +186,4 @@ async function main() {
     }
     const table = parseRows(rows);
     if (table.length < 5) {
-      console.error(`Only parsed ${table.length} teams — s
+      console.error(`Only parsed ${table.length}
