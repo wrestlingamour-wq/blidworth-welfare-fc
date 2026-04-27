@@ -19,13 +19,15 @@ const path = require('path');
 // ── CONFIGURE THIS ────────────────────────────────────────────────────────────
 // Paste the full URL of Blidworth's league table on fulltime.thefa.com
 // Example: https://fulltime.thefa.com/displayTeague.do?selectedSeason=940055191&selectedDivision=940062791
-const FA_TABLE_URL = 'REPLACE_WITH_YOUR_FA_FULLTTIME_URL';
+// Abacus Lighting Central Midlands Alliance League — Premier Division South 2025/26
+// league=1854955, season=61164433, division=572016962
+const FA_TABLE_URL = 'https://fulltime.thefa.com/table.html?league=1854955&selectedSeason=61164433&selectedDivision=572016962&selectedCompetition=0&selectedFixtureGroupKey=1_647276211';
 
 // Set to true once you've confirmed the URL above works
-const SYNC_ENABLED = false;
+const SYNC_ENABLED = true;
 // ─────────────────────────────────────────────────────────────────────────────
 
-const DATA_FILE = path.join(__dirname, '../website/components/data.jsx');
+const DATA_FILE = path.join(__dirname, '../components/data.jsx');
 
 // Club name normalisation — handles common variations between FA and our data
 const ALIASES = {
@@ -184,15 +186,4 @@ async function main() {
     }
     const table = parseRows(rows);
     if (table.length < 5) {
-      console.error(`Only parsed ${table.length} teams — something went wrong`);
-      process.exit(1);
-    }
-    updateDataFile(table);
-    console.log(`Done — ${table.length} teams synced from FA Full-Time`);
-  } catch (err) {
-    console.error('FA sync failed:', err.message);
-    process.exit(1);
-  }
-}
-
-main();
+      console.error(`Only parsed ${table.length} teams — s
