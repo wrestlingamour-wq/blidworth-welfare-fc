@@ -8,9 +8,6 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 
-// Abacus Lighting Central Midlands Alliance League
-// Camper UK Premier Division South 2025/26
-// league=1854955, season=912243998, division=201151991
 const FA_TABLE_URL = 'https://fulltime.thefa.com/table.html?league=1854955&selectedSeason=912243998&selectedDivision=201151991&selectedCompetition=0&selectedFixtureGroupKey=1_532713038';
 const SYNC_ENABLED = true;
 
@@ -34,28 +31,48 @@ function normalise(name) {
 }
 
 async function fetchTable() {
-  var browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+  var browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+  });
   try {
     var page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (compatible; BWFC-Sync/1.0)');
-    console.log('Fetching: ' + FA_TABLE_URL);
-    await page.goto(FA_TABLE_URL, { waitUntil: 'networkidle2', timeout: 30000 });
-    await page.waitForSelector('table', { timeout: 10000 }).catch(() => null);
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-    var rows = await page.evaluate(() => {
+    console.log('Fetching: ' + FA_TABLE_URL);
+
+    // Use load event + extra wait rather than networkidle2 which can timeout
+    await page.goto(FA_TABLE_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
+
+    // Wait up to 15s for a table with numeric cells to appear
+    await page.waitForFunction(
+      function() {
+        var tables = document.querySelectorAll('table');
+        for (var t of tables) {
+          var ths = Array.from(t.querySelectorAll('th')).map(function(h) { return h.textContent.trim().toUpperCase(); });
+          if (ths.some(function(h) { return h === 'PTS' || h === 'POINTS'; })) return true;
+        }
+        return false;
+      },
+      { timeout: 15000 }
+    ).catch(function() { console.log('Table header wait timed out, trying anyway...'); });
+
+    // Extra pause for JS rendering
+    await new Promise(function(r) { setTimeout(r, 3000); });
+
+    var rows = await page.evaluate(function() {
       var results = [];
       var tables = document.querySelectorAll('table');
       var standingsTable = null;
       for (var t of tables) {
-        var headers = Array.from(t.querySelectorAll('th')).map(h => h.textContent.trim().toUpperCase());
-        if (headers.some(h => h === 'PTS' || h === 'P' || h === 'POINTS')) {
+        var headers = Array.from(t.querySelectorAll('th')).map(function(h) { return h.textContent.trim().toUpperCase(); });
+        if (headers.some(function(h) { return h === 'PTS' || h === 'P' || h === 'POINTS'; })) {
           standingsTable = t;
           break;
         }
       }
       if (!standingsTable) return results;
       standingsTable.querySelectorAll('tbody tr').forEach(function(row) {
-        var cells = Array.from(row.querySelectorAll('td')).map(c => c.textContent.trim());
+        var cells = Array.from(row.querySelectorAll('td')).map(function(c) { return c.textContent.trim(); });
         if (cells.length >= 6) results.push(cells);
       });
       return results;
@@ -78,8 +95,8 @@ function parseRows(rows) {
     if (!cells[teamIdx] || !isNaN(parseInt(cells[teamIdx]))) teamIdx = 2;
     var teamName = normalise(cells[teamIdx] || '');
 
-    // FA Full-Time has home/away split columns, so count from the end:
-    // last = pts, second-to-last = gd, then W D L are at positions -5 -4 -3
+    // FA Full-Time has home/away split columns, so read from the end:
+    // last = pts, second-to-last = gd, positions -5 -4 -3 = W D L
     var nums = [];
     for (var i = teamIdx + 1; i < cells.length; i++) {
       var n = parseInt(cells[i]);
@@ -126,12 +143,12 @@ async function main() {
   try {
     var rows = await fetchTable();
     if (rows.length === 0) {
-      console.error('No table rows found');
+      console.error('No table rows found - FA Full-Time page may not have loaded');
       process.exit(1);
     }
     var table = parseRows(rows);
     if (table.length < 5) {
-      console.error('Only parsed ' + table.length + ' teams');
+      console.error('Only parsed ' + table.length + ' teams - check page structure');
       process.exit(1);
     }
     updateDataFile(table);
