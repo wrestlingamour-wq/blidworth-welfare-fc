@@ -1,5 +1,5 @@
 // Blidworth Welfare FC — shared site data
-// Last updated via admin panel: 2026-04-27T15:44:57.592Z
+// Last updated via admin panel: 2026-04-27T18:05:25.900Z
 
 const BW_DATA = {
   "club": {
@@ -645,7 +645,19 @@ const BW_DATA = {
   ],
   "historyText": "Blidworth Welfare Football Club was founded in 1926, rooted in the mining heritage of the village. The club has been a constant in the community through generations of change.",
   "historyPhotos": [],
-  "ticker": ""
+  "ticker": "",
+  "topScorers": [
+    {
+      "name": "Henry Eastgate",
+      "club": "Blidworth W F.C",
+      "goals": 11
+    },
+    {
+      "name": "Finn Brooks",
+      "club": "Blidworth W F.C",
+      "goals": 5
+    }
+  ]
 };
 
 window.BW_DATA = BW_DATA;
