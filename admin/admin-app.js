@@ -351,56 +351,58 @@ function NextMatchSection({
   const nm = data.nextMatch || {};
   const logos = data.logos || {};
   const teams = (data.table || []).map(r => r.team);
-  const [form, setForm] = React.useState({
-    awayName: nm.away?.name || '',
-    awayShort: nm.away?.short || '',
-    comp: nm.comp || '',
-    venue: nm.venue || 'Welfare Ground',
-    round: nm.round || 'League',
-    kickoff: nm.kickoff ? nm.kickoff.substring(0, 16) : '',
-    isHome: nm.home?.name === 'Blidworth Welfare'
-  });
-  const save = () => {
-    const opponent = {
-      name: form.awayName,
-      short: form.awayShort
+  const isHome = !nm.home?.name || nm.home?.name === 'Blidworth Welfare';
+  const opp = isHome ? nm.away || {} : nm.home || {};
+
+  // Convert stored ISO to local datetime-local string
+  const kickoffLocal = nm.kickoff ? new Date(new Date(nm.kickoff).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
+  const commit = patch => {
+    const vals = {
+      isHome,
+      awayName: opp.name || '',
+      awayShort: opp.short || '',
+      comp: nm.comp || '',
+      round: nm.round || 'League',
+      venue: nm.venue || 'Welfare Ground',
+      kickoff: nm.kickoff || '',
+      tickets: nm.tickets !== false,
+      ...patch
     };
-    if (logos[form.awayName]) opponent.logo = logos[form.awayName];
-    const nextMatch = form.isHome ? {
-      home: {
-        short: 'BWFC',
-        name: 'Blidworth Welfare',
-        crest: 'assets/crest.png'
-      },
-      away: opponent,
-      comp: form.comp,
-      kickoff: form.kickoff ? new Date(form.kickoff).toISOString() : '',
-      venue: form.venue,
-      round: form.round,
-      tickets: true
+    const oppObj = {
+      name: vals.awayName,
+      short: vals.awayShort
+    };
+    if (logos[vals.awayName]) oppObj.logo = logos[vals.awayName];
+    const bw = {
+      short: 'BWFC',
+      name: 'Blidworth Welfare',
+      crest: 'assets/crest.png'
+    };
+    const kickoffISO = vals.kickoff ? new Date(vals.kickoff).toISOString() : '';
+    update('nextMatch', vals.isHome ? {
+      home: bw,
+      away: oppObj,
+      comp: vals.comp,
+      kickoff: kickoffISO,
+      venue: 'Welfare Ground',
+      round: vals.round,
+      tickets: vals.tickets
     } : {
-      home: opponent,
-      away: {
-        short: 'BWFC',
-        name: 'Blidworth Welfare',
-        crest: 'assets/crest.png'
-      },
-      comp: form.comp,
-      kickoff: form.kickoff ? new Date(form.kickoff).toISOString() : '',
-      venue: form.venue,
-      round: form.round,
+      home: oppObj,
+      away: bw,
+      comp: vals.comp,
+      kickoff: kickoffISO,
+      venue: vals.venue,
+      round: vals.round,
       tickets: false
-    };
-    update('nextMatch', nextMatch);
+    });
   };
-  const handleTeamPick = name => {
-    const t = (data.table || []).find(r => r.team === name) || {};
+  const pickTeam = name => {
     const short = name.split(' ').map(w => w[0]).join('').substring(0, 4).toUpperCase();
-    setForm(f => ({
-      ...f,
+    commit({
       awayName: name,
       awayShort: short
-    }));
+    });
   };
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "section-title"
@@ -410,7 +412,13 @@ function NextMatchSection({
     className: "card"
   }, /*#__PURE__*/React.createElement("div", {
     className: "card-title"
-  }, "Fixture Details"), /*#__PURE__*/React.createElement("div", {
+  }, "Fixture Details"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: 13,
+      color: 'var(--green)',
+      marginBottom: 20
+    }
+  }, "\u2713 Changes save automatically \u2014 click ", /*#__PURE__*/React.createElement("strong", null, "Publish to Live Site"), " when ready."), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
@@ -418,12 +426,11 @@ function NextMatchSection({
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "field"
-  }, /*#__PURE__*/React.createElement("label", null, "Venue type"), /*#__PURE__*/React.createElement("select", {
-    value: form.isHome ? 'home' : 'away',
-    onChange: e => setForm(f => ({
-      ...f,
+  }, /*#__PURE__*/React.createElement("label", null, "Home or Away?"), /*#__PURE__*/React.createElement("select", {
+    value: isHome ? 'home' : 'away',
+    onChange: e => commit({
       isHome: e.target.value === 'home'
-    }))
+    })
   }, /*#__PURE__*/React.createElement("option", {
     value: "home"
   }, "Home (Welfare Ground)"), /*#__PURE__*/React.createElement("option", {
@@ -432,16 +439,15 @@ function NextMatchSection({
     className: "field"
   }, /*#__PURE__*/React.createElement("label", null, "Kickoff date & time"), /*#__PURE__*/React.createElement("input", {
     type: "datetime-local",
-    value: form.kickoff,
-    onChange: e => setForm(f => ({
-      ...f,
+    value: kickoffLocal,
+    onChange: e => commit({
       kickoff: e.target.value
-    }))
+    })
   })), /*#__PURE__*/React.createElement("div", {
     className: "field"
-  }, /*#__PURE__*/React.createElement("label", null, "Opponent (pick from table)"), /*#__PURE__*/React.createElement("select", {
-    value: form.awayName,
-    onChange: e => handleTeamPick(e.target.value)
+  }, /*#__PURE__*/React.createElement("label", null, "Opponent"), /*#__PURE__*/React.createElement("select", {
+    value: opp.name || '',
+    onChange: e => pickTeam(e.target.value)
   }, /*#__PURE__*/React.createElement("option", {
     value: ""
   }, "\u2014 select club \u2014"), teams.map(t => /*#__PURE__*/React.createElement("option", {
@@ -450,71 +456,79 @@ function NextMatchSection({
   }, t)))), /*#__PURE__*/React.createElement("div", {
     className: "field"
   }, /*#__PURE__*/React.createElement("label", null, "Opponent short code"), /*#__PURE__*/React.createElement("input", {
-    value: form.awayShort,
-    onChange: e => setForm(f => ({
-      ...f,
-      awayShort: e.target.value.toUpperCase()
-    })),
+    value: opp.short || '',
     maxLength: 5,
-    placeholder: "e.g. BOR"
+    placeholder: "e.g. BOR",
+    onChange: e => commit({
+      awayShort: e.target.value.toUpperCase()
+    })
   })), /*#__PURE__*/React.createElement("div", {
     className: "field"
   }, /*#__PURE__*/React.createElement("label", null, "Competition"), /*#__PURE__*/React.createElement("input", {
-    value: form.comp,
-    onChange: e => setForm(f => ({
-      ...f,
+    value: nm.comp || '',
+    placeholder: "e.g. Camper UK Premier South",
+    onChange: e => commit({
       comp: e.target.value
-    })),
-    placeholder: "e.g. Camper UK Premier South"
+    })
   })), /*#__PURE__*/React.createElement("div", {
     className: "field"
   }, /*#__PURE__*/React.createElement("label", null, "Round"), /*#__PURE__*/React.createElement("input", {
-    value: form.round,
-    onChange: e => setForm(f => ({
-      ...f,
+    value: nm.round || '',
+    placeholder: "e.g. League",
+    onChange: e => commit({
       round: e.target.value
-    })),
-    placeholder: "e.g. League"
-  })), !form.isHome && /*#__PURE__*/React.createElement("div", {
+    })
+  })), !isHome && /*#__PURE__*/React.createElement("div", {
     className: "field"
-  }, /*#__PURE__*/React.createElement("label", null, "Venue"), /*#__PURE__*/React.createElement("input", {
-    value: form.venue,
-    onChange: e => setForm(f => ({
-      ...f,
+  }, /*#__PURE__*/React.createElement("label", null, "Venue name"), /*#__PURE__*/React.createElement("input", {
+    value: nm.venue || '',
+    onChange: e => commit({
       venue: e.target.value
-    }))
-  }))), logos[form.awayName] ? /*#__PURE__*/React.createElement("div", {
+    })
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "field"
+  }, /*#__PURE__*/React.createElement("label", null, "Tickets available?"), /*#__PURE__*/React.createElement("select", {
+    value: nm.tickets !== false ? 'yes' : 'no',
+    onChange: e => commit({
+      tickets: e.target.value === 'yes'
+    })
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "yes"
+  }, "Yes \u2014 show Tickets Live badge"), /*#__PURE__*/React.createElement("option", {
+    value: "no"
+  }, "No")))), opp.name && /*#__PURE__*/React.createElement("div", {
     style: {
-      marginTop: 12,
+      marginTop: 16,
       display: 'flex',
       alignItems: 'center',
       gap: 12
     }
-  }, /*#__PURE__*/React.createElement("img", {
-    src: logos[form.awayName],
+  }, logos[opp.name] ? /*#__PURE__*/React.createElement("img", {
+    src: logos[opp.name],
     style: {
       width: 48,
       height: 48,
       objectFit: 'contain'
     }
-  }), /*#__PURE__*/React.createElement("span", {
+  }) : /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 48,
+      height: 48,
+      background: 'var(--paper-2)',
+      border: '1px dashed var(--rule)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: 11,
+      color: 'var(--muted)',
+      textAlign: 'center'
+    }
+  }, "No logo"), /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: 13,
       color: 'var(--muted)'
     }
-  }, "Logo saved for ", form.awayName)) : form.awayName && /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 12,
-      fontSize: 13,
-      color: 'var(--muted)'
-    }
-  }, "No logo saved for ", form.awayName, " \u2014 upload one in Club Logos."), /*#__PURE__*/React.createElement("button", {
-    className: "btn-primary btn-gold",
-    style: {
-      marginTop: 20
-    },
-    onClick: save
-  }, "Save Next Match")));
+  }, logos[opp.name] ? `Logo ready for ${opp.name}` : `No logo yet for ${opp.name} — upload in Club Logos`))));
 }
 
 // ─── News Manager ─────────────────────────────────────────────────────────────
@@ -1483,28 +1497,26 @@ function ClubInfoSection({
   data,
   update
 }) {
-  const [histText, setHistText] = React.useState(data.historyText || '');
-  const [honours, setHonours] = React.useState(data.honours || []);
-  const saveHistory = () => {
-    update('historyText', histText);
-  };
-  const saveHonours = () => {
-    update('honours', honours);
-  };
-  const updateHonour = (i, key, val) => setHonours(h => h.map((x, j) => j === i ? {
+  const updateHonour = (i, key, val) => update('honours', (data.honours || []).map((x, j) => j === i ? {
     ...x,
     [key]: val
   } : x));
-  const addHonour = () => setHonours(h => [...h, {
+  const addHonour = () => update('honours', [...(data.honours || []), {
     year: '',
     title: ''
   }]);
-  const removeHonour = i => setHonours(h => h.filter((_, j) => j !== i));
+  const removeHonour = i => update('honours', (data.honours || []).filter((_, j) => j !== i));
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "section-title"
   }, "Club"), /*#__PURE__*/React.createElement("div", {
     className: "section-h"
-  }, "Club Info"), /*#__PURE__*/React.createElement("div", {
+  }, "Club Info"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: 13,
+      color: 'var(--green)',
+      marginBottom: 20
+    }
+  }, "\u2713 Changes save automatically \u2014 click ", /*#__PURE__*/React.createElement("strong", null, "Publish to Live Site"), " when ready."), /*#__PURE__*/React.createElement("div", {
     className: "card",
     style: {
       marginBottom: 24
@@ -1515,16 +1527,13 @@ function ClubInfoSection({
     className: "field"
   }, /*#__PURE__*/React.createElement("label", null, "History paragraphs"), /*#__PURE__*/React.createElement("textarea", {
     rows: 8,
-    value: histText,
-    onChange: e => setHistText(e.target.value)
-  })), /*#__PURE__*/React.createElement("button", {
-    className: "btn-primary btn-gold",
-    onClick: saveHistory
-  }, "Save History")), /*#__PURE__*/React.createElement("div", {
+    value: data.historyText || '',
+    onChange: e => update('historyText', e.target.value)
+  }))), /*#__PURE__*/React.createElement("div", {
     className: "card"
   }, /*#__PURE__*/React.createElement("div", {
     className: "card-title"
-  }, "Roll of Honour"), honours.map((h, i) => /*#__PURE__*/React.createElement("div", {
+  }, "Roll of Honour"), (data.honours || []).map((h, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
     style: {
       display: 'grid',
@@ -1558,19 +1567,13 @@ function ClubInfoSection({
       borderColor: 'var(--red)'
     },
     onClick: () => removeHonour(i)
-  }, "\u2715"))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 12,
-      marginTop: 8
-    }
-  }, /*#__PURE__*/React.createElement("button", {
+  }, "\u2715"))), /*#__PURE__*/React.createElement("button", {
     className: "btn-ghost",
+    style: {
+      marginTop: 8
+    },
     onClick: addHonour
-  }, "+ Add Trophy"), /*#__PURE__*/React.createElement("button", {
-    className: "btn-primary btn-gold",
-    onClick: saveHonours
-  }, "Save Honours"))));
+  }, "+ Add Trophy")));
 }
 
 // ─── Board & Contacts ─────────────────────────────────────────────────────────
