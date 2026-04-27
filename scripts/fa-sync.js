@@ -1,16 +1,14 @@
 /**
  * FA Full-Time League Table Sync
- * Fetches the Camper UK Premier Division South league table from FA Full-Time
- * and updates components/data.jsx with the latest standings.
+ * Uses a simple HTTPS fetch (no Puppeteer needed - table is server-rendered).
  */
 
-const puppeteer = require('puppeteer');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
 const FA_TABLE_URL = 'https://fulltime.thefa.com/table.html?league=1854955&selectedSeason=912243998&selectedDivision=201151991&selectedCompetition=0&selectedFixtureGroupKey=1_532713038';
 const SYNC_ENABLED = true;
-
 const DATA_FILE = path.join(__dirname, '../components/data.jsx');
 
 const ALIASES = {
@@ -26,63 +24,70 @@ const ALIASES = {
 };
 
 function normalise(name) {
-  var trimmed = name.trim();
-  return ALIASES[trimmed] || trimmed;
+  return ALIASES[name.trim()] || name.trim();
 }
 
-async function fetchTable() {
-  var browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-  });
-  try {
-    var page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-
-    console.log('Fetching: ' + FA_TABLE_URL);
-
-    // Use load event + extra wait rather than networkidle2 which can timeout
-    await page.goto(FA_TABLE_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
-
-    // Wait up to 15s for a table with numeric cells to appear
-    await page.waitForFunction(
-      function() {
-        var tables = document.querySelectorAll('table');
-        for (var t of tables) {
-          var ths = Array.from(t.querySelectorAll('th')).map(function(h) { return h.textContent.trim().toUpperCase(); });
-          if (ths.some(function(h) { return h === 'PTS' || h === 'POINTS'; })) return true;
-        }
-        return false;
-      },
-      { timeout: 15000 }
-    ).catch(function() { console.log('Table header wait timed out, trying anyway...'); });
-
-    // Extra pause for JS rendering
-    await new Promise(function(r) { setTimeout(r, 3000); });
-
-    var rows = await page.evaluate(function() {
-      var results = [];
-      var tables = document.querySelectorAll('table');
-      var standingsTable = null;
-      for (var t of tables) {
-        var headers = Array.from(t.querySelectorAll('th')).map(function(h) { return h.textContent.trim().toUpperCase(); });
-        if (headers.some(function(h) { return h === 'PTS' || h === 'P' || h === 'POINTS'; })) {
-          standingsTable = t;
-          break;
-        }
+function fetchHtml(url) {
+  return new Promise(function(resolve, reject) {
+    var options = {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
+        'Accept-Language': 'en-GB,en;q=0.9',
       }
-      if (!standingsTable) return results;
-      standingsTable.querySelectorAll('tbody tr').forEach(function(row) {
-        var cells = Array.from(row.querySelectorAll('td')).map(function(c) { return c.textContent.trim(); });
-        if (cells.length >= 6) results.push(cells);
-      });
-      return results;
-    });
+    };
+    https.get(url, options, function(res) {
+      if (res.statusCode === 301 || res.statusCode === 302) {
+        return fetchHtml(res.headers.location).then(resolve).catch(reject);
+      }
+      var data = [];
+      res.on('data', function(chunk) { data.push(chunk); });
+      res.on('end', function() { resolve(Buffer.concat(data).toString('utf8')); });
+    }).on('error', reject);
+  });
+}
 
-    console.log('Found ' + rows.length + ' rows in table');
-    return rows;
-  } finally {
-    await browser.close();
+function stripTags(html) {
+  return html.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&#39;/g, "'").replace(/&quot;/g, '"').trim();
+}
+
+function parseHtml(html) {
+  // Find the standings table (first table with PTS or P header)
+  var tableMatch = html.match(/<table[\s\S]*?<\/table>/gi);
+  if (!tableMatch) return [];
+
+  var standingsTable = null;
+  for (var t of tableMatch) {
+    var headers = [];
+    var thRe = /<th[^>]*>([\s\S]*?)<\/th>/gi;
+    var thM;
+    while ((thM = thRe.exec(t)) !== null) {
+      headers.push(stripTags(thM[1]).toUpperCase());
+    }
+    if (headers.some(function(h) { return h === 'PTS' || h === 'POINTS' || h === 'P'; })) {
+      standingsTable = t;
+      break;
+    }
   }
+  if (!standingsTable) return [];
+
+  // Extract tbody rows
+  var rows = [];
+  var tbodyMatch = standingsTable.match(/<tbody[\s\S]*?<\/tbody>/i);
+  if (!tbodyMatch) return [];
+
+  var rowRe = /<tr[\s\S]*?<\/tr>/gi;
+  var rowM;
+  while ((rowM = rowRe.exec(tbodyMatch[0])) !== null) {
+    var cells = [];
+    var tdRe = /<td[^>]*>([\s\S]*?)<\/td>/gi;
+    var tdM;
+    while ((tdM = tdRe.exec(rowM[0])) !== null) {
+      cells.push(stripTags(tdM[1]));
+    }
+    if (cells.length >= 6) rows.push(cells);
+  }
+  return rows;
 }
 
 function parseRows(rows) {
@@ -94,9 +99,10 @@ function parseRows(rows) {
     var teamIdx = 1;
     if (!cells[teamIdx] || !isNaN(parseInt(cells[teamIdx]))) teamIdx = 2;
     var teamName = normalise(cells[teamIdx] || '');
+    if (!teamName) return;
 
-    // FA Full-Time has home/away split columns, so read from the end:
-    // last = pts, second-to-last = gd, positions -5 -4 -3 = W D L
+    // FA Full-Time has home/away split columns - read from the end:
+    // last = pts, second-to-last = gd, positions -5 -4 -3 = W D L, first = P
     var nums = [];
     for (var i = teamIdx + 1; i < cells.length; i++) {
       var n = parseInt(cells[i]);
@@ -136,23 +142,33 @@ function updateDataFile(newTable) {
 }
 
 async function main() {
-  if (!SYNC_ENABLED) {
-    console.log('FA sync disabled.');
-    process.exit(0);
-  }
+  if (!SYNC_ENABLED) { console.log('FA sync disabled.'); process.exit(0); }
   try {
-    var rows = await fetchTable();
+    console.log('Fetching: ' + FA_TABLE_URL);
+    var html = await fetchHtml(FA_TABLE_URL);
+    console.log('Downloaded ' + html.length + ' bytes');
+
+    var rows = parseHtml(html);
+    console.log('Found ' + rows.length + ' table rows');
     if (rows.length === 0) {
-      console.error('No table rows found - FA Full-Time page may not have loaded');
+      console.error('No table rows found');
       process.exit(1);
     }
+
     var table = parseRows(rows);
     if (table.length < 5) {
-      console.error('Only parsed ' + table.length + ' teams - check page structure');
+      console.error('Only parsed ' + table.length + ' teams - check parsing');
+      // Log first few rows for debugging
+      rows.slice(0, 3).forEach(function(r) { console.log('  Row:', JSON.stringify(r)); });
       process.exit(1);
     }
+
+    // Show Blidworth row for verification
+    var bwfc = table.find(function(t) { return t.self; });
+    if (bwfc) console.log('Blidworth: pos=' + bwfc.pos + ' P=' + bwfc.p + ' W=' + bwfc.w + ' D=' + bwfc.d + ' L=' + bwfc.l + ' GD=' + bwfc.gd + ' Pts=' + bwfc.pts);
+
     updateDataFile(table);
-    console.log('Done - ' + table.length + ' teams synced from FA Full-Time');
+    console.log('Done - ' + table.length + ' teams synced');
   } catch (err) {
     console.error('FA sync failed: ' + err.message);
     process.exit(1);
