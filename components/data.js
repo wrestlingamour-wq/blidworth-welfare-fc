@@ -1,5 +1,5 @@
 // Blidworth Welfare FC — shared site data
-// Last updated via admin panel: 2026-04-27T18:05:25.900Z
+// Last updated via admin panel: 2026-04-27T18:21:44.805Z
 
 const BW_DATA = {
   "club": {
@@ -366,6 +366,17 @@ const BW_DATA = {
     }
   ],
   "news": [
+    {
+      "cat": "firstteam",
+      "catLabel": "First Team",
+      "title": "From Step Six to Top Scorer:",
+      "kicker": " How Henry Eastgate Became One of Blidworth's Most Valuable Asset",
+      "body": "When Henry Eastgate first arrived at Blidworth Welfare, it was on a dual registration from Southwell FC, a club operating one steps above at Step 6. Nobody quite knew how long it would last or whether the young striker would make the move permanent. Eleven goals later, the answer could not be clearer.\nEastgate has been the standout performer in red and black this season. Still only in his early twenties, the centre forward has taken to Step 7 football like he belongs here, and his goals have been nothing short of crucial in what has been a challenging Camper UK Premier Division South campaign. He did not come in quietly, either. The dual signing arrangement meant he had to prove himself quickly, to show both clubs he was worth the commitment. He did exactly that, and when the time came to make the move to Blidworth permanent, the decision was straightforward.\nWhat makes Eastgate so effective is the combination of two qualities that do not always come in the same package at this level. He is a clinical finisher, the kind of player who does not panic when the chance arrives. He takes his time, picks his spot, and more often than not, finds the net. But he is not just a poacher waiting for things to drop for him. He works. He presses from the front, he links play, he makes life uncomfortable for defenders from the first whistle to the last.\nThe goals have shown up on the scoresheet. Eleven of them across the season is a remarkable return for a player still finding his feet at a new club. But if you had to pick one that captured his value in a single moment, it would be the trip to Borrowash Victoria in January. Away from home, Blidworth needed something. The game was tight, the tension was real, and it was Eastgate who delivered, tucking the ball away in the dying minutes to seal a 1-0 win.\nThe manager summed it up better than any statistic could. \"Henry's contributions in front of goal this season has aided us in our goal of keeping step 7 status.\" At this level, that is what it comes down to. Results matter, survival matters, and the players who deliver when it counts matter most of all.\nHenry Eastgate came on loan from a higher division, proved his worth, and made this club his own. The red and black shirt suits him.",
+      "date": "2026-04-27",
+      "author": "Club Media",
+      "photos": [],
+      "id": "mohixcrz1z4xh"
+    },
     {
       "id": "new-kit",
       "cat": "sponsorships",
