@@ -27,7 +27,8 @@ function Page() {
   const initialCat = new URLSearchParams(location.search).get('cat') || 'all';
   const [filter, setFilter] = React.useState(initialCat);
   const cats = ['all', 'firstteam', 'announcements', 'sponsorships'];
-  const filtered = filter === 'all' ? d.news : d.news.filter(n => n.cat === filter);
+  const newsItems = d.news || [];
+  const filtered = filter === 'all' ? newsItems : newsItems.filter(n => n.cat === filter);
 
   const handleFilter = (c) => {
     setFilter(c);
@@ -81,4 +82,37 @@ function Page() {
               <h2 className="h-editorial" style={{ fontSize: 72, fontWeight: 400, textWrap: 'balance', marginBottom: 24 }}>
                 {filtered[0].title}
               </h2>
-              <p style={{ fontSize: 18, opacity: 0.75, marginBottom: 24, textW
+              <p style={{ fontSize: 18, opacity: 0.75, marginBottom: 24, textWrap: 'balance' }}>{filtered[0].kicker}</p>
+              <div className="eyebrow" style={{ opacity: 0.5 }}>{filtered[0].date} · {filtered[0].author}</div>
+              <div style={{ marginTop: 24 }}>
+                <span style={{ fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: 12, fontWeight: 600, color: 'var(--gold)' }}>Read Story →</span>
+              </div>
+            </div>
+          </a>
+        )}
+        {filtered.length > 1 && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, borderTop: '1px solid var(--rule)', paddingTop: 48 }}>
+            {filtered.slice(1).map(a => (
+              <a key={a.id} href={`article.html?id=${a.id}`} className="news-card" style={{ color: 'var(--ink)', textDecoration: 'none' }}>
+                {a.photos && a.photos[0]
+                  ? <img src={a.photos[0]} style={{ width: '100%', height: 220, objectFit: 'cover', display: 'block', marginBottom: 20 }} />
+                  : <div className="ph" style={{ height: 220, marginBottom: 20 }}/>
+                }
+                <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 10 }}>{a.catLabel || a.cat}</div>
+                <h3 style={{ fontSize: 24, fontWeight: 600, lineHeight: 1.2, marginBottom: 12 }}>{a.title}</h3>
+                <p style={{ fontSize: 15, opacity: 0.7, marginBottom: 12 }}>{a.kicker}</p>
+                <div className="eyebrow" style={{ opacity: 0.45, fontSize: 11 }}>{a.date} · {a.author}</div>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+    <SponsorStrip sponsors={d.sponsors}/>
+    <SiteFooter/>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
+</script>
+</body>
+</html>
