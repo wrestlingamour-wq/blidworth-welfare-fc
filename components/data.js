@@ -1,5 +1,5 @@
 // Blidworth Welfare FC — shared site data
-// Last updated via admin panel: 2026-04-27T14:24:44.479Z
+// Last updated via admin panel: 2026-04-27T14:26:28.147Z
 
 const BW_DATA = {
   "club": {
