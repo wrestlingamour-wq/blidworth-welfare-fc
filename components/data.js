@@ -1,5 +1,5 @@
 // Blidworth Welfare FC — shared site data
-// Last updated via admin panel: 2026-04-27T14:55:02.307Z
+// Last updated via admin panel: 2026-04-27T15:18:37.819Z
 
 const BW_DATA = {
   "club": {
@@ -366,26 +366,6 @@ const BW_DATA = {
     }
   ],
   "news": [
-    {
-      "id": "centenary-launch",
-      "cat": "announcements",
-      "catLabel": "Club News",
-      "title": "100 Years: Centenary season programme unveiled",
-      "kicker": "A year-long celebration of Welfare football. Heritage kit, dinner, and a commemorative matchday at the Welfare Ground.",
-      "date": "2026-04-09",
-      "author": "Club Media",
-      "img": "archive"
-    },
-    {
-      "id": "academy-intake",
-      "cat": "announcements",
-      "catLabel": "Community",
-      "title": "Academy opens 2026 summer intake applications",
-      "kicker": "U9 to U16 trials confirmed across four weekends from June.",
-      "date": "2026-04-05",
-      "author": "Academy",
-      "img": "academy"
-    },
     {
       "id": "new-kit",
       "cat": "sponsorships",
