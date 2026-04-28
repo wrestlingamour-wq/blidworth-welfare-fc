@@ -23,7 +23,97 @@ const CAT_LABELS = {
 
 function Page() {
   const d = BW_DATA;
-  const id = new URLSearchParams(location.search).get('id');
+  const params = new URLSearchParams(location.search);
+  const matchReportIdx = params.get('matchreport');
+  const isMatchReport = matchReportIdx !== null;
+
+  // ── Match report mode ──────────────────────────────────────────────────────
+  if (isMatchReport) {
+    const results = d.results || [];
+    const idx = parseInt(matchReportIdx, 10);
+    const result = results[idx];
+    const report = result && result.report;
+
+    if (!report) {
+      return (<>
+        <Ticker/>
+        <SiteNav current="fixtures"/>
+        <section style={{ padding: '120px 0', textAlign: 'center' }}>
+          <div className="wrap">
+            <div className="eyebrow" style={{ color: 'var(--red)', marginBottom: 24 }}>Report not found</div>
+            <h1 style={{ fontSize: 48, fontWeight: 400, marginBottom: 32 }}>No match report yet.</h1>
+            <a href="fixtures.html#results" className="btn">← Back to Results</a>
+          </div>
+        </section>
+        <SiteFooter/>
+      </>);
+    }
+
+    const score = result ? `${result.home} ${result.hs} – ${result.as} ${result.away}` : '';
+    const title = report.title || `Match Report: ${score}`;
+    const author = report.author || 'Club Reporter';
+    const paras = (report.body || '').split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+    const finalParas = paras.length > 0 ? paras : (report.body || '').split(/\n/).map(p => p.trim()).filter(Boolean);
+
+    return (<>
+      <Ticker/>
+      <SiteNav current="fixtures"/>
+      <article>
+        <section style={{ background: 'var(--ink)', color: 'var(--paper)', position: 'relative', overflow: 'hidden' }}>
+          {report.photo
+            ? <img src={report.photo} style={{ position: 'absolute', inset: 0, width: '100%', height: 760, objectFit: 'cover', opacity: 0.45 }} />
+            : <div className="ph" style={{ position: 'absolute', inset: 0, height: 760, opacity: 0.3 }}/>
+          }
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,10,10,0.2), rgba(10,10,10,0.95))', height: 760 }}/>
+          <div className="wrap" style={{ position: 'relative', padding: '120px 0 80px', minHeight: 760, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+            <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+              <span className="chip red">Match Report</span>
+            </div>
+            <h1 className="h-editorial" style={{ fontSize: 'clamp(48px, 7vw, 120px)', fontWeight: 400, textWrap: 'balance', marginBottom: 28, maxWidth: 1100, lineHeight: 0.95 }}>
+              {title}
+            </h1>
+            {score && (
+              <p className="h-editorial" style={{ fontSize: 22, fontStyle: 'italic', maxWidth: 860, marginBottom: 32, opacity: 0.88 }}>
+                {score}
+              </p>
+            )}
+            <div style={{ display: 'flex', gap: 24, fontSize: 14, opacity: 0.7 }}>
+              <span>By <em>{author}</em></span>
+              {result && result.date && <><span>·</span><span>{new Date(result.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</span></>}
+            </div>
+          </div>
+        </section>
+        <section style={{ padding: '80px 0', background: 'var(--paper)' }}>
+          <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 2.4fr 1fr', gap: 48 }}>
+            <aside style={{ position: 'sticky', top: 120, alignSelf: 'start' }}>
+              <div className="eyebrow" style={{ marginBottom: 16, opacity: 0.5 }}>Share</div>
+              {['X (Twitter)', 'Facebook', 'WhatsApp', 'Copy link'].map(s => (
+                <a key={s} href="#" style={{ display: 'block', padding: '10px 0', fontSize: 13, borderBottom: '1px solid var(--rule)', color: 'var(--ink)' }}>{s} →</a>
+              ))}
+              <div style={{ marginTop: 32 }}>
+                <a href="fixtures.html#results" style={{ fontSize: 13, color: 'var(--muted)' }}>← All Results</a>
+              </div>
+            </aside>
+            <div style={{ fontSize: 18, lineHeight: 1.8, textWrap: 'pretty' }}>
+              {finalParas.length === 0 && <p style={{ opacity: 0.5, fontStyle: 'italic' }}>No report body yet.</p>}
+              {finalParas.map((para, i) => (
+                <p key={i} style={{ marginBottom: 24 }}>
+                  {i === 0 && <span style={{ fontFamily: 'var(--font-editorial)', fontSize: 80, float: 'left', lineHeight: 0.85, marginRight: 12, marginTop: 8 }}>{para[0]}</span>}
+                  {i === 0 ? para.slice(1) : para}
+                </p>
+              ))}
+            </div>
+            <aside/>
+          </div>
+        </section>
+      </article>
+      <SponsorStrip sponsors={d.sponsors}/>
+      <SiteFooter/>
+    </>);
+  }
+
+  // ── News article mode ──────────────────────────────────────────────────────
+  const id = params.get('id');
   const news = d.news || [];
   const article = id ? news.find(n => n.id === id) : news[0];
   const others = news.filter(n => !article || n.id !== article.id).slice(0, 3);
