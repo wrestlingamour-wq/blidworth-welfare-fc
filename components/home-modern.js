@@ -32,8 +32,8 @@ function SocialEmbeds() {
     ref: containerRef,
     style: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: 48,
+      gridTemplateColumns: '1fr 1fr 1fr',
+      gap: 32,
       alignItems: 'start',
       marginTop: 48
     }
@@ -62,7 +62,80 @@ function SocialEmbeds() {
     "data-adapt-container-width": "true",
     "data-hide-cover": "false",
     "data-show-facepile": "false"
-  })));
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      minHeight: 500,
+      border: '1px solid var(--rule)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 24,
+      padding: 40,
+      textAlign: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "56",
+    height: "56",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "2",
+    y: "2",
+    width: "20",
+    height: "20",
+    rx: "5.5",
+    stroke: "var(--ink)",
+    strokeWidth: "1.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "4",
+    stroke: "var(--ink)",
+    strokeWidth: "1.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "17.5",
+    cy: "6.5",
+    r: "1",
+    fill: "var(--ink)"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "eyebrow",
+    style: {
+      color: 'var(--gold)',
+      marginBottom: 8
+    }
+  }, "Instagram"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 22,
+      fontWeight: 700,
+      fontFamily: 'var(--font-display)',
+      letterSpacing: '-0.02em',
+      marginBottom: 8
+    }
+  }, "@blidworthwelfare_fc1st"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 14,
+      opacity: 0.6,
+      lineHeight: 1.5
+    }
+  }, "Match-day photos, training shots and behind-the-scenes from the Welfare Ground.")), /*#__PURE__*/React.createElement("a", {
+    href: "https://www.instagram.com/blidworthwelfare_fc1st/",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: {
+      display: 'inline-block',
+      padding: '12px 28px',
+      background: 'var(--ink)',
+      color: 'var(--paper)',
+      fontFamily: 'var(--font-display)',
+      textTransform: 'uppercase',
+      letterSpacing: '0.1em',
+      fontSize: 12,
+      fontWeight: 600,
+      textDecoration: 'none'
+    }
+  }, "Follow on Instagram \u2192")));
 }
 function ordinal(n) {
   const s = ['th', 'st', 'nd', 'rd'],

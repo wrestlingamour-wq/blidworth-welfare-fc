@@ -31,7 +31,8 @@ function SocialEmbeds() {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start', marginTop: 48 }}>
+    <div ref={containerRef} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 32, alignItems: 'start', marginTop: 48 }}>
+      {/* X / Twitter */}
       <div style={{ minHeight: 500 }}>
         <a className="twitter-timeline"
            data-height="500"
@@ -40,6 +41,7 @@ function SocialEmbeds() {
           Tweets by @BlidworthFC
         </a>
       </div>
+      {/* Facebook */}
       <div style={{ minHeight: 500 }}>
         <div id="fb-root"></div>
         <div className="fb-page"
@@ -52,6 +54,30 @@ function SocialEmbeds() {
              data-hide-cover="false"
              data-show-facepile="false">
         </div>
+      </div>
+      {/* Instagram — no free timeline embed; show a follow card */}
+      <div style={{ minHeight: 500, border: '1px solid var(--rule)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, padding: 40, textAlign: 'center' }}>
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="var(--ink)" strokeWidth="1.5"/>
+          <circle cx="12" cy="12" r="4" stroke="var(--ink)" strokeWidth="1.5"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="var(--ink)"/>
+        </svg>
+        <div>
+          <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 8 }}>Instagram</div>
+          <div style={{ fontSize: 22, fontWeight: 700, fontFamily: 'var(--font-display)', letterSpacing: '-0.02em', marginBottom: 8 }}>@blidworthwelfare_fc1st</div>
+          <div style={{ fontSize: 14, opacity: 0.6, lineHeight: 1.5 }}>Match-day photos, training shots and behind-the-scenes from the Welfare Ground.</div>
+        </div>
+        <a href="https://www.instagram.com/blidworthwelfare_fc1st/"
+           target="_blank" rel="noopener noreferrer"
+           style={{
+             display: 'inline-block', padding: '12px 28px',
+             background: 'var(--ink)', color: 'var(--paper)',
+             fontFamily: 'var(--font-display)', textTransform: 'uppercase',
+             letterSpacing: '0.1em', fontSize: 12, fontWeight: 600,
+             textDecoration: 'none',
+           }}>
+          Follow on Instagram →
+        </a>
       </div>
     </div>
   );
