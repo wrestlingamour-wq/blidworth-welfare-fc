@@ -80,10 +80,7 @@ function Page() {
               A century at the Welfare Ground
             </h2>
             <div style={{ fontSize: 16, lineHeight: 1.8, color: 'var(--ink)', opacity: 0.85 }}>
-              {(d.historyText || '').split(/
-
-+|
-/).map((p, i) => p.trim()).filter(Boolean).map((para, i, arr) => (
+              {(d.historyText || '').split('\n').map(p => p.trim()).filter(Boolean).map((para, i, arr) => (
                 <p key={i} style={{ marginBottom: i < arr.length - 1 ? 20 : 0 }}>{para}</p>
               ))}
             </div>
