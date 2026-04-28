@@ -1882,6 +1882,55 @@ function ClubInfoSection({
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "card-title"
+  }, "Club Details"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "field"
+  }, /*#__PURE__*/React.createElement("label", null, "Kit Colours"), /*#__PURE__*/React.createElement("input", {
+    value: data.club && data.club.colours || '',
+    onChange: e => update('club', {
+      ...(data.club || {}),
+      colours: e.target.value
+    }),
+    placeholder: "e.g. Red & Black"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "field"
+  }, /*#__PURE__*/React.createElement("label", null, "Ground"), /*#__PURE__*/React.createElement("input", {
+    value: data.club && data.club.ground || '',
+    onChange: e => update('club', {
+      ...(data.club || {}),
+      ground: e.target.value
+    }),
+    placeholder: "e.g. Welfare Ground"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "field"
+  }, /*#__PURE__*/React.createElement("label", null, "Division"), /*#__PURE__*/React.createElement("input", {
+    value: data.club && data.club.division || '',
+    onChange: e => update('club', {
+      ...(data.club || {}),
+      division: e.target.value
+    }),
+    placeholder: "e.g. Premier Division South"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "field"
+  }, /*#__PURE__*/React.createElement("label", null, "Founded"), /*#__PURE__*/React.createElement("input", {
+    value: data.club && data.club.founded || '',
+    onChange: e => update('club', {
+      ...(data.club || {}),
+      founded: e.target.value
+    }),
+    placeholder: "e.g. 1926"
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      marginBottom: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card-title"
   }, "Club History Text"), /*#__PURE__*/React.createElement("div", {
     className: "field"
   }, /*#__PURE__*/React.createElement("label", null, "History paragraphs"), /*#__PURE__*/React.createElement("textarea", {

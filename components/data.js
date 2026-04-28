@@ -14,7 +14,7 @@ const BW_DATA = {
     "season": "2026/27",
     "manager": "Dan Mellors",
     "captain": "Tom Hodgkinson",
-    "colours": "Black & White"
+    "colours": "Red & Black"
   },
   "nextMatch": {
     "home": {
