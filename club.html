@@ -22,17 +22,18 @@
 <script src="components/ui.js"></script>
 <script type="text/babel">
 
-const BOARD = [
-  { name: 'Chairman', person: 'TBC', email: '' },
-  { name: 'Secretary', person: 'TBC', email: '' },
-  { name: 'Treasurer', person: 'TBC', email: '' },
-  { name: 'Team Manager', person: 'Dan Mellors', email: '' },
-  { name: 'Assistant Manager', person: 'TBC', email: '' },
-  { name: 'Welfare Officer', person: 'TBC', email: '' },
-];
-
 function Page() {
   const d = BW_DATA;
+
+  // Use board from BW_DATA (editable via admin), fall back to defaults if empty
+  const board = (d.board && d.board.length > 0) ? d.board : [
+    { id: 1, role: 'Chairman',          name: 'TBC', email: '', photo: null },
+    { id: 2, role: 'Secretary',         name: 'TBC', email: '', photo: null },
+    { id: 3, role: 'Treasurer',         name: 'TBC', email: '', photo: null },
+    { id: 4, role: 'Team Manager',      name: 'TBC', email: '', photo: null },
+    { id: 5, role: 'Assistant Manager', name: 'TBC', email: '', photo: null },
+    { id: 6, role: 'Welfare Officer',   name: 'TBC', email: '', photo: null },
+  ];
 
   // Scroll to section if hash present on load
   React.useEffect(() => {
@@ -138,14 +139,22 @@ function Page() {
         <h2 className="h-editorial" style={{ fontSize: 56, fontWeight: 400, marginBottom: 56 }}>Board & Contacts</h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 64 }}>
-          {BOARD.map((m, i) => (
-            <div key={i} className="board-card">
-              <div className="ph" style={{ height: 180, marginBottom: 24 }}>
-                <span className="ph-label">[ photo ]</span>
-              </div>
-              <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 8 }}>{m.name}</div>
+          {board.map((m, i) => (
+            <div key={m.id || i} className="board-card">
+              {m.photo ? (
+                <img
+                  src={m.photo}
+                  alt={m.name}
+                  style={{ width: '100%', height: 220, objectFit: 'cover', objectPosition: 'top', display: 'block', marginBottom: 24 }}
+                />
+              ) : (
+                <div className="ph" style={{ height: 220, marginBottom: 24 }}>
+                  <span className="ph-label">[ photo — upload via admin ]</span>
+                </div>
+              )}
+              <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 8 }}>{m.role}</div>
               <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 20, marginBottom: 8 }}>
-                {m.person}
+                {m.name || 'TBC'}
               </div>
               {m.email && (
                 <a href={`mailto:${m.email}`} style={{ color: 'var(--muted)', fontSize: 13 }}>{m.email}</a>
