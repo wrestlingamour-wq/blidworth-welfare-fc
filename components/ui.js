@@ -7,6 +7,7 @@ function SiteNav({
 }) {
   const [open, setOpen] = React.useState(null);
   const [scrolled, setScrolled] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
   React.useEffect(() => {
     const h = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', h, {
@@ -14,26 +15,39 @@ function SiteNav({
     });
     return () => window.removeEventListener('scroll', h);
   }, []);
+
+  // Lock body scroll when mobile menu is open
+  React.useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
   const dark = variant === 'dark';
   const nav = [{
     k: 'news',
     label: 'News',
+    href: 'news.html',
     sub: [['First Team', 'news.html?cat=firstteam'], ['Announcements', 'news.html?cat=announcements'], ['Sponsorships', 'news.html?cat=sponsorships']]
   }, {
     k: 'fixtures',
     label: 'Fixtures',
+    href: 'fixtures.html',
     sub: [['Fixtures', 'fixtures.html#fixtures'], ['Results', 'fixtures.html#results'], ['League Table', 'table.html']]
   }, {
     k: 'club',
     label: 'Club',
+    href: 'club.html',
     sub: [['History & Honours', 'club.html#history'], ['Board & Contacts', 'club.html#board']]
   }, {
     k: 'tickets',
     label: 'Tickets',
+    href: 'tickets.html',
     sub: null
   }, {
     k: 'lotto',
     label: 'Lotto',
+    href: 'lotto.html',
     sub: null
   }];
   return /*#__PURE__*/React.createElement("header", {
@@ -53,21 +67,22 @@ function SiteNav({
     style: {
       display: 'flex',
       alignItems: 'center',
-      height: 88,
-      gap: 32
+      height: 72,
+      gap: 24
     }
   }, /*#__PURE__*/React.createElement("a", {
     href: "index.html",
     style: {
       display: 'flex',
       alignItems: 'center',
-      gap: 12
+      gap: 12,
+      flexShrink: 0
     }
   }, /*#__PURE__*/React.createElement("img", {
     src: "assets/crest.png",
     alt: "BWFC",
     style: {
-      height: 56,
+      height: 48,
       width: 'auto'
     }
   }), /*#__PURE__*/React.createElement("div", {
@@ -77,7 +92,7 @@ function SiteNav({
   }, /*#__PURE__*/React.createElement("div", {
     className: "h-display",
     style: {
-      fontSize: 18,
+      fontSize: 16,
       fontWeight: 700
     }
   }, "Blidworth Welfare"), /*#__PURE__*/React.createElement("div", {
@@ -88,8 +103,8 @@ function SiteNav({
       marginTop: 4
     }
   }, "Football Club \xB7 Est. 1926"))), /*#__PURE__*/React.createElement("nav", {
+    className: "site-nav-desktop",
     style: {
-      display: 'flex',
       gap: 4,
       marginLeft: 'auto',
       alignItems: 'stretch'
@@ -101,12 +116,12 @@ function SiteNav({
       position: 'relative'
     }
   }, /*#__PURE__*/React.createElement("a", {
-    href: item.k === 'lotto' ? 'lotto.html' : item.k === 'fixtures' ? 'fixtures.html' : item.k === 'news' ? 'news.html' : item.k === 'tickets' ? 'tickets.html' : item.k === 'club' ? 'club.html' : '#',
+    href: item.href,
     style: {
       display: 'flex',
       alignItems: 'center',
       padding: '0 14px',
-      height: 88,
+      height: 72,
       fontFamily: 'var(--font-display)',
       textTransform: 'uppercase',
       letterSpacing: '0.1em',
@@ -140,15 +155,18 @@ function SiteNav({
     onMouseLeave: e => e.currentTarget.style.color = 'inherit'
   }, label)))))), /*#__PURE__*/React.createElement("a", {
     href: "tickets.html",
-    className: "btn red sm",
+    className: "btn red sm site-nav-buy-btn",
     style: {
-      marginLeft: 8
+      marginLeft: 8,
+      flexShrink: 0
     }
   }, "Buy Tickets \u2192"), /*#__PURE__*/React.createElement("a", {
     href: "admin/index.html",
+    className: "site-nav-admin",
     title: "Admin Panel",
     style: {
-      marginLeft: 12,
+      marginLeft: 4,
+      flexShrink: 0,
       display: 'flex',
       alignItems: 'center',
       gap: 6,
@@ -172,7 +190,68 @@ function SiteNav({
       e.currentTarget.style.color = 'rgba(0,0,0,0.35)';
       e.currentTarget.style.borderColor = 'rgba(0,0,0,0.15)';
     }
-  }, "\u2699 Admin")));
+  }, "\u2699 Admin"), /*#__PURE__*/React.createElement("button", {
+    className: "site-nav-burger",
+    onClick: () => setMobileOpen(true),
+    "aria-label": "Open menu",
+    style: {
+      marginLeft: 'auto',
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      padding: 8,
+      color: 'inherit',
+      flexDirection: 'column',
+      gap: 5,
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      width: 24,
+      height: 2,
+      background: 'currentColor'
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      width: 24,
+      height: 2,
+      background: 'currentColor'
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      width: 16,
+      height: 2,
+      background: 'currentColor'
+    }
+  }))), mobileOpen && /*#__PURE__*/React.createElement("div", {
+    className: "site-nav-mobile-menu"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "site-nav-mobile-close",
+    onClick: () => setMobileOpen(false),
+    "aria-label": "Close menu"
+  }, "\u2715"), nav.map(item => /*#__PURE__*/React.createElement("div", {
+    key: item.k
+  }, /*#__PURE__*/React.createElement("a", {
+    href: item.href,
+    onClick: () => setMobileOpen(false)
+  }, item.label), item.sub && /*#__PURE__*/React.createElement("div", {
+    className: "site-nav-mobile-sub"
+  }, item.sub.map(([label, href]) => /*#__PURE__*/React.createElement("a", {
+    key: label,
+    href: href,
+    onClick: () => setMobileOpen(false)
+  }, label))))), /*#__PURE__*/React.createElement("a", {
+    href: "tickets.html",
+    onClick: () => setMobileOpen(false),
+    style: {
+      color: 'var(--gold)',
+      marginTop: 16
+    }
+  }, "Buy Tickets \u2192")));
 }
 
 // ============ TICKER ============

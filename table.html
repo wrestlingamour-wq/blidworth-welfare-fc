@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=1440">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>League Table · Blidworth Welfare FC</title>
 <link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/mobile.css">
 </head>
 <body>
 <div id="root"></div>
@@ -33,7 +34,7 @@ function Page() {
       <div className="wrap">
         <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: 40 }}>
           <div>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+            <div className="table-scroll"><table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--ink)' }}>
                   {[['#', 'c'], ['Club', 'l'], ['P', 'c'], ['W', 'c'], ['D', 'c'], ['L', 'c'], ['GD', 'c'], ['Pts', 'c']].map(([h, a]) => (
@@ -90,7 +91,7 @@ function Page() {
                   );
                 })}
               </tbody>
-            </table>
+            </table></div>
             <div style={{ marginTop: 24, display: 'flex', gap: 24, fontSize: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 4, height: 14, background: 'var(--green)' }}/> <strong>P</strong> Promotion (1 place)

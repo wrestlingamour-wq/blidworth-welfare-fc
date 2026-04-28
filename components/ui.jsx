@@ -4,30 +4,38 @@
 function SiteNav({ variant = 'light', current = '' }) {
   const [open, setOpen] = React.useState(null);
   const [scrolled, setScrolled] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
   React.useEffect(() => {
     const h = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  React.useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
+
   const dark = variant === 'dark';
   const nav = [
-    { k: 'news', label: 'News', sub: [
+    { k: 'news', label: 'News', href: 'news.html', sub: [
       ['First Team', 'news.html?cat=firstteam'],
       ['Announcements', 'news.html?cat=announcements'],
       ['Sponsorships', 'news.html?cat=sponsorships'],
     ]},
-    { k: 'fixtures', label: 'Fixtures', sub: [
+    { k: 'fixtures', label: 'Fixtures', href: 'fixtures.html', sub: [
       ['Fixtures', 'fixtures.html#fixtures'],
       ['Results', 'fixtures.html#results'],
       ['League Table', 'table.html'],
     ]},
-    { k: 'club', label: 'Club', sub: [
+    { k: 'club', label: 'Club', href: 'club.html', sub: [
       ['History & Honours', 'club.html#history'],
       ['Board & Contacts', 'club.html#board'],
     ]},
-    { k: 'tickets', label: 'Tickets', sub: null },
-    { k: 'lotto', label: 'Lotto', sub: null },
+    { k: 'tickets', label: 'Tickets', href: 'tickets.html', sub: null },
+    { k: 'lotto', label: 'Lotto', href: 'lotto.html', sub: null },
   ];
 
   return (
@@ -41,28 +49,29 @@ function SiteNav({ variant = 'light', current = '' }) {
     }}
     onMouseLeave={() => setOpen(null)}
     >
-      <div className="wrap" style={{ display: 'flex', alignItems: 'center', height: 88, gap: 32 }}>
-        <a href="index.html" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img src="assets/crest.png" alt="BWFC" style={{ height: 56, width: 'auto' }}/>
+      <div className="wrap" style={{ display: 'flex', alignItems: 'center', height: 72, gap: 24 }}>
+
+        {/* Logo — always visible */}
+        <a href="index.html" style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+          <img src="assets/crest.png" alt="BWFC" style={{ height: 48, width: 'auto' }}/>
           <div style={{ lineHeight: 1 }}>
-            <div className="h-display" style={{ fontSize: 18, fontWeight: 700 }}>Blidworth Welfare</div>
+            <div className="h-display" style={{ fontSize: 16, fontWeight: 700 }}>Blidworth Welfare</div>
             <div className="eyebrow" style={{ fontSize: 10, opacity: 0.7, marginTop: 4 }}>Football Club · Est. 1926</div>
           </div>
         </a>
-        <nav style={{ display: 'flex', gap: 4, marginLeft: 'auto', alignItems: 'stretch' }}>
+
+        {/* Desktop nav */}
+        <nav className="site-nav-desktop" style={{ gap: 4, marginLeft: 'auto', alignItems: 'stretch' }}>
           {nav.map(item => (
-            <div key={item.k}
-              onMouseEnter={() => setOpen(item.k)}
-              style={{ position: 'relative' }}>
-              <a href={item.k === 'lotto' ? 'lotto.html' : item.k === 'fixtures' ? 'fixtures.html' : item.k === 'news' ? 'news.html' : item.k === 'tickets' ? 'tickets.html' : item.k === 'club' ? 'club.html' : '#'}
-                 style={{
-                   display: 'flex', alignItems: 'center', padding: '0 14px', height: 88,
-                   fontFamily: 'var(--font-display)', textTransform: 'uppercase',
-                   letterSpacing: '0.1em', fontSize: 13, fontWeight: 500,
-                   color: current === item.k ? 'var(--gold)' : 'inherit',
-                   borderBottom: current === item.k ? '2px solid var(--gold)' : '2px solid transparent',
-                   marginBottom: '-1px',
-                 }}>
+            <div key={item.k} onMouseEnter={() => setOpen(item.k)} style={{ position: 'relative' }}>
+              <a href={item.href} style={{
+                display: 'flex', alignItems: 'center', padding: '0 14px', height: 72,
+                fontFamily: 'var(--font-display)', textTransform: 'uppercase',
+                letterSpacing: '0.1em', fontSize: 13, fontWeight: 500,
+                color: current === item.k ? 'var(--gold)' : 'inherit',
+                borderBottom: current === item.k ? '2px solid var(--gold)' : '2px solid transparent',
+                marginBottom: '-1px',
+              }}>
                 {item.label}
               </a>
               {item.sub && open === item.k && (
@@ -74,12 +83,9 @@ function SiteNav({ variant = 'light', current = '' }) {
                   animation: 'reveal 0.2s ease forwards',
                 }}>
                   {item.sub.map(([label, href]) => (
-                    <a key={label} href={href} style={{
-                      display: 'block', padding: '10px 20px',
-                      fontSize: 13, letterSpacing: '0.02em',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.color = 'var(--gold)'}
-                    onMouseLeave={e => e.currentTarget.style.color = 'inherit'}
+                    <a key={label} href={href} style={{ display: 'block', padding: '10px 20px', fontSize: 13, letterSpacing: '0.02em' }}
+                      onMouseEnter={e => e.currentTarget.style.color = 'var(--gold)'}
+                      onMouseLeave={e => e.currentTarget.style.color = 'inherit'}
                     >{label}</a>
                   ))}
                 </div>
@@ -87,13 +93,14 @@ function SiteNav({ variant = 'light', current = '' }) {
             </div>
           ))}
         </nav>
-        <a href="tickets.html" className="btn red sm" style={{ marginLeft: 8 }}>Buy Tickets →</a>
-        <a href="admin/index.html" title="Admin Panel"
+
+        {/* Desktop: Buy Tickets + Admin */}
+        <a href="tickets.html" className="btn red sm site-nav-buy-btn" style={{ marginLeft: 8, flexShrink: 0 }}>Buy Tickets →</a>
+        <a href="admin/index.html" className="site-nav-admin" title="Admin Panel"
           style={{
-            marginLeft: 12,
+            marginLeft: 4, flexShrink: 0,
             display: 'flex', alignItems: 'center', gap: 6,
-            padding: '6px 12px',
-            borderRadius: 6,
+            padding: '6px 12px', borderRadius: 6,
             border: '1px solid rgba(0,0,0,0.15)',
             fontFamily: 'var(--font-display)', textTransform: 'uppercase',
             letterSpacing: '0.08em', fontSize: 11, fontWeight: 600,
@@ -102,10 +109,44 @@ function SiteNav({ variant = 'light', current = '' }) {
           }}
           onMouseEnter={e => { e.currentTarget.style.color = 'var(--gold)'; e.currentTarget.style.borderColor = 'var(--gold)'; }}
           onMouseLeave={e => { e.currentTarget.style.color = 'rgba(0,0,0,0.35)'; e.currentTarget.style.borderColor = 'rgba(0,0,0,0.15)'; }}
+        >&#9881; Admin</a>
+
+        {/* Mobile: hamburger button */}
+        <button
+          className="site-nav-burger"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open menu"
+          style={{
+            marginLeft: 'auto', background: 'none', border: 'none',
+            cursor: 'pointer', padding: 8, color: 'inherit',
+            flexDirection: 'column', gap: 5, alignItems: 'center', justifyContent: 'center',
+          }}
         >
-          &#9881; Admin
-        </a>
+          <span style={{ display: 'block', width: 24, height: 2, background: 'currentColor' }}/>
+          <span style={{ display: 'block', width: 24, height: 2, background: 'currentColor' }}/>
+          <span style={{ display: 'block', width: 16, height: 2, background: 'currentColor' }}/>
+        </button>
       </div>
+
+      {/* Mobile full-screen menu */}
+      {mobileOpen && (
+        <div className="site-nav-mobile-menu">
+          <button className="site-nav-mobile-close" onClick={() => setMobileOpen(false)} aria-label="Close menu">✕</button>
+          {nav.map(item => (
+            <div key={item.k}>
+              <a href={item.href} onClick={() => setMobileOpen(false)}>{item.label}</a>
+              {item.sub && (
+                <div className="site-nav-mobile-sub">
+                  {item.sub.map(([label, href]) => (
+                    <a key={label} href={href} onClick={() => setMobileOpen(false)}>{label}</a>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          <a href="tickets.html" onClick={() => setMobileOpen(false)} style={{ color: 'var(--gold)', marginTop: 16 }}>Buy Tickets →</a>
+        </div>
+      )}
     </header>
   );
 }

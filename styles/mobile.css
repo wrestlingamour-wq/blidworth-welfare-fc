@@ -1,0 +1,170 @@
+/* ─────────────────────────────────────────────────────────────────
+   Blidworth Welfare FC — Mobile Responsive Layer
+   Breakpoint: 768px and below
+   ───────────────────────────────────────────────────────────────── */
+
+/* ── Nav: show burger, hide desktop links ───────────────────────── */
+.site-nav-burger   { display: flex !important; }
+.site-nav-desktop  { display: none !important; }
+.site-nav-buy-btn  { display: none !important; }
+.site-nav-admin    { display: none !important; }
+
+/* These are desktop-only defaults (overridden at mobile) */
+@media (min-width: 769px) {
+  .site-nav-burger        { display: none !important; }
+  .site-nav-desktop       { display: flex !important; }
+  .site-nav-buy-btn       { display: inline-flex !important; }
+  .site-nav-admin         { display: flex !important; }
+  .site-nav-mobile-menu   { display: none !important; }
+}
+
+/* ── Mobile nav overlay ─────────────────────────────────────────── */
+.site-nav-mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 100px 32px 48px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.site-nav-mobile-menu a {
+  display: block;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule-light);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--paper);
+  text-decoration: none;
+}
+.site-nav-mobile-menu a:first-child { border-top: 1px solid var(--rule-light); }
+.site-nav-mobile-menu a:hover { color: var(--gold); }
+.site-nav-mobile-sub {
+  padding-left: 16px;
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
+.site-nav-mobile-sub a {
+  font-size: 14px;
+  padding: 10px 0;
+  opacity: 0.7;
+  border-bottom: none;
+}
+.site-nav-mobile-sub a:first-child { border-top: none; }
+.site-nav-mobile-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: transparent;
+  border: 1px solid var(--rule-light);
+  color: var(--paper);
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+
+  /* ── Spacing ──────────────────────────────────────────────────── */
+  :root { --gutter: 16px; }
+
+  /* ── All major section grids → single column ─────────────────── */
+  section > .wrap > div,
+  section > .wrap > a {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Allow 2-col for small utility grids (stats bars, etc.) */
+  .grid-2col-keep { grid-template-columns: 1fr 1fr !important; }
+
+  /* ── Section padding ─────────────────────────────────────────── */
+  section { padding-top: 48px !important; padding-bottom: 48px !important; }
+
+  /* ── Hero fixes ──────────────────────────────────────────────── */
+  /* The hero split-screen needs special handling */
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+  .hero-right {
+    min-height: 360px;
+    padding: 48px 24px !important;
+  }
+  .hero-left {
+    padding: 48px 24px !important;
+  }
+
+  /* ── Typography scale-down ──────────────────────────────────── */
+  h1, .h1 { font-size: clamp(48px, 14vw, 80px) !important; }
+  .h-editorial { line-height: 1.1 !important; }
+
+  /* ── Tables → scrollable ────────────────────────────────────── */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-scroll table { min-width: 560px; }
+
+  /* ── News grid: 1 column ────────────────────────────────────── */
+  .news-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Fixtures: reduce columns ───────────────────────────────── */
+  .fixture-row {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+
+  /* ── Squad grid ─────────────────────────────────────────────── */
+  .squad-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* ── Sponsor strip: 2 per row ───────────────────────────────── */
+  .sponsor-strip {
+    grid-template-columns: 1fr 1fr !important;
+    flex-wrap: wrap;
+  }
+
+  /* ── Social embeds: stack ───────────────────────────────────── */
+  .social-embeds-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Big tiles: stack ───────────────────────────────────────── */
+  .big-tiles-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .big-tile { min-height: 260px !important; }
+
+  /* ── Article page ────────────────────────────────────────────── */
+  .article-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .article-sidebar { display: none !important; }
+
+  /* ── Wrap padding ────────────────────────────────────────────── */
+  .wrap { padding: 0 16px !important; }
+
+  /* ── Reduce header height ────────────────────────────────────── */
+  .site-header-inner {
+    height: 64px !important;
+  }
+
+  /* ── Category filter: scrollable ────────────────────────────── */
+  .cat-filter {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap !important;
+  }
+}
