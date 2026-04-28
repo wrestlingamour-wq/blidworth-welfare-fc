@@ -80,15 +80,12 @@ function Page() {
               A century at the Welfare Ground
             </h2>
             <div style={{ fontSize: 16, lineHeight: 1.8, color: 'var(--ink)', opacity: 0.85 }}>
-              <p style={{ marginBottom: 20 }}>
-                Blidworth Welfare Football Club was founded in 1926, rooted in the mining heritage of the village. The club has been a constant in the community through generations of change — surviving the pit closures, the lean years, and the gradual transformation of non-league football.
-              </p>
-              <p style={{ marginBottom: 20 }}>
-                Playing in black and white on the Welfare Ground, the club has competed across several tiers of Nottinghamshire and Midlands non-league football. Promotion to the Camper UK Alliance Premier Division South stands as one of the proudest recent achievements.
-              </p>
-              <p>
-                The 2026/27 season marks 100 years of Welfare football — a centenary celebrated with a heritage kit, a commemorative fixture, and a commitment to keeping the game alive for the next generation of Blidworth supporters.
-              </p>
+              {(d.historyText || '').split(/
+
++|
+/).map((p, i) => p.trim()).filter(Boolean).map((para, i, arr) => (
+                <p key={i} style={{ marginBottom: i < arr.length - 1 ? 20 : 0 }}>{para}</p>
+              ))}
             </div>
           </div>
 
