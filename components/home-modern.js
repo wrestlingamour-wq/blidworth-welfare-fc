@@ -45,8 +45,8 @@ function SocialEmbeds() {
     className: "twitter-timeline",
     "data-height": "500",
     "data-chrome": "noheader nofooter",
-    href: "https://twitter.com/BlidworthWFC"
-  }, "Tweets by @BlidworthWFC")), /*#__PURE__*/React.createElement("div", {
+    href: "https://x.com/BlidworthFC"
+  }, "Tweets by @BlidworthFC")), /*#__PURE__*/React.createElement("div", {
     style: {
       minHeight: 500
     }
@@ -54,7 +54,7 @@ function SocialEmbeds() {
     id: "fb-root"
   }), /*#__PURE__*/React.createElement("div", {
     className: "fb-page",
-    "data-href": "https://www.facebook.com/BlidworthWelfareFC",
+    "data-href": "https://www.facebook.com/blidworthwelfarefc",
     "data-tabs": "timeline",
     "data-width": "",
     "data-height": "500",
@@ -815,10 +815,10 @@ function HomeModern() {
     className: "wrap"
   }, /*#__PURE__*/React.createElement(SectionHeader, {
     eyebrow: "Follow the club",
-    title: "@BlidworthWFC",
+    title: "@BlidworthFC",
     action: {
       label: 'Follow on X',
-      href: 'https://twitter.com/BlidworthWFC'
+      href: 'https://x.com/BlidworthFC'
     }
   }), /*#__PURE__*/React.createElement(SocialEmbeds, null))), /*#__PURE__*/React.createElement(SponsorStrip, {
     sponsors: d.sponsors

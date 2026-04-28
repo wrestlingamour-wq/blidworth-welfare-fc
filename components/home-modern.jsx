@@ -36,14 +36,14 @@ function SocialEmbeds() {
         <a className="twitter-timeline"
            data-height="500"
            data-chrome="noheader nofooter"
-           href="https://twitter.com/BlidworthWFC">
-          Tweets by @BlidworthWFC
+           href="https://x.com/BlidworthFC">
+          Tweets by @BlidworthFC
         </a>
       </div>
       <div style={{ minHeight: 500 }}>
         <div id="fb-root"></div>
         <div className="fb-page"
-             data-href="https://www.facebook.com/BlidworthWelfareFC"
+             data-href="https://www.facebook.com/blidworthwelfarefc"
              data-tabs="timeline"
              data-width=""
              data-height="500"
@@ -434,8 +434,8 @@ function HomeModern() {
       {/* SOCIAL FEED */}
       <section style={{ padding: '96px 0' }}>
         <div className="wrap">
-          <SectionHeader eyebrow="Follow the club" title="@BlidworthWFC"
-            action={{ label: 'Follow on X', href: 'https://twitter.com/BlidworthWFC' }}/>
+          <SectionHeader eyebrow="Follow the club" title="@BlidworthFC"
+            action={{ label: 'Follow on X', href: 'https://x.com/BlidworthFC' }}/>
           <SocialEmbeds />
         </div>
       </section>
