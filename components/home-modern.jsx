@@ -2,6 +2,61 @@
 // Bold split-screen hero, huge type, heavy grid, live match widget
 // Feels digital-first, broadcast-graphic inspired, lots of motion
 
+function SocialEmbeds() {
+  const containerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    // X / Twitter timeline
+    if (window.twttr && window.twttr.widgets) {
+      window.twttr.widgets.load(containerRef.current);
+    } else {
+      const s = document.createElement('script');
+      s.src = 'https://platform.twitter.com/widgets.js';
+      s.async = true;
+      s.charset = 'utf-8';
+      document.head.appendChild(s);
+    }
+    // Facebook Page Plugin
+    if (window.FB) {
+      window.FB.XFBML.parse(containerRef.current);
+    } else if (!document.getElementById('facebook-jssdk')) {
+      const fb = document.createElement('script');
+      fb.id = 'facebook-jssdk';
+      fb.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v21.0';
+      fb.async = true;
+      fb.defer = true;
+      fb.crossOrigin = 'anonymous';
+      document.head.appendChild(fb);
+    }
+  }, []);
+
+  return (
+    <div ref={containerRef} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start', marginTop: 48 }}>
+      <div style={{ minHeight: 500 }}>
+        <a className="twitter-timeline"
+           data-height="500"
+           data-chrome="noheader nofooter"
+           href="https://twitter.com/BlidworthWFC">
+          Tweets by @BlidworthWFC
+        </a>
+      </div>
+      <div style={{ minHeight: 500 }}>
+        <div id="fb-root"></div>
+        <div className="fb-page"
+             data-href="https://www.facebook.com/BlidworthWelfareFC"
+             data-tabs="timeline"
+             data-width=""
+             data-height="500"
+             data-small-header="true"
+             data-adapt-container-width="true"
+             data-hide-cover="false"
+             data-show-facepile="false">
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ordinal(n) {
   const s = ['th','st','nd','rd'], v = n % 100;
   return n + (s[(v-20)%10] || s[v] || s[0]);
@@ -380,10 +435,8 @@ function HomeModern() {
       <section style={{ padding: '96px 0' }}>
         <div className="wrap">
           <SectionHeader eyebrow="Follow the club" title="@BlidworthWFC"
-            action={{ label: 'All channels', href: '#' }}/>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
-            {d.socials.map((s, i) => <SocialItem key={i} s={s}/>)}
-          </div>
+            action={{ label: 'Follow on X', href: 'https://twitter.com/BlidworthWFC' }}/>
+          <SocialEmbeds />
         </div>
       </section>
 
