@@ -1134,10 +1134,63 @@ function FixturesSection({
 }
 
 // ─── Results Manager ──────────────────────────────────────────────────────────
+const parseResults = text => {
+  const BLIDWORTH = ['blidworth welfare f.c.', 'blidworth welfare fc', 'blidworth welfare'];
+  const isBlidworth = s => BLIDWORTH.some(b => s.toLowerCase().includes(b));
+  const cleanTeam = s => {
+    s = s.trim().replace(/\s*\(HT[^)]*\)/gi, '').trim();
+    if (isBlidworth(s)) return 'Blidworth Welfare';
+    return s.replace(/\s+(F\.C\.|FC)$/i, '').trim();
+  };
+  // Group lines: fixture/result rows start with L or CC + date
+  const rawLines = text.split('\n');
+  const groups = [];
+  for (const line of rawLines) {
+    if (/^(L|CC)\s+\d{2}\/\d{2}\/\d{2}/i.test(line.trim())) {
+      groups.push(line.trim());
+    } else if (groups.length > 0 && line.trim()) {
+      groups[groups.length - 1] += ' ' + line.trim();
+    }
+  }
+  const rows = [];
+  for (const line of groups) {
+    // Only process lines that have a score (skip upcoming fixtures with VS)
+    if (!/\d+\s*[-–]\s*\d+/.test(line)) continue;
+    const m = line.match(/^(L|CC)\s+(\d{2})\/(\d{2})\/(\d{2})\s+(\d{2}:\d{2})\s+(.*)/i);
+    if (!m) continue;
+    const [, compCode, dd, mm, yy,, rest] = m;
+    const date = `20${yy}-${mm}-${dd}`;
+    const comp = compCode.toUpperCase() === 'L' ? 'League' : 'Cup';
+    // Find score — first "digit - digit" pattern
+    const scoreMatch = rest.match(/(\d+)\s*[-–]\s*(\d+)/);
+    if (!scoreMatch) continue;
+    const hs = parseInt(scoreMatch[1]);
+    const as_ = parseInt(scoreMatch[2]);
+    const scoreIdx = rest.search(/(\d+)\s*[-–]\s*(\d+)/);
+    const homePart = rest.slice(0, scoreIdx).trim();
+    const afterScore = rest.slice(scoreIdx + scoreMatch[0].length);
+    // Strip HT score in parens and ground/competition info (appears after team name)
+    const awayPart = afterScore.replace(/\s*\(HT[^)]*\)/gi, '').trim().split(/\s{2,}/)[0].trim();
+    const home = cleanTeam(homePart.split(/\s{2,}/)[0]);
+    const away = cleanTeam(awayPart);
+    if (!home || !away) continue;
+    rows.push({
+      date,
+      home,
+      hs,
+      away,
+      as: as_,
+      comp
+    });
+  }
+  return rows;
+};
 function ResultsSection({
   data,
   update
 }) {
+  const [pasteText, setPasteText] = React.useState('');
+  const [parseMsg, setParseMsg] = React.useState('');
   const [adding, setAdding] = React.useState(false);
   const [editId, setEditId] = React.useState(null);
   const [form, setForm] = React.useState({
@@ -1146,11 +1199,19 @@ function ResultsSection({
     hs: '',
     away: '',
     as: '',
-    comp: 'League',
-    ht: ''
+    comp: 'League'
   });
   const results = data.results || [];
-  const teams = ['Blidworth Welfare', ...(data.table || []).map(r => r.team).filter(t => t !== 'Blidworth Welfare')];
+  const handleParse = () => {
+    const rows = parseResults(pasteText);
+    if (!rows.length) {
+      setParseMsg('No results found — make sure rows have a score (e.g. 3 - 0).');
+      return;
+    }
+    update('results', rows);
+    setPasteText('');
+    setParseMsg(`✓ Imported ${rows.length} result${rows.length !== 1 ? 's' : ''}.`);
+  };
   const saveRow = () => {
     const row = {
       ...form,
@@ -1169,8 +1230,7 @@ function ResultsSection({
       hs: '',
       away: '',
       as: '',
-      comp: 'League',
-      ht: ''
+      comp: 'League'
     });
     setAdding(false);
   };
@@ -1195,15 +1255,51 @@ function ResultsSection({
       hs: '',
       away: '',
       as: '',
-      comp: 'League',
-      ht: ''
+      comp: 'League'
     });
   };
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "section-title"
   }, "Content"), /*#__PURE__*/React.createElement("div", {
-    className: "section-h"
-  }, "Results"), adding && /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      marginBottom: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card-title"
+  }, "Paste from FA Full-Time"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: 13,
+      color: 'var(--muted)',
+      marginBottom: 12
+    }
+  }, "Go to the FA Full-Time results page, select and copy the result rows, then paste below. Only rows with scores are imported \u2014 upcoming fixtures are automatically ignored."), /*#__PURE__*/React.createElement("textarea", {
+    rows: 6,
+    value: pasteText,
+    onChange: e => {
+      setPasteText(e.target.value);
+      setParseMsg('');
+    },
+    placeholder: "L 25/04/26 15:00 Wirksworth Ivanhoe 3 - 0 Blidworth Welfare F.C.\nL 21/04/26 19:45 Blidworth Welfare F.C. 2 - 0 Borrowash Victoria First",
+    style: {
+      width: '100%',
+      fontFamily: 'monospace',
+      fontSize: 12
+    }
+  }), parseMsg && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 8,
+      fontSize: 13,
+      color: parseMsg.startsWith('✓') ? 'var(--green, #2a7a2a)' : 'var(--red)'
+    }
+  }, parseMsg), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 12
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn-primary btn-gold",
+    onClick: handleParse
+  }, "Parse & Import Results"))), adding && /*#__PURE__*/React.createElement("div", {
     className: "card",
     style: {
       marginBottom: 24
@@ -1233,27 +1329,15 @@ function ResultsSection({
       ...f,
       comp: e.target.value
     }))
-  })), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement("div", null), /*#__PURE__*/React.createElement("div", {
     className: "field"
-  }, /*#__PURE__*/React.createElement("label", null, "HT Score"), /*#__PURE__*/React.createElement("input", {
-    value: form.ht,
-    onChange: e => setForm(f => ({
-      ...f,
-      ht: e.target.value
-    })),
-    placeholder: "e.g. 1-0"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "field"
-  }, /*#__PURE__*/React.createElement("label", null, "Home"), /*#__PURE__*/React.createElement("select", {
+  }, /*#__PURE__*/React.createElement("label", null, "Home Team"), /*#__PURE__*/React.createElement("input", {
     value: form.home,
     onChange: e => setForm(f => ({
       ...f,
       home: e.target.value
     }))
-  }, teams.map(t => /*#__PURE__*/React.createElement("option", {
-    key: t,
-    value: t
-  }, t)))), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement("div", {
     className: "field"
   }, /*#__PURE__*/React.createElement("label", null, "Home Score"), /*#__PURE__*/React.createElement("input", {
     type: "number",
@@ -1265,16 +1349,13 @@ function ResultsSection({
     }))
   })), /*#__PURE__*/React.createElement("div", null), /*#__PURE__*/React.createElement("div", {
     className: "field"
-  }, /*#__PURE__*/React.createElement("label", null, "Away"), /*#__PURE__*/React.createElement("select", {
+  }, /*#__PURE__*/React.createElement("label", null, "Away Team"), /*#__PURE__*/React.createElement("input", {
     value: form.away,
     onChange: e => setForm(f => ({
       ...f,
       away: e.target.value
     }))
-  }, teams.map(t => /*#__PURE__*/React.createElement("option", {
-    key: t,
-    value: t
-  }, t)))), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement("div", {
     className: "field"
   }, /*#__PURE__*/React.createElement("label", null, "Away Score"), /*#__PURE__*/React.createElement("input", {
     type: "number",
@@ -1307,9 +1388,16 @@ function ResultsSection({
       setAdding(true);
       setEditId(null);
     }
-  }, "+ Add Result")), /*#__PURE__*/React.createElement("table", {
+  }, "+ Add Manually")), /*#__PURE__*/React.createElement("table", {
     className: "admin-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Date"), /*#__PURE__*/React.createElement("th", null, "Home"), /*#__PURE__*/React.createElement("th", null, "Score"), /*#__PURE__*/React.createElement("th", null, "Away"), /*#__PURE__*/React.createElement("th", null, "Comp"), /*#__PURE__*/React.createElement("th", null, "Result"), /*#__PURE__*/React.createElement("th", null))), /*#__PURE__*/React.createElement("tbody", null, results.map((r, i) => {
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Date"), /*#__PURE__*/React.createElement("th", null, "Home"), /*#__PURE__*/React.createElement("th", null, "Score"), /*#__PURE__*/React.createElement("th", null, "Away"), /*#__PURE__*/React.createElement("th", null, "Comp"), /*#__PURE__*/React.createElement("th", null, "Result"), /*#__PURE__*/React.createElement("th", null))), /*#__PURE__*/React.createElement("tbody", null, results.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: 7,
+    style: {
+      textAlign: 'center',
+      color: 'var(--muted)',
+      padding: 24
+    }
+  }, "No results yet. Paste from FA Full-Time above.")), results.map((r, i) => {
     const bwHome = r.home === 'Blidworth Welfare';
     const bwScore = bwHome ? r.hs : r.as;
     const oppScore = bwHome ? r.as : r.hs;
