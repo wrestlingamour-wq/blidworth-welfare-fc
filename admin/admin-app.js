@@ -1889,6 +1889,94 @@ function ClubInfoSection({
     value: data.historyText || '',
     onChange: e => update('historyText', e.target.value)
   }))), /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      marginBottom: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card-title"
+  }, "History Photos"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: 13,
+      color: 'var(--muted)',
+      marginBottom: 16
+    }
+  }, "Upload up to 2 photos that appear on the Club History page."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: 24
+    }
+  }, [0, 1].map(idx => {
+    const photos = data.historyPhotos || [];
+    const src = photos[idx] || null;
+    const handleUpload = async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const b64 = await fileToBase64(file);
+      const updated = [...(data.historyPhotos || [null, null])];
+      updated[idx] = b64;
+      update('historyPhotos', updated);
+    };
+    const handleRemove = () => {
+      const updated = [...(data.historyPhotos || [null, null])];
+      updated[idx] = null;
+      update('historyPhotos', updated);
+    };
+    return /*#__PURE__*/React.createElement("div", {
+      key: idx,
+      style: {
+        border: '1px solid var(--rule)',
+        padding: 16
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "eyebrow",
+      style: {
+        marginBottom: 12,
+        opacity: 0.6
+      }
+    }, "Photo ", idx + 1), src ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("img", {
+      src: src,
+      style: {
+        width: '100%',
+        height: 180,
+        objectFit: 'cover',
+        display: 'block',
+        marginBottom: 12
+      }
+    }), /*#__PURE__*/React.createElement("button", {
+      className: "btn-ghost btn-sm",
+      style: {
+        color: 'var(--red)',
+        borderColor: 'var(--red)'
+      },
+      onClick: handleRemove
+    }, "Remove")) : /*#__PURE__*/React.createElement("label", {
+      style: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 180,
+        border: '2px dashed var(--rule)',
+        cursor: 'pointer',
+        color: 'var(--muted)',
+        fontSize: 13,
+        gap: 8
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 28
+      }
+    }, "+"), /*#__PURE__*/React.createElement("span", null, "Click to upload"), /*#__PURE__*/React.createElement("input", {
+      type: "file",
+      accept: "image/*",
+      style: {
+        display: 'none'
+      },
+      onChange: handleUpload
+    })));
+  }))), /*#__PURE__*/React.createElement("div", {
     className: "card"
   }, /*#__PURE__*/React.createElement("div", {
     className: "card-title"
