@@ -213,7 +213,7 @@ function HomeModern() {
                 <div key={n.id} style={l}
                   onMouseEnter={() => setHoverNews(i)}
                   onMouseLeave={() => setHoverNews(null)}>
-                  <a href="article.html" style={{
+                  <a href={`article.html?id=${n.id}`} style={{
                     display: 'flex', flexDirection: 'column', height: '100%',
                     color: 'var(--ink)', overflow: 'hidden',
                     background: 'var(--white)', border: '1px solid var(--rule)',
@@ -221,9 +221,10 @@ function HomeModern() {
                     transform: hoverNews === i ? 'translateY(-4px)' : 'translateY(0)',
                     boxShadow: hoverNews === i ? '0 20px 40px rgba(0,0,0,0.08)' : 'none',
                   }}>
-                    <div className="ph" style={{ flex: 1, minHeight: 160 }}>
-                      <span className="ph-label">[ {n.img} ]</span>
-                    </div>
+                    {n.photos && n.photos[0]
+                      ? <img src={n.photos[0]} style={{ flex: 1, minHeight: 160, width: '100%', objectFit: 'cover', display: 'block' }} />
+                      : <div className="ph" style={{ flex: 1, minHeight: 160 }}><span className="ph-label">[ {n.img || 'photo'} ]</span></div>
+                    }
                     <div style={{ padding: 20 }}>
                       <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 8 }}>{n.cat}</div>
                       <h3 className="h-editorial" style={{

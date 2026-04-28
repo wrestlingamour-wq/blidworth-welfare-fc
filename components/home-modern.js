@@ -379,7 +379,7 @@ function HomeModern() {
       onMouseEnter: () => setHoverNews(i),
       onMouseLeave: () => setHoverNews(null)
     }, /*#__PURE__*/React.createElement("a", {
-      href: "article.html",
+      href: `article.html?id=${n.id}`,
       style: {
         display: 'flex',
         flexDirection: 'column',
@@ -392,7 +392,16 @@ function HomeModern() {
         transform: hoverNews === i ? 'translateY(-4px)' : 'translateY(0)',
         boxShadow: hoverNews === i ? '0 20px 40px rgba(0,0,0,0.08)' : 'none'
       }
-    }, /*#__PURE__*/React.createElement("div", {
+    }, n.photos && n.photos[0] ? /*#__PURE__*/React.createElement("img", {
+      src: n.photos[0],
+      style: {
+        flex: 1,
+        minHeight: 160,
+        width: '100%',
+        objectFit: 'cover',
+        display: 'block'
+      }
+    }) : /*#__PURE__*/React.createElement("div", {
       className: "ph",
       style: {
         flex: 1,
@@ -400,7 +409,7 @@ function HomeModern() {
       }
     }, /*#__PURE__*/React.createElement("span", {
       className: "ph-label"
-    }, "[ ", n.img, " ]")), /*#__PURE__*/React.createElement("div", {
+    }, "[ ", n.img || 'photo', " ]")), /*#__PURE__*/React.createElement("div", {
       style: {
         padding: 20
       }
