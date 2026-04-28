@@ -1,5 +1,5 @@
 // Blidworth Welfare FC — shared site data
-// Last updated via admin panel: 2026-04-28T06:47:43.340Z
+// Last updated via admin panel: 2026-04-28T07:02:35.717Z
 
 const BW_DATA = {
   "club": {
@@ -76,77 +76,51 @@ const BW_DATA = {
   ],
   "results": [
     {
-      "date": "2026-04-18",
-      "home": "Blidworth Welfare",
-      "hs": 1,
-      "away": "Holbrook Sports",
-      "as": 2,
-      "comp": "League",
-      "ht": "1-1"
-    },
-    {
-      "date": "2026-04-18",
-      "home": "Holbrook St Michaels",
-      "hs": 1,
-      "away": "Melbourne Dynamo",
-      "as": 1,
-      "comp": "League"
-    },
-    {
-      "date": "2026-04-18",
-      "home": "Selston F.C.",
-      "hs": null,
-      "away": "FC Sunnyhill",
-      "as": null,
-      "comp": "League",
-      "status": "P-P"
-    },
-    {
-      "date": "2026-04-11",
-      "home": "FC Sunnyhill",
-      "hs": 2,
+      "date": "2026-04-25",
+      "home": "Wirksworth Ivanhoe",
+      "hs": 3,
       "away": "Blidworth Welfare",
       "as": 0,
       "comp": "League"
     },
     {
-      "date": "2026-04-04",
-      "home": "Blidworth Welfare",
-      "hs": 1,
-      "away": "Mickleover Athletic",
-      "as": 1,
-      "comp": "League"
-    },
-    {
-      "date": "2026-03-28",
-      "home": "Holbrook St Michaels",
-      "hs": 3,
-      "away": "Blidworth Welfare",
-      "as": 1,
-      "comp": "League"
-    },
-    {
-      "date": "2026-03-21",
+      "date": "2026-04-21",
       "home": "Blidworth Welfare",
       "hs": 2,
-      "away": "Bakewell Town",
+      "away": "Borrowash Victoria",
+      "as": 0,
+      "comp": "League"
+    },
+    {
+      "date": "2026-04-18",
+      "home": "Blidworth Welfare",
+      "hs": 1,
+      "away": "Holbrook Sports",
       "as": 2,
       "comp": "League"
     },
     {
-      "date": "2026-03-14",
-      "home": "Graham Street Prims",
+      "date": "2026-04-14",
+      "home": "Selston F.C.",
       "hs": 4,
       "away": "Blidworth Welfare",
       "as": 0,
       "comp": "League"
     },
     {
-      "date": "2026-03-07",
+      "date": "2026-04-07",
+      "home": "Blidworth Welfare",
+      "hs": 0,
+      "away": "Graham Street Prims",
+      "as": 2,
+      "comp": "League"
+    },
+    {
+      "date": "2026-04-04",
       "home": "Blidworth Welfare",
       "hs": 1,
-      "away": "Melbourne Dynamo",
-      "as": 3,
+      "away": "Gresley Rovers Reserves",
+      "as": 1,
       "comp": "League"
     }
   ],
