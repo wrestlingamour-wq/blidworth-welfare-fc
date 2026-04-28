@@ -72,7 +72,7 @@ function Page() {
           <div style={{ marginBottom: 56 }}>
             <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 20 }}>Upcoming</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
-              {d.fixtures.map((f, i) => {
+              {(d.fixtures||[]).map((f, i) => {
                 const home = f.home === 'Blidworth Welfare';
                 return (
                   <div key={i} style={{
@@ -117,7 +117,7 @@ function Page() {
                 </tr>
               </thead>
               <tbody>
-                {d.results.map((r, i) => {
+                {(d.results||[]).map((r, i) => {
                   const home = r.home === 'Blidworth Welfare';
                   const wld = home ? (r.hs > r.as ? 'W' : r.hs < r.as ? 'L' : 'D') : (r.as > r.hs ? 'W' : r.as < r.hs ? 'L' : 'D');
                   const col = wld === 'W' ? 'var(--green)' : wld === 'D' ? '#8a7b4a' : 'var(--red)';
@@ -154,4 +154,7 @@ function Page() {
     <SiteFooter/>
   </>);
 }
-ReactDOM.createRoot(doc
+ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
+</script>
+</body>
+</html>
