@@ -357,12 +357,22 @@ function NewsCard({ item, size = 'md', onDark = false }) {
   const heights = { sm: 200, md: 260, lg: 420, xl: 520 };
   const fg = onDark ? 'var(--paper)' : 'var(--ink)';
   const titleSize = { sm: 18, md: 22, lg: 32, xl: 44 };
+  const heroPhoto = item.photos && item.photos[0] ? item.photos[0] : null;
+  const articleHref = item.id ? `article.html?id=${item.id}` : 'article.html';
   return (
-    <a href={`article.html`} style={{ display: 'block', color: fg, cursor: 'pointer' }}
+    <a href={articleHref} style={{ display: 'block', color: fg, cursor: 'pointer' }}
        className="news-card">
-      <div className="ph" style={{ height: heights[size], marginBottom: 16 }}>
-        <span className="ph-label">[ photo: {item.img} ]</span>
-      </div>
+      {heroPhoto ? (
+        <img
+          src={heroPhoto}
+          alt={item.title}
+          style={{ width: '100%', height: heights[size], objectFit: 'cover', marginBottom: 16, display: 'block' }}
+        />
+      ) : (
+        <div className="ph" style={{ height: heights[size], marginBottom: 16 }}>
+          <span className="ph-label">[ photo: {item.img} ]</span>
+        </div>
+      )}
       <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 10 }}>{item.cat}</div>
       <h3 className="h-editorial" style={{
         fontSize: titleSize[size], fontWeight: 400,
