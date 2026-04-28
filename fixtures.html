@@ -139,7 +139,7 @@ function Page() {
                         }}>{wld}</span>
                       </td>
                       <td style={{ padding: '18px 12px' }}>
-                        <a href="article.html" style={{ color: 'var(--gold)', fontSize: 13, fontWeight: 600 }}>Report →</a>
+                        {r.report && <a href={`article.html?matchreport=${i}`} style={{ color: 'var(--gold)', fontSize: 13, fontWeight: 600 }}>Match Report →</a>}
                       </td>
                     </tr>
                   );
