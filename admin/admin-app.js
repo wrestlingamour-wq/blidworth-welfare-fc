@@ -829,10 +829,46 @@ function NewsSection({
 }
 
 // ─── Fixtures Manager ─────────────────────────────────────────────────────────
+const parseFixtures = text => {
+  const BLIDWORTH = ['blidworth welfare f.c.', 'blidworth welfare fc', 'blidworth welfare'];
+  const isBlidworth = s => BLIDWORTH.some(b => s.toLowerCase().includes(b));
+  const cleanTeam = s => {
+    s = s.trim();
+    if (isBlidworth(s)) return 'Blidworth Welfare';
+    // Strip trailing "F.C.", "FC", "First" etc for cleanliness
+    return s.replace(/\s+(F\.C\.|FC)$/i, '').trim();
+  };
+  const rows = [];
+  const lines = text.trim().split('\n').map(l => l.trim()).filter(Boolean);
+  for (const line of lines) {
+    // Skip lines with a score (results) — look for "digit - digit" pattern
+    if (/\d+\s*[-–]\s*\d+/.test(line)) continue;
+    // Match: [L|CC] DD/MM/YY HH:MM <home> v <away>
+    const m = line.match(/^(L|CC)\s+(\d{2})\/(\d{2})\/(\d{2})\s+(\d{2}:\d{2})\s+(.+?)\s+v\s+(.+)$/i);
+    if (!m) continue;
+    const [, compCode, dd, mm, yy, time, homeRaw, awayRaw] = m;
+    const date = `20${yy}-${mm}-${dd}`;
+    const home = cleanTeam(homeRaw);
+    const away = cleanTeam(awayRaw);
+    const venue = isBlidworth(homeRaw) ? 'H' : 'A';
+    const comp = compCode.toUpperCase() === 'L' ? 'League' : 'Cup';
+    rows.push({
+      date,
+      time,
+      home,
+      away,
+      venue,
+      comp
+    });
+  }
+  return rows;
+};
 function FixturesSection({
   data,
   update
 }) {
+  const [pasteText, setPasteText] = React.useState('');
+  const [parseMsg, setParseMsg] = React.useState('');
   const [adding, setAdding] = React.useState(false);
   const [form, setForm] = React.useState({
     date: '',
@@ -844,6 +880,16 @@ function FixturesSection({
   });
   const [editId, setEditId] = React.useState(null);
   const fixtures = data.fixtures || [];
+  const handleParse = () => {
+    const rows = parseFixtures(pasteText);
+    if (!rows.length) {
+      setParseMsg('No upcoming fixtures found — make sure you copy rows without scores.');
+      return;
+    }
+    update('fixtures', rows);
+    setPasteText('');
+    setParseMsg(`✓ Imported ${rows.length} fixture${rows.length !== 1 ? 's' : ''}.`);
+  };
   const saveRow = () => {
     if (editId !== null) {
       update('fixtures', fixtures.map((f, i) => i === editId ? {
@@ -887,12 +933,48 @@ function FixturesSection({
       venue: 'H'
     });
   };
-  const teams = ['Blidworth Welfare', ...(data.table || []).map(r => r.team).filter(t => t !== 'Blidworth Welfare')];
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "section-title"
   }, "Content"), /*#__PURE__*/React.createElement("div", {
-    className: "section-h"
-  }, "Fixtures"), adding && /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      marginBottom: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card-title"
+  }, "Paste from FA Full-Time"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: 13,
+      color: 'var(--muted)',
+      marginBottom: 12
+    }
+  }, "Go to the FA Full-Time fixtures page, select and copy the upcoming fixture rows, then paste below. Rows with scores (results) are automatically ignored \u2014 only unplayed fixtures are imported."), /*#__PURE__*/React.createElement("textarea", {
+    rows: 6,
+    value: pasteText,
+    onChange: e => {
+      setPasteText(e.target.value);
+      setParseMsg('');
+    },
+    placeholder: "L 28/04/26 19:45 Blidworth Welfare F.C. v Linby Colliery Welfare F.C.\nL 30/04/26 19:45 Blidworth Welfare F.C. v Derby Singh Brothers",
+    style: {
+      width: '100%',
+      fontFamily: 'monospace',
+      fontSize: 12
+    }
+  }), parseMsg && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 8,
+      fontSize: 13,
+      color: parseMsg.startsWith('✓') ? 'var(--green, #2a7a2a)' : 'var(--red)'
+    }
+  }, parseMsg), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 12
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn-primary btn-gold",
+    onClick: handleParse
+  }, "Parse & Import Fixtures"))), adding && /*#__PURE__*/React.createElement("div", {
     className: "card",
     style: {
       marginBottom: 24
@@ -942,27 +1024,21 @@ function FixturesSection({
     value: "A"
   }, "Away"))), /*#__PURE__*/React.createElement("div", {
     className: "field"
-  }, /*#__PURE__*/React.createElement("label", null, "Home"), /*#__PURE__*/React.createElement("select", {
+  }, /*#__PURE__*/React.createElement("label", null, "Home Team"), /*#__PURE__*/React.createElement("input", {
     value: form.home,
     onChange: e => setForm(f => ({
       ...f,
       home: e.target.value
     }))
-  }, teams.map(t => /*#__PURE__*/React.createElement("option", {
-    key: t,
-    value: t
-  }, t)))), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement("div", {
     className: "field"
-  }, /*#__PURE__*/React.createElement("label", null, "Away"), /*#__PURE__*/React.createElement("select", {
+  }, /*#__PURE__*/React.createElement("label", null, "Away Team"), /*#__PURE__*/React.createElement("input", {
     value: form.away,
     onChange: e => setForm(f => ({
       ...f,
       away: e.target.value
     }))
-  }, teams.map(t => /*#__PURE__*/React.createElement("option", {
-    key: t,
-    value: t
-  }, t)))), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement("div", {
     className: "field"
   }, /*#__PURE__*/React.createElement("label", null, "Competition"), /*#__PURE__*/React.createElement("input", {
     value: form.comp,
@@ -993,9 +1069,16 @@ function FixturesSection({
       setAdding(true);
       setEditId(null);
     }
-  }, "+ Add Fixture")), /*#__PURE__*/React.createElement("table", {
+  }, "+ Add Manually")), /*#__PURE__*/React.createElement("table", {
     className: "admin-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Date"), /*#__PURE__*/React.createElement("th", null, "Time"), /*#__PURE__*/React.createElement("th", null, "Home"), /*#__PURE__*/React.createElement("th", null, "Away"), /*#__PURE__*/React.createElement("th", null, "Comp"), /*#__PURE__*/React.createElement("th", null, "H/A"), /*#__PURE__*/React.createElement("th", null))), /*#__PURE__*/React.createElement("tbody", null, fixtures.map((f, i) => /*#__PURE__*/React.createElement("tr", {
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Date"), /*#__PURE__*/React.createElement("th", null, "Time"), /*#__PURE__*/React.createElement("th", null, "Home"), /*#__PURE__*/React.createElement("th", null, "Away"), /*#__PURE__*/React.createElement("th", null, "Comp"), /*#__PURE__*/React.createElement("th", null, "H/A"), /*#__PURE__*/React.createElement("th", null))), /*#__PURE__*/React.createElement("tbody", null, fixtures.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: 7,
+    style: {
+      textAlign: 'center',
+      color: 'var(--muted)',
+      padding: 24
+    }
+  }, "No fixtures yet. Paste from FA Full-Time above.")), fixtures.map((f, i) => /*#__PURE__*/React.createElement("tr", {
     key: i
   }, /*#__PURE__*/React.createElement("td", null, formatDate(f.date)), /*#__PURE__*/React.createElement("td", null, f.time), /*#__PURE__*/React.createElement("td", {
     style: {
