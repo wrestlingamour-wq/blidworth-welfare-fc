@@ -1,5 +1,5 @@
 // Blidworth Welfare FC — shared site data
-// Last updated via admin panel: 2026-04-27T19:51:31.913Z
+// Last updated via admin panel: 2026-04-28T06:47:43.340Z
 
 const BW_DATA = {
   "club": {
@@ -50,44 +50,28 @@ const BW_DATA = {
   },
   "fixtures": [
     {
-      "date": "2026-04-21",
-      "time": "19:45",
-      "home": "Blidworth Welfare",
-      "away": "Borrowash Victoria",
-      "comp": "League",
-      "venue": "H"
-    },
-    {
-      "date": "2026-04-25",
-      "time": "15:00",
-      "home": "Wirksworth Ivanhoe",
-      "away": "Blidworth Welfare",
-      "comp": "League",
-      "venue": "A"
-    },
-    {
-      "date": "2026-04-28",
-      "time": "19:45",
-      "home": "Blidworth Welfare",
-      "away": "Linby Colliery Welfare",
-      "comp": "League",
-      "venue": "H"
-    },
-    {
       "date": "2026-04-30",
-      "time": "19:45",
+      "time": "19:00",
       "home": "Blidworth Welfare",
-      "away": "Wirksworth Ivanhoe",
-      "comp": "League",
-      "venue": "H"
+      "away": "Wirksworth Ivanhoe\tWirksworth Ivanhoe\tBLIDWORTH MINERS WELFARE SOCIAL CENTRE\tCamper UK Premier Division South",
+      "venue": "H",
+      "comp": "League"
     },
     {
       "date": "2026-05-02",
       "time": "15:00",
-      "home": "Cromford & Wirksworth Town",
+      "home": "Cromford & Wirksworth Town FC\tCromford & Wirksworth Town",
       "away": "Blidworth Welfare",
-      "comp": "League",
-      "venue": "A"
+      "venue": "A",
+      "comp": "League"
+    },
+    {
+      "date": "2026-05-09",
+      "time": "15:00",
+      "home": "Blidworth Welfare",
+      "away": "Linby Colliery Welfare F.C.\tLinby Colliery Welfare F.C.\tBLIDWORTH MINERS WELFARE SOCIAL CENTRE\tCamper UK Premier Division South",
+      "venue": "H",
+      "comp": "League"
     }
   ],
   "results": [
@@ -99,22 +83,6 @@ const BW_DATA = {
       "as": 2,
       "comp": "League",
       "ht": "1-1"
-    },
-    {
-      "date": "2026-04-18",
-      "home": "Bakewell Town",
-      "hs": 1,
-      "away": "Borrowash Victoria",
-      "as": 2,
-      "comp": "League"
-    },
-    {
-      "date": "2026-04-18",
-      "home": "Cromford & Wirksworth Town",
-      "hs": 2,
-      "away": "Graham Street Prims",
-      "as": 2,
-      "comp": "League"
     },
     {
       "date": "2026-04-18",
