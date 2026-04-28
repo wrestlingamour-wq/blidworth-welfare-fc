@@ -835,23 +835,38 @@ const parseFixtures = text => {
   const cleanTeam = s => {
     s = s.trim();
     if (isBlidworth(s)) return 'Blidworth Welfare';
-    // Strip trailing "F.C.", "FC", "First" etc for cleanliness
     return s.replace(/\s+(F\.C\.|FC)$/i, '').trim();
   };
+  // FA Full-Time copies team names twice with wide spaces between — take the first occurrence
+  const firstPart = s => s.trim().split(/\s{2,}/)[0].trim();
+
+  // Group lines: each fixture row starts with L or CC followed by a date
+  // Continuation lines (venue/competition info) get merged into the previous
+  const rawLines = text.split('\n');
+  const groups = [];
+  for (const line of rawLines) {
+    if (/^(L|CC)\s+\d{2}\/\d{2}\/\d{2}/i.test(line.trim())) {
+      groups.push(line.trim());
+    } else if (groups.length > 0 && line.trim()) {
+      groups[groups.length - 1] += ' ' + line.trim();
+    }
+  }
   const rows = [];
-  const lines = text.trim().split('\n').map(l => l.trim()).filter(Boolean);
-  for (const line of lines) {
-    // Skip lines with a score (results) — look for "digit - digit" pattern
+  for (const line of groups) {
+    // Skip if it contains a score (digit - digit)
     if (/\d+\s*[-–]\s*\d+/.test(line)) continue;
-    // Match: [L|CC] DD/MM/YY HH:MM <home> v <away>
-    const m = line.match(/^(L|CC)\s+(\d{2})\/(\d{2})\/(\d{2})\s+(\d{2}:\d{2})\s+(.+?)\s+v\s+(.+)$/i);
+    // Extract comp code, date, time, then everything else
+    const m = line.match(/^(L|CC)\s+(\d{2})\/(\d{2})\/(\d{2})\s+(\d{2}:\d{2})\s+(.*)/i);
     if (!m) continue;
-    const [, compCode, dd, mm, yy, time, homeRaw, awayRaw] = m;
+    const [, compCode, dd, mm, yy, time, rest] = m;
     const date = `20${yy}-${mm}-${dd}`;
-    const home = cleanTeam(homeRaw);
-    const away = cleanTeam(awayRaw);
-    const venue = isBlidworth(homeRaw) ? 'H' : 'A';
     const comp = compCode.toUpperCase() === 'L' ? 'League' : 'Cup';
+    // Split on " VS " (FA Full-Time uses uppercase VS with surrounding spaces)
+    const vsSplit = rest.split(/\s+VS\s+/i);
+    if (vsSplit.length < 2) continue;
+    const home = cleanTeam(firstPart(vsSplit[0]));
+    const away = cleanTeam(firstPart(vsSplit[1]));
+    const venue = isBlidworth(vsSplit[0]) ? 'H' : 'A';
     rows.push({
       date,
       time,
