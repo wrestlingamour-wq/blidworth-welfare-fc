@@ -1,9 +1,9 @@
-// ─── Auto-setup: ensure token is available ───────────────────────────────────
+// ─── Token cleanup: remove any revoked token ─────────────────────────────────
 (function () {
   const k = 'bwfc-gh-token';
-  if (!localStorage.getItem(k)) {
-    const c = [103, 104, 112, 95, 119, 112, 121, 82, 50, 110, 81, 83, 100, 89, 86, 121, 70, 76, 53, 50, 75, 86, 49, 107, 97, 78, 84, 120, 51, 70, 121, 54, 97, 56, 50, 105, 112, 100, 88, 49];
-    localStorage.setItem(k, c.map(n => String.fromCharCode(n)).join(''));
+  const revoked = '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';
+  if (localStorage.getItem(k) === revoked) {
+    localStorage.removeItem(k);
   }
 })();
 
