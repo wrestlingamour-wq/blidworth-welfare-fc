@@ -49,9 +49,20 @@ function Page() {
               </thead>
               <tbody>
                 {d.table.map((r, i) => {
+                  const total = d.table.length;
                   let indicator = null;
-                  if (r.pos <= 2) indicator = <div style={{ width: 4, height: 24, background: 'var(--green)' }}/>;
-                  else if (r.pos >= 12) indicator = <div style={{ width: 4, height: 24, background: 'var(--red)' }}/>;
+                  if (r.pos === 1) indicator = (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <div style={{ width: 4, height: 24, background: 'var(--green)' }}/>
+                      <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--green)', fontFamily: 'var(--font-display)', letterSpacing: '0.05em' }}>P</span>
+                    </div>
+                  );
+                  else if (r.pos > total - 3) indicator = (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <div style={{ width: 4, height: 24, background: 'var(--red)' }}/>
+                      <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--red)', fontFamily: 'var(--font-display)', letterSpacing: '0.05em' }}>R</span>
+                    </div>
+                  );
                   return (
                     <tr key={r.team} style={{
                       borderBottom: '1px solid var(--rule)',
@@ -82,10 +93,10 @@ function Page() {
             </table>
             <div style={{ marginTop: 24, display: 'flex', gap: 24, fontSize: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 4, height: 14, background: 'var(--green)' }}/> Promotion
+                <div style={{ width: 4, height: 14, background: 'var(--green)' }}/> <strong>P</strong> Promotion (1 place)
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 4, height: 14, background: 'var(--red)' }}/> Relegation
+                <div style={{ width: 4, height: 14, background: 'var(--red)' }}/> <strong>R</strong> Relegation (3 places)
               </div>
             </div>
           </div>
