@@ -1084,33 +1084,7 @@ function FixturesSection({
       setAdding(true);
       setEditId(null);
     }
-  }, "+ Add Manually")), reportEditId !== null && /*#__PURE__*/React.createElement("div", { className: "card", style: { marginBottom: 24, borderLeft: "4px solid var(--gold)" } },
-    /*#__PURE__*/React.createElement("div", { className: "card-title" }, "Match Report — " + (results[reportEditId] ? results[reportEditId].home + " " + results[reportEditId].hs + " – " + results[reportEditId].as + " " + results[reportEditId].away : "")),
-    /*#__PURE__*/React.createElement("div", { className: "field", style: { marginBottom: 12 } },
-      /*#__PURE__*/React.createElement("label", null, "Headline"),
-      /*#__PURE__*/React.createElement("input", { value: reportForm.title, onChange: e => setReportForm(f => ({...f, title: e.target.value})), placeholder: "Match report headline..." })
-    ),
-    /*#__PURE__*/React.createElement("div", { className: "field", style: { marginBottom: 12 } },
-      /*#__PURE__*/React.createElement("label", null, "Report"),
-      /*#__PURE__*/React.createElement("textarea", { rows: 8, value: reportForm.body, onChange: e => setReportForm(f => ({...f, body: e.target.value})), placeholder: "Write the match report here...", style: { width: "100%", resize: "vertical" } })
-    ),
-    /*#__PURE__*/React.createElement("div", { className: "field", style: { marginBottom: 12 } },
-      /*#__PURE__*/React.createElement("label", null, "Photo"),
-      reportForm.photo && /*#__PURE__*/React.createElement("img", { src: reportForm.photo, style: { width: "100%", maxHeight: 200, objectFit: "cover", marginBottom: 8, display: "block" } }),
-      /*#__PURE__*/React.createElement("input", { type: "file", accept: "image/*", onChange: handleReportPhoto }),
-      reportForm.photo && /*#__PURE__*/React.createElement("button", { className: "btn-ghost btn-sm", style: { color: "var(--red)", marginTop: 6 }, onClick: () => setReportForm(f => ({...f, photo: null})) }, "Remove photo")
-    ),
-    /*#__PURE__*/React.createElement("div", { className: "field", style: { marginBottom: 16 } },
-      /*#__PURE__*/React.createElement("label", null, "Author"),
-      /*#__PURE__*/React.createElement("input", { value: reportForm.author, onChange: e => setReportForm(f => ({...f, author: e.target.value})), placeholder: "Club Reporter" })
-    ),
-    /*#__PURE__*/React.createElement("div", { style: { display: "flex", gap: 10, alignItems: "center" } },
-      /*#__PURE__*/React.createElement("button", { className: "btn-primary btn-gold", onClick: saveReport }, "Save Report"),
-      /*#__PURE__*/React.createElement("button", { className: "btn-ghost", onClick: cancelReport }, "Cancel"),
-      results[reportEditId] && results[reportEditId].report && /*#__PURE__*/React.createElement("button", { className: "btn-ghost btn-sm", style: { color: "var(--red)", marginLeft: "auto" }, onClick: () => clearReport(reportEditId) }, "Remove Report")
-    )
-  ),
-/*#__PURE__*/React.createElement("table", {
+  }, "+ Add Manually")), /*#__PURE__*/React.createElement("table", {
     className: "admin-table"
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Date"), /*#__PURE__*/React.createElement("th", null, "Time"), /*#__PURE__*/React.createElement("th", null, "Home"), /*#__PURE__*/React.createElement("th", null, "Away"), /*#__PURE__*/React.createElement("th", null, "Comp"), /*#__PURE__*/React.createElement("th", null, "H/A"), /*#__PURE__*/React.createElement("th", null))), /*#__PURE__*/React.createElement("tbody", null, fixtures.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     colSpan: 7,
@@ -1449,7 +1423,32 @@ function ResultsSection({
       setAdding(true);
       setEditId(null);
     }
-  }, "+ Add Manually")), /*#__PURE__*/React.createElement("table", {
+  }, "+ Add Manually")), reportEditId !== null && /*#__PURE__*/React.createElement("div", { className: "card", style: { marginBottom: 24, borderLeft: "4px solid var(--gold)" } },
+    /*#__PURE__*/React.createElement("div", { className: "card-title" }, "Match Report — " + (results[reportEditId] ? results[reportEditId].home + " " + results[reportEditId].hs + " – " + results[reportEditId].as + " " + results[reportEditId].away : "")),
+    /*#__PURE__*/React.createElement("div", { className: "field", style: { marginBottom: 12 } },
+      /*#__PURE__*/React.createElement("label", null, "Headline"),
+      /*#__PURE__*/React.createElement("input", { value: reportForm.title, onChange: e => setReportForm(f => ({...f, title: e.target.value})), placeholder: "Match report headline..." })
+    ),
+    /*#__PURE__*/React.createElement("div", { className: "field", style: { marginBottom: 12 } },
+      /*#__PURE__*/React.createElement("label", null, "Report"),
+      /*#__PURE__*/React.createElement("textarea", { rows: 8, value: reportForm.body, onChange: e => setReportForm(f => ({...f, body: e.target.value})), placeholder: "Write the match report here...", style: { width: "100%", resize: "vertical" } })
+    ),
+    /*#__PURE__*/React.createElement("div", { className: "field", style: { marginBottom: 12 } },
+      /*#__PURE__*/React.createElement("label", null, "Photo"),
+      reportForm.photo && /*#__PURE__*/React.createElement("img", { src: reportForm.photo, style: { width: "100%", maxHeight: 200, objectFit: "cover", marginBottom: 8, display: "block" } }),
+      /*#__PURE__*/React.createElement("input", { type: "file", accept: "image/*", onChange: handleReportPhoto }),
+      reportForm.photo && /*#__PURE__*/React.createElement("button", { className: "btn-ghost btn-sm", style: { color: "var(--red)", marginTop: 6 }, onClick: () => setReportForm(f => ({...f, photo: null})) }, "Remove photo")
+    ),
+    /*#__PURE__*/React.createElement("div", { className: "field", style: { marginBottom: 16 } },
+      /*#__PURE__*/React.createElement("label", null, "Author"),
+      /*#__PURE__*/React.createElement("input", { value: reportForm.author, onChange: e => setReportForm(f => ({...f, author: e.target.value})), placeholder: "Club Reporter" })
+    ),
+    /*#__PURE__*/React.createElement("div", { style: { display: "flex", gap: 10, alignItems: "center" } },
+      /*#__PURE__*/React.createElement("button", { className: "btn-primary btn-gold", onClick: saveReport }, "Save Report"),
+      /*#__PURE__*/React.createElement("button", { className: "btn-ghost", onClick: cancelReport }, "Cancel"),
+      results[reportEditId] && results[reportEditId].report && /*#__PURE__*/React.createElement("button", { className: "btn-ghost btn-sm", style: { color: "var(--red)", marginLeft: "auto" }, onClick: () => clearReport(reportEditId) }, "Remove Report")
+    )
+  ), /*#__PURE__*/React.createElement("table", {
     className: "admin-table"
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Date"), /*#__PURE__*/React.createElement("th", null, "Home"), /*#__PURE__*/React.createElement("th", null, "Score"), /*#__PURE__*/React.createElement("th", null, "Away"), /*#__PURE__*/React.createElement("th", null, "Comp"), /*#__PURE__*/React.createElement("th", null, "Result"), /*#__PURE__*/React.createElement("th", null))), /*#__PURE__*/React.createElement("tbody", null, results.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     colSpan: 7,
