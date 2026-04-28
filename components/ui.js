@@ -160,7 +160,7 @@ function SiteNav({
       marginLeft: 8,
       flexShrink: 0
     }
-  }, "Buy Tickets \u2192"), /*#__PURE__*/React.createElement("a", {
+  }, "Buy Tickets →"), /*#__PURE__*/React.createElement("a", {
     href: "admin/index.html",
     className: "site-nav-admin",
     title: "Admin Panel",
@@ -190,7 +190,7 @@ function SiteNav({
       e.currentTarget.style.color = 'rgba(0,0,0,0.35)';
       e.currentTarget.style.borderColor = 'rgba(0,0,0,0.15)';
     }
-  }, "\u2699 Admin"), /*#__PURE__*/React.createElement("button", {
+  }, "⚙ Admin"), /*#__PURE__*/React.createElement("button", {
     className: "site-nav-burger",
     onClick: () => setMobileOpen(true),
     "aria-label": "Open menu",
@@ -233,7 +233,7 @@ function SiteNav({
     className: "site-nav-mobile-close",
     onClick: () => setMobileOpen(false),
     "aria-label": "Close menu"
-  }, "\u2715"), nav.map(item => /*#__PURE__*/React.createElement("div", {
+  }, "✕"), nav.map(item => /*#__PURE__*/React.createElement("div", {
     key: item.k
   }, /*#__PURE__*/React.createElement("a", {
     href: item.href,
@@ -251,7 +251,7 @@ function SiteNav({
       color: 'var(--gold)',
       marginTop: 16
     }
-  }, "Buy Tickets \u2192")));
+  }, "Buy Tickets →")));
 }
 
 // ============ TICKER ============
@@ -271,7 +271,7 @@ function Ticker({
     className: "ticker-item"
   }, it.live ? /*#__PURE__*/React.createElement("span", {
     className: "ticker-live"
-  }, "\u25CF ", it.label) : /*#__PURE__*/React.createElement("span", {
+  }, "● ", it.label) : /*#__PURE__*/React.createElement("span", {
     className: "ticker-dot"
   }), /*#__PURE__*/React.createElement("span", null, it.text)))));
 }
@@ -417,7 +417,7 @@ function Countdown({
         letterSpacing: '0.08em',
         opacity: 0.7
       }
-    }, "Full time \xB7 See result \u2193");
+    }, "Full time \xB7 See result ↓");
   }
   return /*#__PURE__*/React.createElement("div", {
     style: {
@@ -525,7 +525,7 @@ function MatchCard({
       color: fg,
       padding: '0 16px'
     }
-  }, match.home?.score ?? match.hs, " \u2013 ", match.away?.score ?? match.as) : /*#__PURE__*/React.createElement("div", {
+  }, match.home?.score ?? match.hs, " – ", match.away?.score ?? match.as) : /*#__PURE__*/React.createElement("div", {
     className: "h-display mono-num",
     style: {
       fontSize: 22,
@@ -554,12 +554,12 @@ function MatchCard({
     style: {
       color: 'var(--gold)'
     }
-  }, "Match Report \u2192") : /*#__PURE__*/React.createElement("a", {
+  }, "Match Report →") : /*#__PURE__*/React.createElement("a", {
     href: "tickets.html",
     style: {
       color: 'var(--gold)'
     }
-  }, "Tickets \u2192")));
+  }, "Tickets →")));
 }
 
 // ============ NEWS CARD ============
@@ -581,15 +581,27 @@ function NewsCard({
     lg: 32,
     xl: 44
   };
+  const heroPhoto = item.photos && item.photos[0] ? item.photos[0] : null;
+  const articleHref = item.id ? `article.html?id=${item.id}` : 'article.html';
   return /*#__PURE__*/React.createElement("a", {
-    href: `article.html`,
+    href: articleHref,
     style: {
       display: 'block',
       color: fg,
       cursor: 'pointer'
     },
     className: "news-card"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, heroPhoto ? /*#__PURE__*/React.createElement("img", {
+    src: heroPhoto,
+    alt: item.title,
+    style: {
+      width: '100%',
+      height: heights[size],
+      objectFit: 'cover',
+      marginBottom: 16,
+      display: 'block'
+    }
+  }) : /*#__PURE__*/React.createElement("div", {
     className: "ph",
     style: {
       height: heights[size],
@@ -834,7 +846,7 @@ function SectionHeader({
       color: onDark ? 'var(--paper)' : 'var(--ink)',
       borderColor: onDark ? 'var(--paper)' : 'var(--ink)'
     }
-  }, action.label, " \u2192"));
+  }, action.label, " →"));
 }
 
 // ============ SOCIAL FEED ITEM ============
