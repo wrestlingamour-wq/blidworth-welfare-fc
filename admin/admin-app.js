@@ -1140,39 +1140,50 @@ const parseResults = text => {
   const cleanTeam = s => {
     s = s.trim().replace(/\s*\(HT[^)]*\)/gi, '').trim();
     if (isBlidworth(s)) return 'Blidworth Welfare';
-    return s.replace(/\s+(F\.C\.|FC)$/i, '').trim();
+    return s.replace(/\s+(F\.C\.|FC|First)$/i, '').trim();
   };
-  // Group lines: fixture/result rows start with L or CC + date
-  const rawLines = text.split('\n');
-  const groups = [];
-  for (const line of rawLines) {
-    if (/^(L|CC)\s+\d{2}\/\d{2}\/\d{2}/i.test(line.trim())) {
-      groups.push(line.trim());
-    } else if (groups.length > 0 && line.trim()) {
-      groups[groups.length - 1] += ' ' + line.trim();
+  const isJunk = s => /^(L|CC)$/i.test(s) || /^\d{2}\/\d{2}\/\d{2}/.test(s) || /^\d{2}:\d{2}$/.test(s) || /^\(HT/i.test(s) || /^[A-Z0-9\s&\-]{8,}$/.test(s) ||
+  // all-caps ground names
+  /camper|premier|division|alliance|league cup|county cup/i.test(s);
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+
+  // Split into blocks — each block starts when we see an L or CC comp code
+  const blocks = [];
+  let cur = [];
+  for (const line of lines) {
+    if (/^(L|CC)$/i.test(line) && cur.some(l => /^\d+\s*[-–]\s*\d+$/.test(l))) {
+      blocks.push(cur);
+      cur = [line];
+    } else {
+      cur.push(line);
     }
   }
+  if (cur.length) blocks.push(cur);
   const rows = [];
-  for (const line of groups) {
-    // Only process lines that have a score (skip upcoming fixtures with VS)
-    if (!/\d+\s*[-–]\s*\d+/.test(line)) continue;
-    const m = line.match(/^(L|CC)\s+(\d{2})\/(\d{2})\/(\d{2})\s+(\d{2}:\d{2})\s+(.*)/i);
-    if (!m) continue;
-    const [, compCode, dd, mm, yy,, rest] = m;
-    const date = `20${yy}-${mm}-${dd}`;
-    const comp = compCode.toUpperCase() === 'L' ? 'League' : 'Cup';
-    // Find score — first "digit - digit" pattern
-    const scoreMatch = rest.match(/(\d+)\s*[-–]\s*(\d+)/);
-    if (!scoreMatch) continue;
-    const hs = parseInt(scoreMatch[1]);
-    const as_ = parseInt(scoreMatch[2]);
-    const scoreIdx = rest.search(/(\d+)\s*[-–]\s*(\d+)/);
-    const homePart = rest.slice(0, scoreIdx).trim();
-    const afterScore = rest.slice(scoreIdx + scoreMatch[0].length);
-    // Strip HT score in parens and ground/competition info (appears after team name)
-    const awayPart = afterScore.replace(/\s*\(HT[^)]*\)/gi, '').trim().split(/\s{2,}/)[0].trim();
-    const home = cleanTeam(homePart.split(/\s{2,}/)[0]);
-    const away = cleanTeam(awayPart);
+  for (const block of blocks) {
+    // Find the score line
+    const scoreIdx = block.findIndex(l => /^\d+\s*[-–]\s*\d+/.test(l));
+    if (scoreIdx === -1) continue;
+    const sm = block[scoreIdx].match(/(\d+)\s*[-–]\s*(\d+)/);
+    if (!sm) continue;
+    const hs = parseInt(sm[1]);
+    const as_ = parseInt(sm[2]);
+
+    // Date
+    const dateLine = block.find(l => /\d{2}\/\d{2}\/\d{2}/.test(l)) || '';
+    const dm = dateLine.match(/(\d{2})\/(\d{2})\/(\d{2})/);
+    if (!dm) continue;
+    const date = `20${dm[3]}-${dm[2]}-${dm[1]}`;
+
+    // Competition
+    const comp = block.some(l => /^CC$/i.test(l)) ? 'Cup' : 'League';
+
+    // Home team: meaningful lines before score
+    const homeTeam = block.slice(0, scoreIdx).filter(l => !isJunk(l))[0] || '';
+    // Away team: meaningful lines after score
+    const awayTeam = block.slice(scoreIdx + 1).filter(l => !isJunk(l))[0] || '';
+    const home = cleanTeam(homeTeam);
+    const away = cleanTeam(awayTeam);
     if (!home || !away) continue;
     rows.push({
       date,
