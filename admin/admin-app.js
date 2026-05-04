@@ -559,14 +559,16 @@ function NewsSection({
       body: '',
       date: new Date().toISOString().split('T')[0],
       author: 'Club Media',
-      photos: []
+      photos: [],
+      video: ''
     });
     setEditing('new');
   };
   const startEdit = a => {
     setForm({
       ...a,
-      photos: a.photos || []
+      photos: a.photos || [],
+      video: a.video || ''
     });
     setEditing(a.id);
   };
@@ -747,6 +749,13 @@ function NewsSection({
       },
       onChange: addPhoto
     })))), /*#__PURE__*/React.createElement("div", {
+      className: "field"
+    }, /*#__PURE__*/React.createElement("label", null, "Video URL (YouTube or Vimeo)"), /*#__PURE__*/React.createElement("input", {
+      type: "url",
+      value: form.video || '',
+      onChange: e => setForm(f => ({ ...f, video: e.target.value })),
+      placeholder: "https://www.youtube.com/watch?v=..."
+    })), /*#__PURE__*/React.createElement("div", {
       style: {
         display: 'flex',
         gap: 12
@@ -1214,10 +1223,10 @@ function ResultsSection({
   });
   const results = data.results || [];
   const [reportEditId, setReportEditId] = React.useState(null);
-  const [reportForm, setReportForm] = React.useState({ title: '', body: '', photo: null, author: '' });
+  const [reportForm, setReportForm] = React.useState({ title: '', body: '', photo: null, author: '', video: '' });
   const startReport = i => {
     const ex = (results[i] && results[i].report) || {};
-    setReportForm({ title: ex.title || '', body: ex.body || '', photo: ex.photo || null, author: ex.author || '' });
+    setReportForm({ title: ex.title || '', body: ex.body || '', photo: ex.photo || null, author: ex.author || '', video: ex.video || '' });
     setReportEditId(i);
   };
   const saveReport = () => {
@@ -1442,6 +1451,10 @@ function ResultsSection({
     /*#__PURE__*/React.createElement("div", { className: "field", style: { marginBottom: 16 } },
       /*#__PURE__*/React.createElement("label", null, "Author"),
       /*#__PURE__*/React.createElement("input", { value: reportForm.author, onChange: e => setReportForm(f => ({...f, author: e.target.value})), placeholder: "Club Reporter" })
+    ),
+    /*#__PURE__*/React.createElement("div", { className: "field", style: { marginBottom: 16 } },
+      /*#__PURE__*/React.createElement("label", null, "Video URL (YouTube or Vimeo)"),
+      /*#__PURE__*/React.createElement("input", { type: "url", value: reportForm.video || '', onChange: e => setReportForm(f => ({...f, video: e.target.value})), placeholder: "https://www.youtube.com/watch?v=..." })
     ),
     /*#__PURE__*/React.createElement("div", { style: { display: "flex", gap: 10, alignItems: "center" } },
       /*#__PURE__*/React.createElement("button", { className: "btn-primary btn-gold", onClick: saveReport }, "Save Report"),
