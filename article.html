@@ -21,6 +21,15 @@ const CAT_LABELS = {
   sponsorships: 'Sponsorships',
 };
 
+function getEmbedUrl(url) {
+  if (!url) return null;
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}?rel=0`;
+  const vm = url.match(/vimeo\.com\/(\d+)/);
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+  return null;
+}
+
 function Page() {
   const d = BW_DATA;
   const params = new URLSearchParams(location.search);
@@ -102,6 +111,14 @@ function Page() {
                   {i === 0 ? para.slice(1) : para}
                 </p>
               ))}
+              {report.video && (() => {
+                const embed = getEmbedUrl(report.video);
+                return embed ? (
+                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, marginTop: 32, marginBottom: 16 }}>
+                    <iframe src={embed} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }} allowFullScreen title="Match video" />
+                  </div>
+                ) : null;
+              })()}
             </div>
             <aside/>
           </div>
@@ -207,6 +224,16 @@ function Page() {
             {article.photos && article.photos.slice(1).map((src, i) => (
               <img key={i} src={src} style={{ width: '100%', marginBottom: 48, display: 'block' }} />
             ))}
+
+            {/* Video embed */}
+            {article.video && (() => {
+              const embed = getEmbedUrl(article.video);
+              return embed ? (
+                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, marginTop: 8, marginBottom: 48 }}>
+                  <iframe src={embed} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }} allowFullScreen title="Article video" />
+                </div>
+              ) : null;
+            })()}
           </div>
 
           {/* Right sidebar — more articles */}
@@ -245,3 +272,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
 </script>
 </body>
 </html>
+
