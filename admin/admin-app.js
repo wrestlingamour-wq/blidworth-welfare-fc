@@ -273,6 +273,9 @@ function Sidebar({
       k: 'results',
       label: '🏆  Results'
     }, {
+      k: 'shop',
+      label: '🛒  Club Shop'
+    }, {
       k: 'table',
       label: '📊  League Table'
     }]
@@ -2437,6 +2440,171 @@ function SettingsSection({
 }
 
 // ─── App Shell ────────────────────────────────────────────────────────────────
+
+function ShopSection({data, update}) {
+  const products = data.shop || [];
+  const [editing, setEditing] = React.useState(null); // null | 'new' | index
+  const [form, setForm] = React.useState({});
+
+  const blankForm = () => ({
+    id: uid(), name: '', cat: 'Shirts', price: '', badge: '',
+    desc: '', photo: null, buyLink: '', available: true
+  });
+
+  const startNew = () => { setForm(blankForm()); setEditing('new'); };
+  const startEdit = i => { setForm({...products[i]}); setEditing(i); };
+  const cancel = () => { setEditing(null); setForm({}); };
+
+  const setF = (k, v) => setForm(f => ({...f, [k]: v}));
+
+  const save = () => {
+    if (!form.name.trim()) return alert('Product name is required.');
+    const price = parseFloat(form.price);
+    if (isNaN(price) || price < 0) return alert('Enter a valid price.');
+    const p = {...form, price};
+    let next;
+    if (editing === 'new') {
+      next = [...products, p];
+    } else {
+      next = products.map((x, i) => i === editing ? p : x);
+    }
+    update('shop', next);
+    cancel();
+  };
+
+  const remove = i => {
+    if (!confirm('Delete this product?')) return;
+    update('shop', products.filter((_, j) => j !== i));
+  };
+
+  const move = (i, dir) => {
+    const next = [...products];
+    const j = i + dir;
+    if (j < 0 || j >= next.length) return;
+    [next[i], next[j]] = [next[j], next[i]];
+    update('shop', next);
+  };
+
+  const uploadPhoto = async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const b64 = await fileToBase64(file);
+    setF('photo', b64);
+  };
+
+  const CE = React.createElement;
+  const inp = (label, key, opts = {}) => CE('div', {style:{marginBottom:14}},
+    CE('label', {className:'field-label'}, label),
+    CE('input', {
+      className: 'field-input',
+      type: opts.type || 'text',
+      value: form[key] !== undefined ? form[key] : '',
+      placeholder: opts.placeholder || '',
+      onChange: e => setF(key, e.target.value),
+      style: {width:'100%'}
+    })
+  );
+
+  if (editing !== null) {
+    return CE('div', null,
+      CE('div', {className:'section-title'}, 'Club Shop'),
+      CE('div', {className:'section-h'}, editing === 'new' ? 'New Product' : 'Edit Product'),
+      CE('div', {className:'card'},
+        inp('Product Name', 'name', {placeholder:'e.g. Centenary Home Shirt 25/26'}),
+        CE('div', {style:{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:14}},
+          CE('div', null,
+            CE('label', {className:'field-label'}, 'Category'),
+            CE('select', {className:'field-input', value:form.cat||'Shirts', onChange:e=>setF('cat',e.target.value), style:{width:'100%'}},
+              ['Shirts','Training','Retro','Accessories'].map(c => CE('option',{key:c,value:c},c))
+            )
+          ),
+          CE('div', null,
+            CE('label', {className:'field-label'}, 'Price (£)'),
+            CE('input', {className:'field-input', type:'number', min:0, step:'0.01', value:form.price!==undefined?form.price:'', onChange:e=>setF('price',e.target.value), style:{width:'100%'}})
+          )
+        ),
+        CE('div', {style:{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:14}},
+          CE('div', null,
+            CE('label', {className:'field-label'}, 'Badge (optional)'),
+            CE('select', {className:'field-input', value:form.badge||'', onChange:e=>setF('badge',e.target.value), style:{width:'100%'}},
+              ['', 'NEW', 'LIMITED', 'SALE', 'COMING SOON'].map(b => CE('option',{key:b,value:b},b||'— none —'))
+            )
+          ),
+          CE('div', null,
+            CE('label', {className:'field-label'}, 'Available'),
+            CE('div', {style:{paddingTop:10}},
+              CE('label', {style:{display:'flex',alignItems:'center',gap:10,cursor:'pointer'}},
+                CE('input', {type:'checkbox', checked:!!form.available, onChange:e=>setF('available',e.target.checked), style:{width:18,height:18}}),
+                CE('span', {style:{fontSize:14}}, form.available ? 'In Stock' : 'Sold Out')
+              )
+            )
+          )
+        ),
+        CE('div', {style:{marginBottom:14}},
+          CE('label', {className:'field-label'}, 'Description'),
+          CE('textarea', {className:'field-input', rows:3, value:form.desc||'', onChange:e=>setF('desc',e.target.value), style:{width:'100%', resize:'vertical'}})
+        ),
+        inp('Buy Link (URL)', 'buyLink', {placeholder:'https://...', type:'url'}),
+        CE('div', {style:{marginBottom:20}},
+          CE('label', {className:'field-label'}, 'Product Photo'),
+          CE('div', {style:{display:'flex',alignItems:'center',gap:16}},
+            form.photo
+              ? CE('img', {src:form.photo, style:{width:80,height:80,objectFit:'cover',border:'1px solid var(--rule)'}})
+              : CE('div', {style:{width:80,height:80,background:'var(--paper-2)',border:'2px dashed var(--rule)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:28}}, '🛍️'),
+            CE('label', {className:'btn-ghost btn-sm', style:{cursor:'pointer'}},
+              form.photo ? 'Change Photo' : 'Upload Photo',
+              CE('input', {type:'file', accept:'image/*', style:{display:'none'}, onChange:uploadPhoto})
+            ),
+            form.photo && CE('button', {className:'btn-ghost btn-sm', style:{color:'var(--red)',borderColor:'var(--red)'}, onClick:()=>setF('photo',null)}, 'Remove')
+          )
+        ),
+        CE('div', {style:{display:'flex',gap:12}},
+          CE('button', {className:'btn', onClick:save}, editing === 'new' ? '+ Add Product' : 'Save Changes'),
+          CE('button', {className:'btn-ghost', onClick:cancel}, 'Cancel')
+        )
+      )
+    );
+  }
+
+  return CE('div', null,
+    CE('div', {className:'section-title'}, 'Club Shop'),
+    CE('div', {style:{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:24}},
+      CE('h2', {className:'section-h', style:{margin:0}}, `Shop (${products.length} products)`),
+      CE('button', {className:'btn', onClick:startNew}, '+ Add Product')
+    ),
+    products.length === 0 && CE('div', {className:'card', style:{textAlign:'center',padding:48,opacity:0.5}},
+      CE('div', {style:{fontSize:48,marginBottom:16}}, '🛍️'),
+      CE('p', null, 'No products yet. Add your first product above.')
+    ),
+    products.map((p, i) => CE('div', {
+      key: p.id || i,
+      className: 'card',
+      style: {marginBottom:12, display:'grid', gridTemplateColumns:'72px 1fr auto', gap:16, alignItems:'center'}
+    },
+      CE('div', {style:{position:'relative'}},
+        p.photo
+          ? CE('img', {src:p.photo, style:{width:72,height:72,objectFit:'cover',border:'1px solid var(--rule)'}})
+          : CE('div', {style:{width:72,height:72,background:'var(--paper-2)',border:'1px dashed var(--rule)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:24}}, '🛍️'),
+        p.badge && CE('div', {style:{position:'absolute',top:0,left:0,background:p.badge==='LIMITED'?'var(--ink)':'var(--red)',color:p.badge==='LIMITED'?'var(--gold)':'var(--paper)',fontSize:8,fontWeight:700,padding:'2px 5px',letterSpacing:'0.08em'}}, p.badge)
+      ),
+      CE('div', null,
+        CE('div', {style:{fontWeight:700,fontSize:15,marginBottom:3}}, p.name),
+        CE('div', {style:{fontSize:12,opacity:0.55}},
+          p.cat, ' · £', p.price,
+          !p.available && CE('span', {style:{marginLeft:8,color:'var(--red)'}}, '· Sold Out')
+        ),
+        p.desc && CE('div', {style:{fontSize:12,opacity:0.45,marginTop:3,fontStyle:'italic'}}, p.desc.slice(0,80) + (p.desc.length > 80 ? '…' : ''))
+      ),
+      CE('div', {style:{display:'flex',gap:6,flexShrink:0}},
+        CE('button', {className:'btn-ghost btn-sm', onClick:()=>move(i,-1), disabled:i===0, title:'Move up'}, '↑'),
+        CE('button', {className:'btn-ghost btn-sm', onClick:()=>move(i,1), disabled:i===products.length-1, title:'Move down'}, '↓'),
+        CE('button', {className:'btn-ghost btn-sm', onClick:()=>startEdit(i)}, 'Edit'),
+        CE('button', {className:'btn-ghost btn-sm', style:{color:'var(--red)',borderColor:'var(--red)'}, onClick:()=>remove(i)}, 'Delete')
+      )
+    ))
+  );
+}
+
 function App() {
   const [isAuthed, setIsAuthed] = React.useState(() => !!localStorage.getItem(AUTH_KEY));
   const [data, setData] = React.useState(() => {
@@ -2518,6 +2686,10 @@ function App() {
       data: data,
       update: update,
       onPublish: () => setIsDirty(false)
+    }),
+    shop: /*#__PURE__*/React.createElement(ShopSection, {
+      data: data,
+      update: update
     })
   };
   if (!isAuthed) {
