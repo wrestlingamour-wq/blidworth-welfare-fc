@@ -6,7 +6,14 @@
 <title>Club Shop · Blidworth Welfare FC</title>
 <link rel="stylesheet" href="styles/base.css">
 <link rel="stylesheet" href="styles/mobile.css">
-<style>.product:hover .product-img { transform: scale(1.04); } .product-img { transition: transform 0.6s ease; }</style>
+<style>
+  .prod-card { transition: transform 0.25s, box-shadow 0.25s; }
+  .prod-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.10); }
+  .prod-img-wrap { overflow: hidden; }
+  .prod-img-wrap img, .prod-img-wrap .ph { transition: transform 0.5s ease; }
+  .prod-card:hover .prod-img-wrap img,
+  .prod-card:hover .prod-img-wrap .ph { transform: scale(1.04); }
+</style>
 </head>
 <body>
 <div id="root"></div>
@@ -16,92 +23,129 @@
 <script src="components/data.js"></script>
 <script src="components/ui.js"></script>
 <script type="text/babel">
-const products = [
-  { name: 'Centenary Home Shirt 25/26', cat: 'Shirts', price: 42, badge: 'NEW', colour: 'gold' },
-  { name: 'Away Shirt 25/26 — White', cat: 'Shirts', price: 38, colour: 'light' },
-  { name: 'Third Shirt — Forest Green', cat: 'Shirts', price: 38, colour: 'dark' },
-  { name: '1926 Heritage Retro Shirt', cat: 'Retro', price: 45, badge: 'LIMITED', colour: 'light' },
-  { name: 'Club Training Tee — Black', cat: 'Training', price: 24, colour: 'dark' },
-  { name: 'Quarter-Zip Midlayer', cat: 'Training', price: 36, colour: 'dark' },
-  { name: 'Match Day Scarf', cat: 'Accessories', price: 18, colour: 'gold' },
-  { name: 'Enamel Crest Pin Badge', cat: 'Accessories', price: 5, colour: 'gold' },
-  { name: 'Centenary Programme Binder', cat: 'Accessories', price: 12, colour: 'light' },
-];
+
+function ProductCard({ item }) {
+  const badge = item.badge;
+  return (
+    <div className="prod-card" style={{ background: 'var(--paper)', border: '1px solid var(--rule)', display: 'flex', flexDirection: 'column' }}>
+      <div className="prod-img-wrap" style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden' }}>
+        {item.photo
+          ? <img src={item.photo} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} alt={item.name}/>
+          : <div className="ph" style={{ width: '100%', height: '100%', opacity: 0.25 }}/>
+        }
+        {badge && (
+          <span style={{
+            position: 'absolute', top: 16, left: 16,
+            background: badge === 'LIMITED' ? 'var(--ink)' : 'var(--red)',
+            color: badge === 'LIMITED' ? 'var(--gold)' : 'var(--paper)',
+            fontSize: 10, fontWeight: 700, letterSpacing: '0.12em',
+            padding: '4px 10px', textTransform: 'uppercase',
+          }}>{badge}</span>
+        )}
+        {!item.available && (
+          <div style={{
+            position: 'absolute', inset: 0, background: 'rgba(10,10,10,0.55)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <span style={{ color: 'var(--paper)', fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.9 }}>Sold Out</span>
+          </div>
+        )}
+      </div>
+      <div style={{ padding: '20px 20px 24px', flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div className="eyebrow" style={{ fontSize: 10, opacity: 0.45, marginBottom: 2 }}>{item.cat}</div>
+        <div style={{ fontWeight: 700, fontSize: 17, lineHeight: 1.25, flex: 1 }}>{item.name}</div>
+        {item.desc && <div style={{ fontSize: 13, opacity: 0.6, lineHeight: 1.55 }}>{item.desc}</div>}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12 }}>
+          <span style={{ fontSize: 22, fontWeight: 700 }}>£{item.price}</span>
+          {item.available && item.buyLink
+            ? <a href={item.buyLink} target="_blank" rel="noopener" className="btn" style={{ fontSize: 13, padding: '10px 20px' }}>Buy →</a>
+            : item.available
+              ? <span style={{ fontSize: 12, opacity: 0.45, fontStyle: 'italic' }}>Link coming soon</span>
+              : <span style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic' }}>Sold out</span>
+          }
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Page() {
   const d = BW_DATA;
+  const allProducts = (d.shop || []);
+  const cats = ['All', ...Array.from(new Set(allProducts.map(p => p.cat)))];
   const [cat, setCat] = React.useState('All');
-  const cats = ['All', 'Shirts', 'Training', 'Retro', 'Accessories'];
-  const visible = cat === 'All' ? products : products.filter(p => p.cat === cat);
+
+  const visible = cat === 'All' ? allProducts : allProducts.filter(p => p.cat === cat);
+  const featured = allProducts[0] || null;
+
   return (<>
     <Ticker/>
     <SiteNav current="shop"/>
 
-    <section style={{
-      background: 'var(--ink)', color: 'var(--paper)',
-      padding: 0, position: 'relative', overflow: 'hidden',
-    }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', minHeight: 560 }}>
-        <div style={{ padding: '96px 80px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 20 }}>Pre-order · Dropping 1st May</div>
-          <h1 className="h-editorial" style={{ fontSize: 'clamp(64px, 7vw, 120px)', fontWeight: 400, textWrap: 'balance', marginBottom: 24 }}>
-            The centenary<br/>home shirt.
+    {/* Hero */}
+    <section style={{ background: 'var(--ink)', color: 'var(--paper)', position: 'relative', overflow: 'hidden', minHeight: 480 }}>
+      {featured && featured.photo
+        ? <img src={featured.photo} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.35 }}/>
+        : <div className="ph" style={{ position: 'absolute', inset: 0, opacity: 0.15 }}/>
+      }
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(120deg, rgba(10,10,10,0.92) 50%, rgba(10,10,10,0.55))' }}/>
+      <div className="wrap" style={{ position: 'relative', padding: '100px 0 80px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center' }}>
+        <div>
+          <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 20 }}>Blidworth Welfare FC · Official Merchandise</div>
+          <h1 className="h-editorial" style={{ fontSize: 'clamp(56px, 6vw, 100px)', fontWeight: 400, textWrap: 'balance', marginBottom: 24, lineHeight: 0.95 }}>
+            Club<br/>Shop.
           </h1>
-          <p style={{ fontSize: 18, opacity: 0.75, maxWidth: 520, marginBottom: 32 }}>
-            Heritage black with commemorative gold trim. Embroidered crest. Limited run of 1,926 individually numbered pieces.
+          <p style={{ fontSize: 17, opacity: 0.72, maxWidth: 480, lineHeight: 1.65, marginBottom: 36 }}>
+            Official kits, training wear, and club accessories — all in one place.
+            {featured && ` The ${featured.name} is available now.`}
           </p>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 32 }}>
-            <div className="h-display mono-num" style={{ fontSize: 80, fontWeight: 700 }}>£42</div>
-            <div style={{ opacity: 0.6, fontSize: 14 }}>inc. VAT · free UK shipping</div>
-          </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <a href="#" className="btn" style={{ background: 'var(--gold)', color: 'var(--ink)', borderColor: 'var(--gold)' }}>Pre-order →</a>
-            <a href="#" className="btn ghost-light">Size Guide</a>
-          </div>
+          <a href="#products" className="btn">
+            Browse all →
+          </a>
         </div>
-        <div className="ph gold" style={{ minHeight: 560 }}>
-          <span className="ph-label">[ hero: centenary shirt on hanger, dramatic lighting ]</span>
-        </div>
+        {featured && (
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            {featured.badge && (
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ background: 'var(--red)', color: 'var(--paper)', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', padding: '6px 16px', textTransform: 'uppercase' }}>
+                  {featured.badge}
+                </span>
+                <div style={{ marginTop: 20, fontSize: 32, fontWeight: 700, fontFamily: 'var(--font-editorial)' }}>{featured.name}</div>
+                <div style={{ fontSize: 40, fontWeight: 700, color: 'var(--gold)', marginTop: 8 }}>£{featured.price}</div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
 
-    <section style={{ padding: '48px 0 32px', borderBottom: '1px solid var(--rule)' }}>
-      <div className="wrap" style={{ display: 'flex', gap: 8, overflowX: 'auto' }}>
-        {cats.map(c => (
-          <button key={c} onClick={() => setCat(c)} style={{
-            padding: '10px 18px', border: '1px solid var(--rule)',
-            background: cat === c ? 'var(--ink)' : 'transparent',
-            color: cat === c ? 'var(--paper)' : 'var(--ink)',
-            fontFamily: 'var(--font-display)', textTransform: 'uppercase',
-            letterSpacing: '0.1em', fontSize: 12, fontWeight: 500,
-          }}>{c}</button>
-        ))}
-      </div>
-    </section>
-
-    <section style={{ padding: '64px 0 96px' }}>
+    {/* Category filter + grid */}
+    <section id="products" style={{ padding: '72px 0', background: 'var(--paper-2)' }}>
       <div className="wrap">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
-          {visible.map((p, i) => (
-            <a key={i} href="#" className="product" style={{ color: 'var(--ink)' }}>
-              <div style={{ overflow: 'hidden', marginBottom: 16, position: 'relative' }}>
-                <div className={`ph ${p.colour} product-img`} style={{ height: 380 }}>
-                  <span className="ph-label">[ {p.name} ]</span>
-                </div>
-                {p.badge && (
-                  <div className="chip" style={{
-                    position: 'absolute', top: 16, left: 16,
-                    background: 'var(--red)', color: '#fff', borderColor: 'var(--red)',
-                  }}>{p.badge}</div>
-                )}
-              </div>
-              <div className="eyebrow" style={{ opacity: 0.5, marginBottom: 6 }}>{p.cat}</div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <div className="h-display" style={{ fontSize: 18, fontWeight: 600 }}>{p.name}</div>
-                <div className="h-display mono-num" style={{ fontSize: 20, fontWeight: 600 }}>£{p.price}</div>
-              </div>
-            </a>
-          ))}
+        {/* Filter tabs */}
+        {cats.length > 2 && (
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 48 }}>
+            {cats.map(c => (
+              <button key={c} onClick={() => setCat(c)} style={{
+                padding: '8px 22px', fontSize: 13, fontWeight: 700, letterSpacing: '0.06em',
+                textTransform: 'uppercase', border: '1px solid var(--rule)', cursor: 'pointer',
+                background: cat === c ? 'var(--ink)' : 'transparent',
+                color: cat === c ? 'var(--paper)' : 'var(--ink)',
+                transition: 'all 0.15s',
+              }}>{c}</button>
+            ))}
+          </div>
+        )}
+
+        {visible.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '80px 0', opacity: 0.4 }}>
+            <p style={{ fontSize: 18 }}>No products in this category yet.</p>
+          </div>
+        )}
+
+        {/* Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 28 }}>
+          {visible.map(item => <ProductCard key={item.id} item={item}/>)}
         </div>
       </div>
     </section>
@@ -110,6 +154,7 @@ function Page() {
     <SiteFooter/>
   </>);
 }
+
 ReactDOM.createRoot(document.getElementById('root')).render(<Page/>);
 </script>
 </body>
