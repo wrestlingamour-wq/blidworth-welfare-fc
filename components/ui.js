@@ -49,6 +49,11 @@ function SiteNav({
     label: 'Lotto',
     href: 'lotto.html',
     sub: null
+  }, {
+    k: 'shop',
+    label: 'Shop',
+    href: 'shop.html',
+    sub: null
   }];
   return /*#__PURE__*/React.createElement("header", {
     style: {
