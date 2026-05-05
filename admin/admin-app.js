@@ -2750,7 +2750,10 @@ function App() {
   }, "Club Info"), /*#__PURE__*/React.createElement("button", {
     className: `nav-btn${section === 'board' ? ' active' : ''}`,
     onClick: () => setSection('board')
-  }, "Board & Contacts")), /*#__PURE__*/React.createElement("div", {
+  }, "Board & Contacts"), /*#__PURE__*/React.createElement("button", {
+    className: `nav-btn${section === 'shop' ? ' active' : ''}`,
+    onClick: () => setSection('shop')
+  }, "🛒  Club Shop")), /*#__PURE__*/React.createElement("div", {
     className: "nav-group"
   }, /*#__PURE__*/React.createElement("div", {
     className: "nav-group-label"
