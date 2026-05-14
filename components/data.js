@@ -1,5 +1,5 @@
 // Blidworth Welfare FC — shared site data
-// Last updated via admin panel: 2026-05-14T14:40:29.627Z
+// Last updated via admin panel: 2026-05-14T15:09:00.662Z
 
 const BW_DATA = {
   "club": {
@@ -598,7 +598,20 @@ const BW_DATA = {
   ],
   "historyText": "Blidworth Welfare Football Club was founded in 1926, rooted in the mining heritage of the village. The club has been a constant in the community through generations of change.",
   "historyPhotos": [],
-  "ticker": ""
+  "ticker": "",
+  "shop": [
+    {
+      "id": "mp5ljfbnh0zwj",
+      "name": "Centenary Scarf",
+      "cat": "Accessories",
+      "price": 9.99,
+      "badge": "LIMITED",
+      "desc": "Our limited addition Centenary Scarf",
+      "photo": null,
+      "buyLink": "",
+      "available": true
+    }
+  ]
 };
 
 window.BW_DATA = BW_DATA;
