@@ -205,7 +205,7 @@ function HomeModern() {
           </div>
         </div>
 
-        {/* RIGHT — match takeover */}
+        {/* RIGHT — match takeover or pre-season panel */}
         <div style={{
           background: 'var(--ink)', color: 'var(--paper)',
           padding: '80px 56px',
@@ -219,69 +219,102 @@ function HomeModern() {
             transformOrigin: 'top right',
           }}/>
 
-          <div className="reveal reveal-2" style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 }}>
-              {next.tickets !== false && (
-                <span className="chip" style={{ background: 'var(--red)', borderColor: 'var(--red)', color: '#fff' }}>
-                  <span className="chip-dot"/> TICKETS LIVE
-                </span>
-              )}
-              <span className="eyebrow" style={{ opacity: 0.7 }}>{next.comp || 'Camper UK Premier South'}</span>
-            </div>
-            <div className="h-display" style={{ fontSize: 14, opacity: 0.6, marginBottom: 24 }}>
-              {koDate} · {koTime}
-            </div>
-
-            {(() => {
-              const oppShort = (isHomeFixture ? next.away?.short : next.home?.short) || 'OPP';
-              const oppFull = (oppName || 'Opponent').toUpperCase();
-              const words = oppFull.split(' ');
-              const splitPt = Math.ceil(words.length / 2);
-              const oppLine1 = words.slice(0, splitPt).join(' ');
-              const oppLine2 = words.slice(splitPt).join(' ');
-              return (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 48 }}>
-                  <div>
-                    <img src="assets/crest.png" style={{ height: 96, marginBottom: 16 }}/>
-                    <div className="h-display" style={{ fontSize: 36, fontWeight: 700, lineHeight: 0.95 }}>
-                      BLIDWORTH
-                    </div>
-                    <div className="eyebrow" style={{ marginTop: 12, opacity: 0.6 }}>{isHomeFixture ? 'Home' : 'Away'} · {ordinal(self.pos)}</div>
-                  </div>
-                  <div>
-                    {(() => {
-                      const oppLogo = isHomeFixture ? next.away?.logo : next.home?.logo;
-                      return oppLogo
-                        ? <img src={oppLogo} style={{ height: 96, width: 96, objectFit: 'contain', marginBottom: 16 }} />
-                        : <div style={{
-                            height: 96, width: 96, marginBottom: 16,
-                            background: 'repeating-linear-gradient(45deg, #d4a24c 0 8px, #a77f35 8px 16px)',
-                            border: '2px solid var(--paper)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, color: 'var(--ink)',
-                          }}>{oppShort}</div>;
-                    })()}
-                    <div className="h-display" style={{ fontSize: 36, fontWeight: 700, lineHeight: 0.95 }}>
-                      {oppLine1}{oppLine2 && <><br/>{oppLine2}</>}
-                    </div>
-                    <div className="eyebrow" style={{ marginTop: 12, opacity: 0.6 }}>{isHomeFixture ? 'Away' : 'Home'} · {opp ? ordinal(opp.pos) : '—'}</div>
-                  </div>
+          {upcoming ? (
+            <>
+              <div className="reveal reveal-2" style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 }}>
+                  {next.tickets !== false && (
+                    <span className="chip" style={{ background: 'var(--red)', borderColor: 'var(--red)', color: '#fff' }}>
+                      <span className="chip-dot"/> TICKETS LIVE
+                    </span>
+                  )}
+                  <span className="eyebrow" style={{ opacity: 0.7 }}>{next.comp || 'Camper UK Premier South'}</span>
                 </div>
-              );
-            })()}
+                <div className="h-display" style={{ fontSize: 14, opacity: 0.6, marginBottom: 24 }}>
+                  {koDate} · {koTime}
+                </div>
 
+                {(() => {
+                  const oppShort = (isHomeFixture ? next.away?.short : next.home?.short) || 'OPP';
+                  const oppFull = (oppName || 'Opponent').toUpperCase();
+                  const words = oppFull.split(' ');
+                  const splitPt = Math.ceil(words.length / 2);
+                  const oppLine1 = words.slice(0, splitPt).join(' ');
+                  const oppLine2 = words.slice(splitPt).join(' ');
+                  return (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 48 }}>
+                      <div>
+                        <img src="assets/crest.png" style={{ height: 96, marginBottom: 16 }}/>
+                        <div className="h-display" style={{ fontSize: 36, fontWeight: 700, lineHeight: 0.95 }}>BLIDWORTH</div>
+                        <div className="eyebrow" style={{ marginTop: 12, opacity: 0.6 }}>{isHomeFixture ? 'Home' : 'Away'} · {ordinal(self.pos)}</div>
+                      </div>
+                      <div>
+                        {(() => {
+                          const oppLogo = isHomeFixture ? next.away?.logo : next.home?.logo;
+                          return oppLogo
+                            ? <img src={oppLogo} style={{ height: 96, width: 96, objectFit: 'contain', marginBottom: 16 }} />
+                            : <div style={{
+                                height: 96, width: 96, marginBottom: 16,
+                                background: 'repeating-linear-gradient(45deg, #d4a24c 0 8px, #a77f35 8px 16px)',
+                                border: '2px solid var(--paper)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, color: 'var(--ink)',
+                              }}>{oppShort}</div>;
+                        })()}
+                        <div className="h-display" style={{ fontSize: 36, fontWeight: 700, lineHeight: 0.95 }}>
+                          {oppLine1}{oppLine2 && <><br/>{oppLine2}</>}
+                        </div>
+                        <div className="eyebrow" style={{ marginTop: 12, opacity: 0.6 }}>{isHomeFixture ? 'Away' : 'Home'} · {opp ? ordinal(opp.pos) : '—'}</div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
 
-          </div>
+              <div style={{ borderTop: '1px solid var(--rule-light)', paddingTop: 32, marginBottom: 32, position: 'relative', zIndex: 1 }}>
+                <div className="eyebrow" style={{ opacity: 0.6, marginBottom: 20 }}>Kick-off in</div>
+                <Countdown target={next.kickoff} onDark/>
+              </div>
 
-          <div style={{ borderTop: '1px solid var(--rule-light)', paddingTop: 32, marginBottom: 32, position: 'relative', zIndex: 1 }}>
-            <div className="eyebrow" style={{ opacity: 0.6, marginBottom: 20 }}>Kick-off in</div>
-            <Countdown target={next.kickoff} onDark/>
-          </div>
-
-          <div className="reveal reveal-3" style={{ position: 'relative', zIndex: 1, display: 'flex', gap: 12 }}>
-            <a href="tickets.html" className="btn red" style={{ flex: 1, justifyContent: 'center' }}>Buy Tickets →</a>
-            <a href="#" className="btn ghost-light" style={{ flex: 1, justifyContent: 'center' }}>Matchday Info</a>
-          </div>
+              <div className="reveal reveal-3" style={{ position: 'relative', zIndex: 1, display: 'flex', gap: 12 }}>
+                <a href="tickets.html" className="btn red" style={{ flex: 1, justifyContent: 'center' }}>Buy Tickets →</a>
+                <a href="fixtures.html" className="btn ghost-light" style={{ flex: 1, justifyContent: 'center' }}>All Fixtures →</a>
+              </div>
+            </>
+          ) : (
+            /* ── PRE-SEASON / NO FIXTURES panel ── */
+            <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+              <div>
+                <div className="reveal reveal-2">
+                  <div className="eyebrow" style={{ color: 'var(--gold)', marginBottom: 24 }}>Season Complete</div>
+                  <div className="h-display" style={{ fontSize: 'clamp(48px, 6vw, 96px)', fontWeight: 700, lineHeight: 0.88, marginBottom: 32 }}>
+                    SEE YOU<br/>
+                    <span style={{ WebkitTextStroke: '2px var(--paper)', WebkitTextFillColor: 'transparent', fontStyle: 'italic' }}>NEXT</span><br/>
+                    SEASON
+                  </div>
+                  <p style={{ fontSize: 16, opacity: 0.7, lineHeight: 1.6, maxWidth: 340, marginBottom: 40 }}>
+                    The 2025/26 season is over. Pre-season fixtures will appear here automatically once published in the admin panel.
+                  </p>
+                </div>
+                {d.lastMatch && (
+                  <div style={{ borderTop: '1px solid var(--rule-light)', paddingTop: 24, marginBottom: 32 }}>
+                    <div className="eyebrow" style={{ opacity: 0.6, marginBottom: 16 }}>Last Result</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600, flex: 1 }}>{d.lastMatch.home?.name}</div>
+                      <div className="h-display mono-num" style={{ fontSize: 32, fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap' }}>
+                        {d.lastMatch.home?.score} – {d.lastMatch.away?.score}
+                      </div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 600, flex: 1, textAlign: 'right' }}>{d.lastMatch.away?.name}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="reveal reveal-3" style={{ display: 'flex', gap: 12 }}>
+                <a href="fixtures.html" className="btn red" style={{ flex: 1, justifyContent: 'center' }}>View Results →</a>
+                <a href="club.html" className="btn ghost-light" style={{ flex: 1, justifyContent: 'center' }}>Club Info →</a>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

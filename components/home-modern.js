@@ -323,7 +323,7 @@ function HomeModern() {
       transform: 'rotate(45deg) translate(50%, -50%)',
       transformOrigin: 'top right'
     }
-  }), /*#__PURE__*/React.createElement("div", {
+  }), upcoming ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "reveal reveal-2",
     style: {
       position: 'relative',
@@ -463,13 +463,116 @@ function HomeModern() {
       justifyContent: 'center'
     }
   }, "Buy Tickets \u2192"), /*#__PURE__*/React.createElement("a", {
-    href: "#",
+    href: "fixtures.html",
     className: "btn ghost-light",
     style: {
       flex: 1,
       justifyContent: 'center'
     }
-  }, "Matchday Info")))), /*#__PURE__*/React.createElement("div", {
+  }, "All Fixtures \u2192"))) :
+  /*#__PURE__*/
+  /* ── PRE-SEASON / NO FIXTURES panel ── */
+  React.createElement("div", {
+    style: {
+      position: 'relative',
+      zIndex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      height: '100%'
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "reveal reveal-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "eyebrow",
+    style: {
+      color: 'var(--gold)',
+      marginBottom: 24
+    }
+  }, "Season Complete"), /*#__PURE__*/React.createElement("div", {
+    className: "h-display",
+    style: {
+      fontSize: 'clamp(48px, 6vw, 96px)',
+      fontWeight: 700,
+      lineHeight: 0.88,
+      marginBottom: 32
+    }
+  }, "SEE YOU", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("span", {
+    style: {
+      WebkitTextStroke: '2px var(--paper)',
+      WebkitTextFillColor: 'transparent',
+      fontStyle: 'italic'
+    }
+  }, "NEXT"), /*#__PURE__*/React.createElement("br", null), "SEASON"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: 16,
+      opacity: 0.7,
+      lineHeight: 1.6,
+      maxWidth: 340,
+      marginBottom: 40
+    }
+  }, "The 2025/26 season is over. Pre-season fixtures will appear here automatically once published in the admin panel.")), d.lastMatch && /*#__PURE__*/React.createElement("div", {
+    style: {
+      borderTop: '1px solid var(--rule-light)',
+      paddingTop: 24,
+      marginBottom: 32
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "eyebrow",
+    style: {
+      opacity: 0.6,
+      marginBottom: 16
+    }
+  }, "Last Result"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 15,
+      fontWeight: 600,
+      flex: 1
+    }
+  }, d.lastMatch.home?.name), /*#__PURE__*/React.createElement("div", {
+    className: "h-display mono-num",
+    style: {
+      fontSize: 32,
+      fontWeight: 700,
+      color: 'var(--gold)',
+      whiteSpace: 'nowrap'
+    }
+  }, d.lastMatch.home?.score, " \u2013 ", d.lastMatch.away?.score), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'var(--font-display)',
+      fontSize: 15,
+      fontWeight: 600,
+      flex: 1,
+      textAlign: 'right'
+    }
+  }, d.lastMatch.away?.name)))), /*#__PURE__*/React.createElement("div", {
+    className: "reveal reveal-3",
+    style: {
+      display: 'flex',
+      gap: 12
+    }
+  }, /*#__PURE__*/React.createElement("a", {
+    href: "fixtures.html",
+    className: "btn red",
+    style: {
+      flex: 1,
+      justifyContent: 'center'
+    }
+  }, "View Results \u2192"), /*#__PURE__*/React.createElement("a", {
+    href: "club.html",
+    className: "btn ghost-light",
+    style: {
+      flex: 1,
+      justifyContent: 'center'
+    }
+  }, "Club Info \u2192"))))), /*#__PURE__*/React.createElement("div", {
     style: {
       background: 'var(--gold)',
       color: 'var(--ink)',
