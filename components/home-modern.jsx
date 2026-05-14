@@ -89,7 +89,38 @@ function ordinal(n) {
 }
 function HomeModern() {
   const d = BW_DATA;
-  const next = d.nextMatch;
+
+  // ── Auto-derive next match from fixtures list ─────────────────────────────
+  const shortName = (name) => {
+    if (/blidworth/i.test(name)) return 'BWFC';
+    return name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 4);
+  };
+  const upcoming = (d.fixtures || []).find(f => {
+    const dt = new Date(f.date + 'T' + (f.time || '15:00') + ':00');
+    return dt.getTime() >= Date.now() - 3 * 60 * 60 * 1000; // include matches started up to 3h ago
+  });
+  const next = upcoming ? {
+    home: {
+      name: upcoming.home,
+      short: shortName(upcoming.home),
+      crest: /blidworth/i.test(upcoming.home) ? 'assets/crest.png' : null,
+    },
+    away: {
+      name: upcoming.away,
+      short: shortName(upcoming.away),
+      crest: /blidworth/i.test(upcoming.away) ? 'assets/crest.png' : null,
+    },
+    kickoff: upcoming.date + 'T' + (upcoming.time || '15:00') + ':00',
+    comp: upcoming.comp || (d.nextMatch && d.nextMatch.comp) || 'Camper UK Premier South',
+    venue: /blidworth/i.test(upcoming.home) ? 'Welfare Ground' : upcoming.home,
+    tickets: (d.nextMatch && d.nextMatch.tickets) || false,
+  } : (d.nextMatch || {
+    home: { name: 'Blidworth Welfare', short: 'BWFC', crest: 'assets/crest.png' },
+    away: { name: 'TBC', short: 'TBC' },
+    kickoff: new Date(Date.now() + 7 * 86400000).toISOString(),
+    comp: 'Camper UK Premier South',
+    tickets: false,
+  });
   const [hoverNews, setHoverNews] = React.useState(null);
 
   // ── Derive live stats from the synced table ──────────────────────────────

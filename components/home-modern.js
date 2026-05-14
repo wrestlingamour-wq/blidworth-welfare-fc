@@ -144,10 +144,46 @@ function ordinal(n) {
 }
 function HomeModern() {
   const d = BW_DATA;
-  const next = d.nextMatch;
+
+  // ── Auto-derive next match from fixtures list ─────────────────────────────
+  const shortName = name => {
+    if (/blidworth/i.test(name)) return 'BWFC';
+    return name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 4);
+  };
+  const upcoming = (d.fixtures || []).find(f => {
+    const dt = new Date(f.date + 'T' + (f.time || '15:00') + ':00');
+    return dt.getTime() >= Date.now() - 3 * 60 * 60 * 1000; // include matches started up to 3h ago
+  });
+  const next = upcoming ? {
+    home: {
+      name: upcoming.home,
+      short: shortName(upcoming.home),
+      crest: /blidworth/i.test(upcoming.home) ? 'assets/crest.png' : null
+    },
+    away: {
+      name: upcoming.away,
+      short: shortName(upcoming.away),
+      crest: /blidworth/i.test(upcoming.away) ? 'assets/crest.png' : null
+    },
+    kickoff: upcoming.date + 'T' + (upcoming.time || '15:00') + ':00',
+    comp: upcoming.comp || d.nextMatch && d.nextMatch.comp || 'Camper UK Premier South',
+    venue: /blidworth/i.test(upcoming.home) ? 'Welfare Ground' : upcoming.home,
+    tickets: d.nextMatch && d.nextMatch.tickets || false
+  } : d.nextMatch || {
+    home: {
+      name: 'Blidworth Welfare',
+      short: 'BWFC',
+      crest: 'assets/crest.png'
+    },
+    away: {
+      name: 'TBC',
+      short: 'TBC'
+    },
+    kickoff: new Date(Date.now() + 7 * 86400000).toISOString(),
+    comp: 'Camper UK Premier South',
+    tickets: false
+  };
   const [hoverNews, setHoverNews] = React.useState(null);
-  const latestReport = (d.results || []).find(r => r.report);
-  const reportIdx = (d.results || []).findIndex(r => r.report);
 
   // ── Derive live stats from the synced table ──────────────────────────────
   const self = (d.table || []).find(r => r.self) || {
@@ -570,30 +606,7 @@ function HomeModern() {
         opacity: 0.7
       }
     }, n.kicker))));
-  })))), latestReport && /*#__PURE__*/React.createElement("section", {
-    style: {
-      padding: '80px 0',
-      background: 'var(--paper)',
-      borderTop: '4px solid var(--gold)'
-    }
-  }, /*#__PURE__*/React.createElement("div", { className: "wrap" },
-    /*#__PURE__*/React.createElement("div", { style: { display: 'grid', gridTemplateColumns: latestReport.report && latestReport.report.photo ? '1fr 1fr' : '1fr', gap: 64, alignItems: 'center' } },
-      /*#__PURE__*/React.createElement("div", null,
-        /*#__PURE__*/React.createElement("div", { className: "eyebrow", style: { color: 'var(--gold)', marginBottom: 16 } }, "Latest Match Report"),
-        /*#__PURE__*/React.createElement("h2", { className: "h-editorial", style: { fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 400, lineHeight: 1.1, marginBottom: 12 } }, latestReport.report.title),
-        /*#__PURE__*/React.createElement("div", { style: { fontSize: 13, opacity: 0.55, marginBottom: 24, fontFamily: 'var(--font-display)', textTransform: 'uppercase', letterSpacing: '0.08em' } },
-          latestReport.home + " " + latestReport.hs + " – " + latestReport.as + " " + latestReport.away + " · " + new Date(latestReport.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-        ),
-        /*#__PURE__*/React.createElement("p", { style: { fontSize: 17, lineHeight: 1.75, opacity: 0.75, marginBottom: 32, maxWidth: 560 } },
-          latestReport.report.body.length > 220 ? latestReport.report.body.slice(0, 220) + '…' : latestReport.report.body
-        ),
-        /*#__PURE__*/React.createElement("a", { href: "article.html?matchreport=" + reportIdx, style: { display: 'inline-block', padding: '14px 32px', background: 'var(--ink)', color: 'var(--paper)', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.1em', textDecoration: 'none' } }, "Read Full Report →")
-      ),
-      latestReport.report && latestReport.report.photo ? /*#__PURE__*/React.createElement("div", null,
-        /*#__PURE__*/React.createElement("img", { src: latestReport.report.photo, style: { width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' } })
-      ) : null
-    )
-  )), /*#__PURE__*/React.createElement("section", {
+  })))), /*#__PURE__*/React.createElement("section", {
     style: {
       background: 'var(--ink)',
       color: 'var(--paper)',
@@ -923,4 +936,3 @@ function HomeModern() {
   }));
 }
 window.HomeModern = HomeModern;
-
